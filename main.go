@@ -4,6 +4,7 @@ import (
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/midi"
+	"github.com/bspaans/bs8bs/sinks"
 )
 
 func main() {
@@ -22,5 +23,15 @@ func main() {
 	mixer.NoteOn(1, 54)
 	mixer.NoteOn(2, 57)
 	samples := mixer.GetSamples(cfg, cfg.SampleRate)
-	audio.WriteWavFile(cfg, samples, "test.wav")
+
+	sink1 := sinks.NewWavSink("test.wav")
+	sink1.Write(cfg, samples)
+	sink1.Close(cfg)
+
+	sink2, err := sinks.NewPortAudioSink(cfg)
+	if err != nil {
+		panic(err)
+	}
+	sink2.Write(cfg, samples)
+	sink2.Close(cfg)
 }
