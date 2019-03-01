@@ -32,3 +32,7 @@ func (s *SquareWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	}
 	return result
 }
+
+func (s *SquareWaveOscillator) SetPitch(f float64) {
+	s.Pitch = f
+}

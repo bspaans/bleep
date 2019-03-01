@@ -31,3 +31,7 @@ func (s *SineWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	}
 	return result
 }
+
+func (s *SineWaveOscillator) SetPitch(f float64) {
+	s.Pitch = f
+}
