@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bs8bs/generators"
 )
 
 type Mixer struct {
@@ -12,15 +13,20 @@ type Mixer struct {
 }
 
 func NewMixer() *Mixer {
-	return &Mixer{
+	m := &Mixer{
 		Channels: []Channel{},
 		Gain:     []float64{},
 	}
+	for i := 0; i < 16; i++ {
+		g := generators.NewSquareWaveOscillator()
+		m.AddChannel(NewMonophonicChannel(g))
+	}
+	return m
 }
 
 func (m *Mixer) AddChannel(ch Channel) {
 	m.Channels = append(m.Channels, ch)
-	m.Gain = append(m.Gain, 0.3)
+	m.Gain = append(m.Gain, 0.05)
 }
 
 func (m *Mixer) NoteOn(channel, note int) {

@@ -1,8 +1,6 @@
 package sinks
 
 import (
-	"time"
-
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/gordonklaus/portaudio"
 )
@@ -20,7 +18,7 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 	if err != nil {
 		return nil, err
 	}
-	buffer := make([]uint8, cfg.SampleRate)
+	buffer := make([]uint8, cfg.StepSize)
 	streamParams := portaudio.HighLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)
 	stream, err := portaudio.OpenStream(streamParams, buffer)
 	if err != nil {
@@ -40,8 +38,6 @@ func (p *PortAudioSink) Write(cfg *audio.AudioConfig, samples []int) error {
 		p.Buffer[i] = uint8(s)
 	}
 	p.Stream.Write()
-	time.Sleep(1 * time.Second)
-
 	return nil
 }
 
