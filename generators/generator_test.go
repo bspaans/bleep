@@ -1,8 +1,8 @@
 package generators
 
-func CountPeaksInSamples(samples []int) int {
+func CountPeaksInSamples(samples []float64) int {
 	goingDown := false
-	prev := 0
+	prev := 0.0
 	peaks := 0
 	for _, v := range samples {
 		if !goingDown && v < prev {
