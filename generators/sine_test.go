@@ -1,11 +1,13 @@
-package main
+package generators
 
 import (
 	"testing"
+
+	"github.com/bspaans/bs8bs/audio"
 )
 
-func Test_Oscillator_GetSamples_sanity_check(t *testing.T) {
-	cfg := NewAudioConfig()
+func Test_Sine_GetSamples_sanity_check(t *testing.T) {
+	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
 	osc := NewSineWaveOscillator()
 	osc.Pitch = 1.0
@@ -27,8 +29,8 @@ func Test_Oscillator_GetSamples_sanity_check(t *testing.T) {
 	}
 }
 
-func Test_Oscillator_GetSamples_number_of_peaks_equals_pitch(t *testing.T) {
-	cfg := NewAudioConfig()
+func Test_Sine_GetSamples_number_of_peaks_equals_pitch(t *testing.T) {
+	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 44000
 	osc := NewSineWaveOscillator()
 	osc.Pitch = 440.0
@@ -36,18 +38,7 @@ func Test_Oscillator_GetSamples_number_of_peaks_equals_pitch(t *testing.T) {
 	if len(samples) != 44000 {
 		t.Errorf("Want 44000 samples, got %v", len(samples))
 	}
-	goingDown := false
-	prev := 0
-	peaks := 0
-	for _, v := range samples {
-		if !goingDown && v < prev {
-			goingDown = true
-			peaks++
-		} else if goingDown && v > prev {
-			goingDown = false
-		}
-		prev = v
-	}
+	peaks := CountPeaksInSamples(samples)
 	if float64(peaks) != osc.Pitch {
 		t.Errorf("Expecting the number of peaks to correspond with the pitch; got %v peaks", peaks)
 	}
