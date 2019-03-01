@@ -6,3 +6,4 @@
 * Square wave oscillators
 * Channels
 * `.wav` output
+* PortAudio output

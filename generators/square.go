@@ -20,6 +20,9 @@ func NewSquareWaveOscillator() *SquareWaveOscillator {
 
 func (s *SquareWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	result := make([]int, n)
+	if s.Pitch == 0.0 {
+		return result
+	}
 	flipEvery := (float64(cfg.SampleRate) / 2) / s.Pitch
 	maxValue := int(math.Pow(2, float64(cfg.BitDepth)))
 	for i := 0; i < n; i++ {

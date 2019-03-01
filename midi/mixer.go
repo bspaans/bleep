@@ -19,6 +19,7 @@ func NewMixer() *Mixer {
 	}
 	for i := 0; i < 16; i++ {
 		g := generators.NewSquareWaveOscillator()
+		g.SetPitch(0)
 		m.AddChannel(NewMonophonicChannel(g))
 	}
 	return m

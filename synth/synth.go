@@ -50,3 +50,9 @@ func (s *Synth) NoteOn(channel, note int) {
 func (s *Synth) NoteOff(channel, note int) {
 	s.Mixer.NoteOff(channel, note)
 }
+
+func (s *Synth) Close() {
+	for _, sink := range s.Sinks {
+		sink.Close(s.Config)
+	}
+}

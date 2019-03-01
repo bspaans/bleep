@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/synth"
 )
@@ -13,8 +15,18 @@ func main() {
 		panic(err)
 	}
 
+	go s.Start()
+	PlaySong(s)
+}
+
+func PlaySong(s *synth.Synth) {
 	s.NoteOn(0, 50)
-	s.NoteOn(1, 54)
-	s.NoteOn(2, 57)
-	s.Start()
+	time.Sleep(500 * time.Millisecond)
+	s.NoteOn(0, 54)
+	time.Sleep(500 * time.Millisecond)
+	s.NoteOn(0, 57)
+	time.Sleep(500 * time.Millisecond)
+	s.NoteOn(0, 62)
+	time.Sleep(1000 * time.Millisecond)
+	s.Close()
 }
