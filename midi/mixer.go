@@ -5,6 +5,7 @@ import (
 
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bs8bs/instruments"
 )
 
 type Mixer struct {
@@ -39,6 +40,12 @@ func (m *Mixer) NoteOn(channel, note int) {
 func (m *Mixer) NoteOff(channel, note int) {
 	if channel < len(m.Channels) {
 		m.Channels[channel].NoteOff(note)
+	}
+}
+
+func (m *Mixer) ChangeInstrument(channel, instr int) {
+	if channel < len(m.Channels) {
+		m.Channels[channel].SetInstrument(instruments.Bank[instr])
 	}
 }
 

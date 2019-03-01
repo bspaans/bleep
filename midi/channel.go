@@ -10,6 +10,7 @@ import (
 type Channel interface {
 	NoteOn(note int)
 	NoteOff(note int)
+	SetInstrument(generators.Generator)
 	GetSamples(cfg *audio.AudioConfig, n int) []float64
 }
 
@@ -21,6 +22,10 @@ func NewMonophonicChannel(g generators.Generator) *MonophonicChannel {
 	return &MonophonicChannel{
 		Instrument: g,
 	}
+}
+
+func (c *MonophonicChannel) SetInstrument(g generators.Generator) {
+	c.Instrument = g
 }
 
 func (c *MonophonicChannel) NoteOn(note int) {

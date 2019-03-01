@@ -80,17 +80,28 @@ func PlaySong(s *synth.Synth) {
 			if midievent.IsNoteOn(ev) {
 				ch, ok := midievent.ChanOf(ev)
 				if ok {
+					ch -= 1
 					fmt.Println("NOTE ON", msg[1], ch)
 					s.NoteOn(ch, int(msg[1]))
 				}
 			} else if midievent.IsNoteOff(ev) {
 				ch, ok := midievent.ChanOf(ev)
 				if ok {
+					ch -= 1
 					fmt.Println("NOTE OFF", msg[1], ch)
 					s.NoteOff(ch, int(msg[1]))
 				}
+			} else if ev >= midievent.Chan1ProgramChangeEvent && ev <= midievent.Chan16ProgramChangeEvent {
+				ch, ok := midievent.ChanOf(ev)
+				if ok {
+					ch -= 1
+					fmt.Println("CHANGE INSTRUMENTS ", msg[1], ch)
+					s.ChangeInstrument(ch, int(msg[1]))
+				}
+
+			} else {
+				log.Println(msg, timeDelta, err)
 			}
-			log.Println(msg, timeDelta, err)
 		}
 	}
 }

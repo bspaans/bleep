@@ -63,6 +63,10 @@ func (s *Synth) NoteOff(channel, note int) {
 	s.Mixer.NoteOff(channel, note)
 }
 
+func (s *Synth) ChangeInstrument(channel, instrument int) {
+	s.Mixer.ChangeInstrument(channel, instrument)
+}
+
 func (s *Synth) Close() {
 	for _, sink := range s.Sinks {
 		sink.Close(s.Config)
