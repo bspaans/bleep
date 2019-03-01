@@ -27,7 +27,7 @@ func NewMixer() *Mixer {
 
 func (m *Mixer) AddChannel(ch Channel) {
 	m.Channels = append(m.Channels, ch)
-	m.Gain = append(m.Gain, 0.05)
+	m.Gain = append(m.Gain, 0.1)
 }
 
 func (m *Mixer) NoteOn(channel, note int) {

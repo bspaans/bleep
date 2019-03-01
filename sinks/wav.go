@@ -1,7 +1,6 @@
 package sinks
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/bspaans/bs8bs/audio"
@@ -12,48 +11,31 @@ import (
 type WavSink struct {
 	TargetFile  string
 	AudioBuffer *goaudio.IntBuffer
+	Encoder     *wav.Encoder
+	Samples     []int
+	Closed      bool
 }
 
-func NewWavSink(file string) *WavSink {
-	return &WavSink{
-		TargetFile:  file,
-		AudioBuffer: nil,
-	}
-}
-
-func (w *WavSink) Write(cfg *audio.AudioConfig, samples []int) error {
-	numChans := 1
-	if w.AudioBuffer == nil {
-		w.AudioBuffer = &goaudio.IntBuffer{
-			Format: &goaudio.Format{
-				NumChannels: numChans,
-				SampleRate:  cfg.SampleRate,
-			},
-			Data:           samples,
-			SourceBitDepth: cfg.BitDepth,
-		}
-	} else {
-		for _, s := range samples {
-			w.AudioBuffer.Data = append(w.AudioBuffer.Data, s)
-		}
-	}
-
-	return nil
-}
-
-func (w *WavSink) Close(cfg *audio.AudioConfig) error {
-	out, err := os.Create(w.TargetFile)
+func NewWavSink(cfg *audio.AudioConfig, file string) (*WavSink, error) {
+	out, err := os.Create(file)
 	if err != nil {
-		panic(fmt.Sprintf("couldn't create output file %v - %v", w.TargetFile, err))
+		return nil, err
 	}
 	numChans := 1
 	audioFormat := 1 // PCM
 	encoder := wav.NewEncoder(out, cfg.SampleRate, cfg.BitDepth, numChans, audioFormat)
-	if err := encoder.Write(w.AudioBuffer); err != nil {
-		return err
-	}
-	if err = encoder.Close(); err != nil {
-		return err
-	}
+	return &WavSink{
+		TargetFile:  file,
+		AudioBuffer: nil,
+		Encoder:     encoder,
+		Samples:     []int{},
+	}, nil
+}
+
+func (w *WavSink) Write(cfg *audio.AudioConfig, samples []int) error {
+	return nil
+}
+
+func (w *WavSink) Close(cfg *audio.AudioConfig) error {
 	return nil
 }

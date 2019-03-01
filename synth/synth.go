@@ -1,6 +1,8 @@
 package synth
 
 import (
+	"log"
+
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/midi"
 	"github.com/bspaans/bs8bs/sinks"
@@ -29,16 +31,26 @@ func (s *Synth) EnablePortAudioSink() error {
 	return nil
 }
 
-func (s *Synth) EnableWavSink(file string) {
-	sink := sinks.NewWavSink(file)
+func (s *Synth) EnableWavSink(file string) error {
+	sink, err := sinks.NewWavSink(s.Config, file)
+	if err != nil {
+		return err
+	}
 	s.Sinks = append(s.Sinks, sink)
+	return nil
 }
 
 func (s *Synth) Start() {
 	for {
-		samples := s.Mixer.GetSamples(s.Config, s.Config.StepSize)
-		for _, sink := range s.Sinks {
-			sink.Write(s.Config, samples)
+		s.WriteSamples()
+	}
+}
+
+func (s *Synth) WriteSamples() {
+	samples := s.Mixer.GetSamples(s.Config, s.Config.StepSize)
+	for _, sink := range s.Sinks {
+		if err := sink.Write(s.Config, samples); err != nil {
+			log.Println(err.Error())
 		}
 	}
 }

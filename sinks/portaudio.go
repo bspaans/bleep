@@ -1,13 +1,22 @@
 package sinks
 
 import (
+	"fmt"
+	"log"
+	"os"
+
 	"github.com/bspaans/bs8bs/audio"
+	goaudio "github.com/go-audio/audio"
+	"github.com/go-audio/wav"
 	"github.com/gordonklaus/portaudio"
 )
 
 type PortAudioSink struct {
-	Stream *portaudio.Stream
-	Buffer []uint8
+	Stream     *portaudio.Stream
+	Buffer     []uint8
+	Samples    []int
+	Recording  bool
+	TargetFile string
 }
 
 func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
@@ -28,8 +37,10 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 		return nil, err
 	}
 	return &PortAudioSink{
-		Stream: stream,
-		Buffer: buffer,
+		Stream:     stream,
+		Buffer:     buffer,
+		Recording:  false,
+		TargetFile: "test.wav",
 	}, nil
 }
 
@@ -38,9 +49,38 @@ func (p *PortAudioSink) Write(cfg *audio.AudioConfig, samples []int) error {
 		p.Buffer[i] = uint8(s)
 	}
 	p.Stream.Write()
+	if p.Recording {
+		for _, s := range samples {
+			p.Samples = append(p.Samples, s)
+		}
+	}
 	return nil
 }
 
 func (p *PortAudioSink) Close(cfg *audio.AudioConfig) error {
-	return nil
+	if p.Recording {
+		log.Println("Writing", len(p.Samples), "samples")
+		out, err := os.Create(p.TargetFile)
+		if err != nil {
+			return err
+		}
+
+		numChans := 1
+		audioFormat := 1 // PCM
+		encoder := wav.NewEncoder(out, cfg.SampleRate, cfg.BitDepth, numChans, audioFormat)
+		if err := encoder.Write(&goaudio.IntBuffer{
+			Format: &goaudio.Format{
+				SampleRate:  cfg.SampleRate,
+				NumChannels: 1,
+			},
+			Data:           p.Samples,
+			SourceBitDepth: cfg.BitDepth,
+		}); err != nil {
+			return err
+		}
+		fmt.Println("Writing", p.TargetFile)
+		return encoder.Close()
+	} else {
+		return p.Stream.Close()
+	}
 }

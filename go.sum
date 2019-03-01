@@ -19,6 +19,8 @@ github.com/mattetti/audio v0.0.0-20180912171649-01576cde1f21 h1:Hc1iKlyxNHp3CV59
 github.com/mattetti/audio v0.0.0-20180912171649-01576cde1f21/go.mod h1:LlQmBGkOuV/SKzEDXBPKauvN2UqCgzXO2XjecTGj40s=
 github.com/metakeule/mutex v0.0.1/go.mod h1:/rTh8BoStvpIqJdiFgDBHt9Ib1mMIziunxMenemvjcQ=
 github.com/thestk/rtmidi v3.0.0+incompatible h1:PnWbzFAaKFzNItn4Tqo+2o4Ty4k2fxKJZ/3Y0emv1gw=
+github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7 h1:GmnQBLZSOXI1F2hXKlyUuV19bW6DpCnWN14p/jP+WXA=
+github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7/go.mod h1:6Wezm38bOZuwEwcq0W+WIrLxkod95+jT5xxaqU9xcj4=
 gitlab.com/gomidi/midi v1.10.4 h1:Zki+MX1moh1oMvOrGmXgIpaJO8M4Q5xEqzvxo6qvrvo=
 gitlab.com/gomidi/midi v1.10.4/go.mod h1:3ohtNOhqoSakkuLG/Li1OI6I3J1c2LErnJF5o/VBq1c=
 gitlab.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20190226224559-2e02e3e34693 h1:7Lkeor6pTMEtuVk+kMteUGAXIebDYEHNBG1/fTHEkN4=
