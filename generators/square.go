@@ -1,6 +1,11 @@
 package generators
 
-import "github.com/bspaans/bs8bs/audio"
+import (
+	"fmt"
+	"math"
+
+	"github.com/bspaans/bs8bs/audio"
+)
 
 type SquareWaveOscillator struct {
 	Pitch  float64
@@ -16,8 +21,15 @@ func NewSquareWaveOscillator() *SquareWaveOscillator {
 
 func (s *SquareWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	result := make([]int, n)
+	flipEvery := (float64(cfg.SampleRate) / 2) / s.Pitch
+	fmt.Println(flipEvery)
 	for i := 0; i < n; i++ {
-		result[i] = 256
+		v := 256
+		if int(math.Floor(float64(s.Period)/flipEvery))%2 == 1 {
+			v = 0
+		}
+		result[i] = v
+		s.Period++
 	}
 	return result
 }
