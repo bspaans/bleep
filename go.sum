@@ -3,7 +3,14 @@ github.com/go-audio/audio v0.0.0-20180206231410-b697a35b5608 h1:PHEBf8t8q21RNXEB
 github.com/go-audio/audio v0.0.0-20180206231410-b697a35b5608/go.mod h1:6uAu0+H2lHkwdGsAY+j2wHPNPpPoeg5AaEFh9FlA+Zs=
 github.com/go-audio/wav v0.0.0-20181013172942-de841e69b884 h1:2TaXIaVA4ff/MHHezOj83tCypALTFAcXOImcFWNa3jw=
 github.com/go-audio/wav v0.0.0-20181013172942-de841e69b884/go.mod h1:UiqzUyfX0zs3pJ/DPyvS5v8sN6s5bXPUDDIVA5v8dks=
+github.com/gomidi/connect v0.11.1 h1:3u5nXHSUDCj1CkhiY3hes+QzTg//gSD3gUVA5eTythU=
+github.com/gomidi/connect v0.11.1/go.mod h1:zu6PoN7Xs/37thtXZ+4Wl1MMg8MxenS7U/M3rn6trNo=
+github.com/gomidi/rtmididrv v0.1.26 h1:eS23H1miHBcSn7FOePYLgYF9NCEnNUPw37VrVkZaLKM=
+github.com/gomidi/rtmididrv v0.1.26/go.mod h1:55Hofs2shxLSpiBFDzsyzu5TjvY4nk0YtccG1SHXTPI=
+github.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20181003214813-394e08a8a616 h1:li36X3RHhnh40a0jGULcNryHKFEKZrf++Vfj0NpfRVM=
+github.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20181003214813-394e08a8a616/go.mod h1:dbXfsHh+fNtafItiJIgnK6EMw5M/xgtXc7Rmya+cZsQ=
 github.com/gordonklaus/portaudio v0.0.0-20180817120803-00e7307ccd93 h1:TSG+DyZBnazM22ZHyHLeUkzM34ClkJRjIWHTq4btvek=
 github.com/gordonklaus/portaudio v0.0.0-20180817120803-00e7307ccd93/go.mod h1:HfYnZi/ARQKG0dwH5HNDmPCHdLiFiBf+SI7DbhW7et4=
 github.com/mattetti/audio v0.0.0-20180912171649-01576cde1f21 h1:Hc1iKlyxNHp3CV59G2E/qabUkHvEwOIJxDK0CJ7CRjA=
 github.com/mattetti/audio v0.0.0-20180912171649-01576cde1f21/go.mod h1:LlQmBGkOuV/SKzEDXBPKauvN2UqCgzXO2XjecTGj40s=
+github.com/metakeule/mutex v0.0.1/go.mod h1:/rTh8BoStvpIqJdiFgDBHt9Ib1mMIziunxMenemvjcQ=

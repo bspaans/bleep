@@ -3,11 +3,20 @@ package main
 import (
 	"time"
 
+	"github.com/gomidi/rtmididrv/imported/rtmidi"
+
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/synth"
 )
 
 func main() {
+	in, err := rtmidi.NewMIDIInDefault()
+	if err != nil {
+		panic(err)
+	}
+	defer in.Destroy()
+	in.OpenVirtualPort("bs8bs")
+
 	cfg := audio.NewAudioConfig()
 	s := synth.NewSynth(cfg)
 	s.EnableWavSink("test.wav")
@@ -16,6 +25,7 @@ func main() {
 	}
 
 	go s.Start()
+
 	PlaySong(s)
 }
 
