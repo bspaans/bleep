@@ -31,7 +31,7 @@ func (c *MonophonicChannel) NoteOn(note int) {
 
 func (c *MonophonicChannel) NoteOff(note int) {
 	if c.Instrument != nil {
-		c.Instrument.SetPitch(NoteToPitch[note])
+		c.Instrument.SetPitch(0.0)
 	}
 }
 
