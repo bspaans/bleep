@@ -10,7 +10,7 @@ import (
 type Channel interface {
 	NoteOn(note int)
 	NoteOff(note int)
-	GetSamples(cfg *audio.AudioConfig, n int) []int
+	GetSamples(cfg *audio.AudioConfig, n int) []float64
 }
 
 type MonophonicChannel struct {
@@ -35,7 +35,7 @@ func (c *MonophonicChannel) NoteOff(note int) {
 	}
 }
 
-func (c *MonophonicChannel) GetSamples(cfg *audio.AudioConfig, n int) []int {
+func (c *MonophonicChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
 	return c.Instrument.GetSamples(cfg, n)
 }
 

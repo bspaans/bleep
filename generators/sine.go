@@ -18,18 +18,18 @@ func NewSineWaveOscillator() *SineWaveOscillator {
 	}
 }
 
-func (s *SineWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []int {
-	result := make([]int, n)
+func (s *SineWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
+	result := make([]float64, n)
 	if s.Pitch == 0.0 {
 		return result
 	}
 	stepSize := (s.Pitch * math.Pi * 2) / float64(cfg.SampleRate)
-	maxValue := math.Pow(2, float64(cfg.BitDepth))
 	for i := 0; i < n; i++ {
 		v := math.Sin(s.Period)
-		scaled := (v + 1) * (maxValue / 2)
-		clipped := math.Min(math.Max(0, math.Ceil(scaled)), maxValue-1)
-		result[i] = int(clipped)
+		//maxValue := math.Pow(2, float64(cfg.BitDepth))
+		//scaled := (v + 1) * (maxValue / 2)
+		//clipped := math.Min(math.Max(0, math.Ceil(scaled)), maxValue-1)
+		result[i] = v
 		s.Period += stepSize
 	}
 	return result
