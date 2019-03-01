@@ -25,7 +25,7 @@ func (s *SineWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	for i := 0; i < n; i++ {
 		v := math.Sin(s.Period)
 		scaled := (v + 1) * (maxValue / 2)
-		clipped := math.Min(math.Max(0, math.Ceil(scaled)), maxValue)
+		clipped := math.Min(math.Max(0, math.Ceil(scaled)), maxValue-1)
 		result[i] = int(clipped)
 		s.Period += stepSize
 	}

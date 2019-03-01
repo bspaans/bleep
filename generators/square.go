@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/bspaans/bs8bs/audio"
@@ -22,9 +21,9 @@ func NewSquareWaveOscillator() *SquareWaveOscillator {
 func (s *SquareWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	result := make([]int, n)
 	flipEvery := (float64(cfg.SampleRate) / 2) / s.Pitch
-	fmt.Println(flipEvery)
+	maxValue := int(math.Pow(2, float64(cfg.BitDepth)))
 	for i := 0; i < n; i++ {
-		v := 256
+		v := maxValue - 1
 		if int(math.Floor(float64(s.Period)/flipEvery))%2 == 1 {
 			v = 0
 		}

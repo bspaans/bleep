@@ -15,10 +15,10 @@ func Test_Square_GetSamples_sanity_check(t *testing.T) {
 	if len(samples) != 100 {
 		t.Errorf("Want 100 samples, got %v", len(samples))
 	}
-	if samples[0] != 256 {
-		t.Errorf("Expecting first sample to be 128, got: %v", samples[0])
+	if samples[0] != 255 {
+		t.Errorf("Expecting peak at first sample, got: %v", samples[0])
 	}
-	if samples[100/4] != 256 {
+	if samples[100/4] != 255 {
 		t.Errorf("Expecting peak at 1/4, got: %v", samples[100/4])
 	}
 	if samples[100/2] != 0 {

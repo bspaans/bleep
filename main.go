@@ -40,6 +40,7 @@ func WriteWavFile(cfg *audio.AudioConfig, samples []int, file string) error {
 
 func main() {
 	cfg := audio.NewAudioConfig()
-	samples := generators.NewSineWaveOscillator().GetSamples(cfg, cfg.SampleRate)
+	samples := generators.NewSquareWaveOscillator().GetSamples(cfg, cfg.SampleRate)
+	fmt.Println(samples)
 	WriteWavFile(cfg, samples, "test.wav")
 }

@@ -18,7 +18,7 @@ func Test_Sine_GetSamples_sanity_check(t *testing.T) {
 	if samples[0] != 128 {
 		t.Errorf("Expecting first sample to be 128, got: %v", samples[0])
 	}
-	if samples[100/4] != 256 {
+	if samples[100/4] != 255 {
 		t.Errorf("Expecting peak at 1/4, got: %v", samples[100/4])
 	}
 	if samples[100/2] != 128 {
