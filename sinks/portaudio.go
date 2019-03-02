@@ -48,7 +48,9 @@ func (p *PortAudioSink) Write(cfg *audio.AudioConfig, samples []int) error {
 	for i, s := range samples {
 		p.Buffer[i] = uint8(s)
 	}
-	p.Stream.Write()
+	if err := p.Stream.Write(); err != nil {
+		return err
+	}
 	if p.Recording {
 		for _, s := range samples {
 			p.Samples = append(p.Samples, s)

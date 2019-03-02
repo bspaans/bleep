@@ -1,6 +1,9 @@
 package generators
 
-import "github.com/bspaans/bs8bs/audio"
+import (
+	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bs8bs/filters"
+)
 
 type Generator interface {
 	GetSamples(cfg *audio.AudioConfig, n int) []float64 // return samples between -1.0 and 1.0
@@ -34,4 +37,28 @@ func (p *PitchControlledGenerator) SetGain(f float64) {
 
 func NewConstantPitchGenerator(g Generator, c float64) Generator {
 	return NewGeneratorWithPitchControl(g, func(f float64) float64 { return c })
+}
+
+type FilteredGenerator struct {
+	Filter    filters.Filter
+	Generator Generator
+}
+
+func NewFilteredGenerator(g Generator, f filters.Filter) Generator {
+	return &FilteredGenerator{
+		Filter:    f,
+		Generator: g,
+	}
+}
+
+func (p *FilteredGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
+	return p.Filter.Filter(cfg, p.Generator.GetSamples(cfg, n))
+}
+
+func (p *FilteredGenerator) SetPitch(f float64) {
+	p.Generator.SetPitch(f)
+}
+
+func (p *FilteredGenerator) SetGain(f float64) {
+	p.Generator.SetGain(f)
 }
