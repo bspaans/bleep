@@ -18,6 +18,8 @@ func NewPercussionChannel() *PercussionChannel {
 	instr[35] = generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
 	instr[36] = generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
 	instr[40] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.1, 0.2, 0.01)
+	instr[42] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01)
+	instr[46] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.5, 0.8, 0.1)
 	return &PercussionChannel{
 		Instruments: instr,
 		On:          &sync.Map{},

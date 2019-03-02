@@ -10,7 +10,7 @@ func Test_Square_GetSamples_sanity_check(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
 	osc := NewSquareWaveOscillator()
-	osc.Pitch = 1.0
+	osc.SetPitch(1.0)
 	samples := osc.GetSamples(cfg, 100)
 	if len(samples) != 100 {
 		t.Errorf("Want 100 samples, got %v", len(samples))
@@ -33,13 +33,13 @@ func Test_Square_GetSamples_number_of_peaks_equals_pitch(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 44000
 	osc := NewSquareWaveOscillator()
-	osc.Pitch = 440.0
+	osc.SetPitch(440.0)
 	samples := osc.GetSamples(cfg, 44000)
 	if len(samples) != 44000 {
 		t.Errorf("Want 44000 samples, got %v", len(samples))
 	}
 	peaks := CountPeaksInSamples(samples)
-	if float64(peaks) != osc.Pitch {
+	if float64(peaks) != 440.0 {
 		t.Errorf("Expecting the number of peaks to correspond with the pitch; got %v peaks", peaks)
 	}
 }
