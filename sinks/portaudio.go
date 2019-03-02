@@ -1,6 +1,7 @@
 package sinks
 
 import (
+	"container/ring"
 	"fmt"
 	"log"
 	"os"
@@ -13,7 +14,8 @@ import (
 
 type PortAudioSink struct {
 	Stream     *portaudio.Stream
-	Buffer     []uint8
+	Buffer     *ring.Ring
+	WriteFrom  *ring.Ring
 	Samples    []int
 	Recording  bool
 	TargetFile string
@@ -27,34 +29,46 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 	if err != nil {
 		return nil, err
 	}
-	buffer := make([]uint8, cfg.StepSize)
-	streamParams := portaudio.HighLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)
-	stream, err := portaudio.OpenStream(streamParams, buffer)
+	buffer := ring.New(44096)
+	for buffer.Value == nil {
+		buffer.Value = 127
+		buffer = buffer.Next()
+	}
+	streamParams := portaudio.LowLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)
+	p := &PortAudioSink{
+		Buffer:     buffer,
+		WriteFrom:  buffer,
+		Recording:  false,
+		TargetFile: "test.wav",
+	}
+	callback := p.Callback
+
+	stream, err := portaudio.OpenStream(streamParams, callback)
 	if err != nil {
 		return nil, err
 	}
 	if err := stream.Start(); err != nil {
 		return nil, err
 	}
-	return &PortAudioSink{
-		Stream:     stream,
-		Buffer:     buffer,
-		Recording:  false,
-		TargetFile: "test.wav",
-	}, nil
+	p.Stream = stream
+	return p, nil
+}
+
+func (p *PortAudioSink) Callback(in, out []uint8, timeInfo portaudio.StreamCallbackTimeInfo, flags portaudio.StreamCallbackFlags) {
+	ix := 0
+	for i := 0; i < len(out)/2; i++ {
+		v := uint8(p.WriteFrom.Value.(int))
+		out[ix] = v
+		out[ix+1] = v
+		ix += 2
+		p.WriteFrom = p.WriteFrom.Next()
+	}
 }
 
 func (p *PortAudioSink) Write(cfg *audio.AudioConfig, samples []int) error {
-	for i, s := range samples {
-		p.Buffer[i] = uint8(s)
-	}
-	if err := p.Stream.Write(); err != nil {
-		return err
-	}
-	if p.Recording {
-		for _, s := range samples {
-			p.Samples = append(p.Samples, s)
-		}
+	for _, s := range samples {
+		p.Buffer.Value = s
+		p.Buffer = p.Buffer.Next()
 	}
 	return nil
 }

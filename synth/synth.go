@@ -42,14 +42,21 @@ func (s *Synth) EnableWavSink(file string) error {
 }
 
 func (s *Synth) Start() {
+	stepsPerSecond := float64(s.Config.SampleRate) / float64(s.Config.StepSize)
+	stepDuration := time.Duration(1000.0/stepsPerSecond) * time.Millisecond
+
+	nextStep := time.Now().Add(stepDuration)
 	for {
-		s.WriteSamples()
-		time.Sleep(10 * time.Millisecond)
+		s.WriteSamples(s.Config.StepSize)
+		now := time.Now()
+		sub := nextStep.Sub(now)
+		time.Sleep(sub + (-1 * time.Millisecond))
+		nextStep = nextStep.Add(stepDuration)
 	}
 }
 
-func (s *Synth) WriteSamples() {
-	samples := s.Mixer.GetSamples(s.Config, s.Config.StepSize)
+func (s *Synth) WriteSamples(n int) {
+	samples := s.Mixer.GetSamples(s.Config, n)
 	for _, sink := range s.Sinks {
 		if err := sink.Write(s.Config, samples); err != nil {
 			log.Println(err.Error())
