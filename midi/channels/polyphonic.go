@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bs8bs/filters"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/midi/notes"
 )
@@ -11,6 +12,7 @@ import (
 type PolyphonicChannel struct {
 	Instruments []generators.Generator
 	On          *sync.Map
+	Filter      filters.Filter
 }
 
 func NewPolyphonicChannel() *PolyphonicChannel {
@@ -18,6 +20,7 @@ func NewPolyphonicChannel() *PolyphonicChannel {
 	return &PolyphonicChannel{
 		Instruments: instr,
 		On:          &sync.Map{},
+		Filter:      filters.NewBaseFilter(nil),
 	}
 }
 
@@ -50,5 +53,5 @@ func (c *PolyphonicChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 		}
 		return true
 	})
-	return result
+	return c.Filter.Filter(cfg, result)
 }

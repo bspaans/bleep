@@ -6,6 +6,7 @@ import (
 	"github.com/bspaans/bs8bs/midi/channels"
 
 	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bs8bs/filters"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/instruments"
 )
@@ -29,6 +30,7 @@ func NewMixer() *Mixer {
 		})
 		m.AddChannel(ch)
 	}
+	m.Channels[0].(*channels.PolyphonicChannel).Filter = filters.NewDelayFilter(1.0, 0.8)
 	m.Channels[9] = channels.NewPercussionChannel()
 	return m
 }
