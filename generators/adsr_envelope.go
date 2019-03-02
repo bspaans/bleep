@@ -1,8 +1,6 @@
 package generators
 
 import (
-	"fmt"
-
 	"github.com/bspaans/bs8bs/audio"
 )
 
@@ -16,13 +14,13 @@ type EnvelopeGenerator struct {
 	Period    int
 }
 
-func NewEnvelopeGenerator(g Generator) *EnvelopeGenerator {
+func NewEnvelopeGenerator(g Generator, attack, decay, sustain, release float64) *EnvelopeGenerator {
 	return &EnvelopeGenerator{
 		Generator: g,
-		Attack:    0.5,
-		Decay:     0.5,
-		Sustain:   0.25,
-		Release:   1.0,
+		Attack:    attack,
+		Decay:     decay,
+		Sustain:   sustain,
+		Release:   release,
 		Period:    0,
 	}
 }
@@ -40,7 +38,6 @@ func (e *EnvelopeGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 	sustainEnd := decayEnd + sustainLength
 	releaseLength := float64(cfg.SampleRate) * e.Release
 	releaseEnd := sustainEnd + releaseLength
-	fmt.Println(attackLength)
 
 	for i, s := range e.Generator.GetSamples(cfg, n) {
 		if float64(e.Period) < attackLength {
