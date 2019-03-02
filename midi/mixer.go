@@ -19,10 +19,15 @@ func NewMixer() *Mixer {
 		Gain:     []float64{},
 	}
 	for i := 0; i < 16; i++ {
-		g := generators.NewSquareWaveOscillator()
-		g.SetPitch(0)
-		m.AddChannel(NewMonophonicChannel(g))
+		ch := NewPolyphonicChannel()
+		ch.SetInstrument(func() generators.Generator {
+			g := generators.NewSineWaveOscillator()
+			g.SetPitch(0)
+			return g
+		})
+		m.AddChannel(ch)
 	}
+	m.Channels[9] = instruments.NewPercussion()
 	return m
 }
 
@@ -66,4 +71,12 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 		result[i] = int(math.Min(maxClipped, maxValue-1))
 	}
 	return result
+}
+
+func (m *Mixer) SilenceAllChannels() {
+	for _, ch := range m.Channels {
+		for i := 0; i < 128; i++ {
+			ch.NoteOff(i)
+		}
+	}
 }

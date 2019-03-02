@@ -62,6 +62,9 @@ func PlaySong(s *synth.Synth) {
 	s.NoteOn(0, midi.C3)
 	time.Sleep(375 * time.Millisecond)
 	s.NoteOff(0, midi.C3)
+	time.Sleep(500 * time.Millisecond)
+
+	s.SilenceAllChannels()
 
 	in, err := rtmidi.NewMIDIInDefault()
 	if err != nil {

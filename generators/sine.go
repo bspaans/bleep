@@ -11,7 +11,7 @@ type SineWaveOscillator struct {
 	Period float64
 }
 
-func NewSineWaveOscillator() *SineWaveOscillator {
+func NewSineWaveOscillator() Generator {
 	return &SineWaveOscillator{
 		Pitch:  440.0,
 		Period: 0.0,

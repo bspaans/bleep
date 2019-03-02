@@ -72,3 +72,7 @@ func (s *Synth) Close() {
 		sink.Close(s.Config)
 	}
 }
+
+func (s *Synth) SilenceAllChannels() {
+	s.Mixer.SilenceAllChannels()
+}

@@ -11,7 +11,7 @@ type SquareWaveOscillator struct {
 	Period int
 }
 
-func NewSquareWaveOscillator() *SquareWaveOscillator {
+func NewSquareWaveOscillator() Generator {
 	return &SquareWaveOscillator{
 		Pitch:  440.0,
 		Period: 0,

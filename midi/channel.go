@@ -2,6 +2,7 @@ package midi
 
 import (
 	"math"
+	"sync"
 
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/generators"
@@ -10,8 +11,52 @@ import (
 type Channel interface {
 	NoteOn(note int)
 	NoteOff(note int)
-	SetInstrument(generators.Generator)
+	SetInstrument(func() generators.Generator)
 	GetSamples(cfg *audio.AudioConfig, n int) []float64
+}
+
+type PolyphonicChannel struct {
+	Instruments []generators.Generator
+	On          *sync.Map
+}
+
+func NewPolyphonicChannel() *PolyphonicChannel {
+	instr := make([]generators.Generator, 128)
+	return &PolyphonicChannel{
+		Instruments: instr,
+		On:          &sync.Map{},
+	}
+}
+
+func (c *PolyphonicChannel) SetInstrument(g func() generators.Generator) {
+	for i := 0; i < 128; i++ {
+		c.Instruments[i] = g()
+	}
+}
+
+func (c *PolyphonicChannel) NoteOn(note int) {
+	if c.Instruments[note] != nil {
+		c.Instruments[note].SetPitch(NoteToPitch[note])
+		c.On.Store(note, true)
+	}
+}
+
+func (c *PolyphonicChannel) NoteOff(note int) {
+	if c.Instruments[note] != nil {
+		c.Instruments[note].SetPitch(0.0)
+		c.On.Delete(note)
+	}
+}
+
+func (c *PolyphonicChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
+	result := make([]float64, n)
+	c.On.Range(func(on, value interface{}) bool {
+		for i, s := range c.Instruments[on.(int)].GetSamples(cfg, n) {
+			result[i] += s
+		}
+		return true
+	})
+	return result
 }
 
 type MonophonicChannel struct {
@@ -24,8 +69,8 @@ func NewMonophonicChannel(g generators.Generator) *MonophonicChannel {
 	}
 }
 
-func (c *MonophonicChannel) SetInstrument(g generators.Generator) {
-	c.Instrument = g
+func (c *MonophonicChannel) SetInstrument(g func() generators.Generator) {
+	c.Instrument = g()
 }
 
 func (c *MonophonicChannel) NoteOn(note int) {
