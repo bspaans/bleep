@@ -2,6 +2,7 @@ package synth
 
 import (
 	"log"
+	"time"
 
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/midi"
@@ -43,6 +44,7 @@ func (s *Synth) EnableWavSink(file string) error {
 func (s *Synth) Start() {
 	for {
 		s.WriteSamples()
+		time.Sleep(10 * time.Millisecond)
 	}
 }
 
@@ -71,6 +73,10 @@ func (s *Synth) Close() {
 	for _, sink := range s.Sinks {
 		sink.Close(s.Config)
 	}
+}
+
+func (s *Synth) SilenceChannel(ch int) {
+	s.Mixer.SilenceChannel(ch)
 }
 
 func (s *Synth) SilenceAllChannels() {

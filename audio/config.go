@@ -10,6 +10,6 @@ func NewAudioConfig() *AudioConfig {
 	return &AudioConfig{
 		BitDepth:   8,
 		SampleRate: 44000,
-		StepSize:   1760,
+		StepSize:   440,
 	}
 }

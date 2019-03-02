@@ -77,6 +77,14 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	return result
 }
 
+func (m *Mixer) SilenceChannel(ch int) {
+	if ch < len(m.Channels) {
+		for i := 0; i < 128; i++ {
+			m.Channels[ch].NoteOff(i)
+		}
+	}
+}
+
 func (m *Mixer) SilenceAllChannels() {
 	for _, ch := range m.Channels {
 		for i := 0; i < 128; i++ {
