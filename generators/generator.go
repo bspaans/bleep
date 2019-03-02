@@ -12,61 +12,91 @@ type Generator interface {
 	SetGain(float64)
 }
 
-type PitchControlledGenerator struct {
-	Generator       Generator
-	PitchController func(float64) float64
+type WrappedGenerator struct {
+	GetSamplesFunc   func(cfg *audio.AudioConfig, n int) []float64
+	SetPitchFunc     func(float64)
+	SetPitchbendFunc func(float64)
+	SetGainFunc      func(float64)
 }
 
-func NewGeneratorWithPitchControl(g Generator, control func(float64) float64) Generator {
-	return &PitchControlledGenerator{
-		Generator:       g,
-		PitchController: control,
+func NewWrappedGenerator(g Generator) *WrappedGenerator {
+	return &WrappedGenerator{
+		GetSamplesFunc:   g.GetSamples,
+		SetPitchFunc:     g.SetPitch,
+		SetPitchbendFunc: g.SetPitchbend,
+		SetGainFunc:      g.SetGain,
 	}
 }
 
-func (p *PitchControlledGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
-	return p.Generator.GetSamples(cfg, n)
+func (b *WrappedGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
+	if b.GetSamplesFunc != nil {
+		return b.GetSamplesFunc(cfg, n)
+	}
+	return make([]float64, n)
+}
+func (b *WrappedGenerator) SetPitch(f float64) {
+	if b.SetPitchFunc != nil {
+		b.SetPitchFunc(f)
+	}
 }
 
-func (p *PitchControlledGenerator) SetPitch(f float64) {
-	p.Generator.SetPitch(p.PitchController(f))
+func (b *WrappedGenerator) SetPitchbend(f float64) {
+	if b.SetPitchbendFunc != nil {
+		b.SetPitchbendFunc(f)
+	}
 }
 
-func (p *PitchControlledGenerator) SetGain(f float64) {
-	p.Generator.SetGain(f)
+func (b *WrappedGenerator) SetGain(f float64) {
+	if b.SetGainFunc != nil {
+		b.SetGainFunc(f)
+	}
 }
 
-func (p *PitchControlledGenerator) SetPitchbend(f float64) {
-	p.Generator.SetPitchbend(f)
+func NewGeneratorWithPitchControl(g Generator, control func(float64) float64) Generator {
+	result := NewWrappedGenerator(g)
+	result.SetPitchFunc = func(f float64) {
+		g.SetPitch(control(f))
+	}
+	return result
 }
 
 func NewConstantPitchGenerator(g Generator, c float64) Generator {
 	return NewGeneratorWithPitchControl(g, func(f float64) float64 { return c })
 }
 
-type FilteredGenerator struct {
-	Filter    filters.Filter
-	Generator Generator
-}
-
 func NewFilteredGenerator(g Generator, f filters.Filter) Generator {
-	return &FilteredGenerator{
-		Filter:    f,
-		Generator: g,
+	result := NewWrappedGenerator(g)
+	result.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
+		return f.Filter(cfg, g.GetSamples(cfg, n))
 	}
+	return result
 }
 
-func (p *FilteredGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
-	return p.Filter.Filter(cfg, p.Generator.GetSamples(cfg, n))
-}
-
-func (p *FilteredGenerator) SetPitch(f float64) {
-	p.Generator.SetPitch(f)
-}
-
-func (p *FilteredGenerator) SetGain(f float64) {
-	p.Generator.SetGain(f)
-}
-func (p *FilteredGenerator) SetPitchbend(f float64) {
-	p.Generator.SetPitchbend(f)
+func NewCombinedGenerators(g ...Generator) Generator {
+	result := NewWrappedGenerator(g[0])
+	result.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
+		result := make([]float64, n)
+		for _, generator := range g {
+			for i, sample := range generator.GetSamples(cfg, n) {
+				result[i] += sample
+			}
+		}
+		return result
+	}
+	result.SetPitchFunc = func(f float64) {
+		for _, generator := range g {
+			generator.SetPitch(f)
+		}
+	}
+	result.SetPitchbendFunc = func(f float64) {
+		for _, generator := range g {
+			generator.SetPitchbend(f)
+		}
+	}
+	result.SetGainFunc = func(f float64) {
+		for _, generator := range g {
+			generator.SetGain(f)
+		}
+	}
+	return result
 }

@@ -3,6 +3,8 @@ package channels
 import (
 	"sync"
 
+	"github.com/bspaans/bs8bs/filters"
+
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/midi/notes"
@@ -15,9 +17,22 @@ type PercussionChannel struct {
 
 func NewPercussionChannel() *PercussionChannel {
 	instr := make([]generators.Generator, 128)
-	instr[35] = generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
+	instr[35] = generators.NewFilteredGenerator(
+		generators.NewCombinedGenerators(
+			generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 100.0), 0.01, 0.01, 0.2, 0.01),
+			generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 80.0), 0.05, 0.01, 0.2, 0.01),
+			generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 40.0), 0.1, 0.01, 0.2, 0.01),
+		),
+		filters.NewOverdriveFilter(3.5),
+	)
 	instr[36] = generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
-	instr[40] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.1, 0.2, 0.01)
+	instr[40] = generators.NewCombinedGenerators(
+		generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
+		generators.NewFilteredGenerator(
+			generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
+			filters.NewOverdriveFilter(3.0),
+		),
+	)
 	instr[42] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01)
 	instr[46] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.5, 0.8, 0.1)
 	return &PercussionChannel{
