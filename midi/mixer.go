@@ -3,23 +3,25 @@ package midi
 import (
 	"math"
 
+	"github.com/bspaans/bs8bs/midi/channels"
+
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/instruments"
 )
 
 type Mixer struct {
-	Channels []Channel
+	Channels []channels.Channel
 	Gain     []float64
 }
 
 func NewMixer() *Mixer {
 	m := &Mixer{
-		Channels: []Channel{},
+		Channels: []channels.Channel{},
 		Gain:     []float64{},
 	}
 	for i := 0; i < 16; i++ {
-		ch := NewPolyphonicChannel()
+		ch := channels.NewPolyphonicChannel()
 		ch.SetInstrument(func() generators.Generator {
 			g := generators.NewSineWaveOscillator()
 			g.SetPitch(0)
@@ -31,7 +33,7 @@ func NewMixer() *Mixer {
 	return m
 }
 
-func (m *Mixer) AddChannel(ch Channel) {
+func (m *Mixer) AddChannel(ch channels.Channel) {
 	m.Channels = append(m.Channels, ch)
 	m.Gain = append(m.Gain, 0.1)
 }

@@ -1,4 +1,4 @@
-package midi
+package notes
 
 const (
 	C3 = 48

@@ -12,7 +12,7 @@ import (
 	"github.com/xlab/midievent"
 
 	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/midi"
+	"github.com/bspaans/bs8bs/midi/notes"
 	"github.com/bspaans/bs8bs/synth"
 )
 
@@ -47,21 +47,21 @@ func PlaySong(s *synth.Synth) {
 		time.Sleep(10 * time.Millisecond)
 		s.NoteOff(0, i)
 	}
-	s.NoteOn(0, midi.C4)
+	s.NoteOn(0, notes.C4)
 	time.Sleep(500 * time.Millisecond)
-	s.NoteOn(0, midi.E4)
+	s.NoteOn(0, notes.E4)
 	time.Sleep(375 * time.Millisecond)
-	s.NoteOn(0, midi.D4)
+	s.NoteOn(0, notes.D4)
 	time.Sleep(125 * time.Millisecond)
-	s.NoteOn(0, midi.G4)
+	s.NoteOn(0, notes.G4)
 	time.Sleep(250 * time.Millisecond)
-	s.NoteOn(0, midi.A4)
+	s.NoteOn(0, notes.A4)
 	time.Sleep(250 * time.Millisecond)
-	s.NoteOn(0, midi.C5)
+	s.NoteOn(0, notes.C5)
 	time.Sleep(125 * time.Millisecond)
-	s.NoteOn(0, midi.C3)
+	s.NoteOn(0, notes.C3)
 	time.Sleep(375 * time.Millisecond)
-	s.NoteOff(0, midi.C3)
+	s.NoteOff(0, notes.C3)
 	time.Sleep(500 * time.Millisecond)
 
 	s.SilenceAllChannels()
