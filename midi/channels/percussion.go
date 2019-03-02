@@ -15,7 +15,8 @@ type PercussionChannel struct {
 
 func NewPercussionChannel() *PercussionChannel {
 	instr := make([]generators.Generator, 128)
-	instr[35] = generators.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 80.0)
+	instr[35] = generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
+	instr[36] = generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
 	instr[40] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.1, 0.2, 0.01)
 	return &PercussionChannel{
 		Instruments: instr,
