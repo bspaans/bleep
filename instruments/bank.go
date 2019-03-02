@@ -11,6 +11,8 @@ func init() {
 		} else {
 			Bank[i] = generators.NewSquareWaveOscillator
 		}
-
+	}
+	Bank[25] = func() generators.Generator {
+		return generators.NewEnvelopeGenerator(generators.NewSineWaveOscillator())
 	}
 }

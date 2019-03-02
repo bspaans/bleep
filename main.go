@@ -42,11 +42,6 @@ func main() {
 }
 
 func PlaySong(s *synth.Synth) {
-	for i := 0; i < 100; i++ {
-		s.NoteOn(0, i)
-		time.Sleep(10 * time.Millisecond)
-		s.NoteOff(0, i)
-	}
 	s.NoteOn(0, notes.C4)
 	time.Sleep(500 * time.Millisecond)
 	s.NoteOn(0, notes.E4)
