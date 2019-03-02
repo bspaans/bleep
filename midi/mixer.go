@@ -29,7 +29,7 @@ func NewMixer() *Mixer {
 		})
 		m.AddChannel(ch)
 	}
-	m.Channels[9] = instruments.NewPercussion()
+	m.Channels[9] = channels.NewPercussionChannel()
 	return m
 }
 

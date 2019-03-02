@@ -11,3 +11,27 @@ type GeneratorConfig struct {
 	BitDepth   int
 	SampleRate int
 }
+
+type PitchControlledGenerator struct {
+	Generator       Generator
+	PitchController func(float64) float64
+}
+
+func NewGeneratorWithPitchControl(g Generator, control func(float64) float64) Generator {
+	return &PitchControlledGenerator{
+		Generator:       g,
+		PitchController: control,
+	}
+}
+
+func (p *PitchControlledGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
+	return p.Generator.GetSamples(cfg, n)
+}
+
+func (p *PitchControlledGenerator) SetPitch(f float64) {
+	p.Generator.SetPitch(p.PitchController(f))
+}
+
+func NewConstantPitchGenerator(g Generator, c float64) Generator {
+	return NewGeneratorWithPitchControl(g, func(f float64) float64 { return c })
+}

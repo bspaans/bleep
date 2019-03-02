@@ -6,7 +6,9 @@ import (
 	"github.com/bspaans/bs8bs/audio"
 )
 
-type WhiteNoiseGenerator struct{}
+type WhiteNoiseGenerator struct {
+	Pitch float64
+}
 
 func NewWhiteNoiseGenerator() Generator {
 	return &WhiteNoiseGenerator{}
@@ -14,6 +16,9 @@ func NewWhiteNoiseGenerator() Generator {
 
 func (s *WhiteNoiseGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
 	result := make([]float64, n)
+	if s.Pitch == 0.0 {
+		return result
+	}
 	for i := 0; i < n; i++ {
 		result[i] = rand.Float64()*2 - 1
 	}
@@ -21,4 +26,5 @@ func (s *WhiteNoiseGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float6
 }
 
 func (s *WhiteNoiseGenerator) SetPitch(f float64) {
+	s.Pitch = f
 }
