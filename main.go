@@ -20,9 +20,9 @@ func main() {
 
 	cfg := audio.NewAudioConfig()
 	s := synth.NewSynth(cfg)
-	//if err := s.EnableWavSink("test.wav"); err != nil {
-	//panic(err)
-	//}
+	if err := s.EnableWavSink("test.wav"); err != nil {
+		panic(err)
+	}
 	if err := s.EnablePortAudioSink(); err != nil {
 		panic(err)
 	}
