@@ -6,7 +6,6 @@ import (
 	"github.com/bspaans/bs8bs/midi/channels"
 
 	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/filters"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/instruments"
 )
@@ -30,7 +29,7 @@ func NewMixer() *Mixer {
 		})
 		m.AddChannel(ch)
 	}
-	m.Channels[0].(*channels.PolyphonicChannel).Filter = filters.NewDelayFilter(1.0, 0.8)
+	//m.Channels[0].(*channels.PolyphonicChannel).Filter = filters.NewDelayFilter(1.0, 0.8)
 	m.Channels[9] = channels.NewPercussionChannel()
 	return m
 }
@@ -49,6 +48,12 @@ func (m *Mixer) NoteOn(channel, note int, velocity float64) {
 func (m *Mixer) NoteOff(channel, note int) {
 	if channel < len(m.Channels) {
 		m.Channels[channel].NoteOff(note)
+	}
+}
+
+func (m *Mixer) SetPitchbend(channel int, pitchbendFactor float64) {
+	if channel < len(m.Channels) {
+		m.Channels[channel].SetPitchbend(pitchbendFactor)
 	}
 }
 

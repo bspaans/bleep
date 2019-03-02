@@ -89,3 +89,7 @@ func (s *Synth) SilenceChannel(ch int) {
 func (s *Synth) SilenceAllChannels() {
 	s.Mixer.SilenceAllChannels()
 }
+
+func (s *Synth) SetPitchbend(channel int, pitchbendFactor float64) {
+	s.Mixer.SetPitchbend(channel, pitchbendFactor)
+}

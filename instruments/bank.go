@@ -18,7 +18,7 @@ func init() {
 
 	// Steel string guitar
 	Bank[25] = func() generators.Generator {
-		return generators.NewEnvelopeGenerator(generators.NewSineWaveOscillator(), 0.001, 1.0, 0.8, 0.24)
+		return generators.NewEnvelopeGenerator(generators.NewSineWaveOscillator(), 0.001, 4.0, 0.5, 0.24)
 	}
 
 	// Overdrive guitar

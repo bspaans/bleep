@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"os/signal"
 	"syscall"
@@ -27,7 +28,6 @@ func main() {
 		panic(err)
 	}
 
-	go s.Start()
 	defer s.Close()
 
 	c := make(chan os.Signal)
@@ -38,12 +38,13 @@ func main() {
 		os.Exit(1)
 	}()
 
-	time.Sleep(time.Second)
-
-	PlaySong(s)
+	//go PlaySong(s)
+	go VirtualMIDIDevice(s)
+	s.Start()
 }
 
 func PlaySong(s *synth.Synth) {
+	time.Sleep(time.Second)
 	s.NoteOn(0, notes.C4, 0.7)
 	time.Sleep(500 * time.Millisecond)
 	s.NoteOn(0, notes.E4, 0.6)
@@ -59,7 +60,11 @@ func PlaySong(s *synth.Synth) {
 	s.NoteOn(0, notes.C3, 0.7)
 	time.Sleep(375 * time.Millisecond)
 	s.SilenceAllChannels()
+}
 
+func VirtualMIDIDevice(s *synth.Synth) {
+
+	time.Sleep(time.Second)
 	var api rtmidi.API
 	for _, a := range rtmidi.CompiledAPI() {
 		api = a
@@ -120,7 +125,13 @@ func PlaySong(s *synth.Synth) {
 					fmt.Printf("UNSUPPORTED CONTROL MODE CHANGE %x %x\n", msg[1], msg)
 				}
 			} else if ev >= midievent.Chan1PitchWheelRangeEvent && ev <= midievent.Chan16PitchWheelRangeEvent {
-				fmt.Println("PITCH WHEEL RANGE EVENT", msg[1], msg[2])
+				ch, _ := midievent.ChanOf(ev)
+				ch -= 1
+				semitones := float64(int(msg[2])-64) / 64.0 // -1.0 <-> 1.0
+				semitones *= (64 / 5)
+				pitchbendFactor := math.Pow(2, semitones/12)
+				fmt.Println("PITCH WHEEL RANGE EVENT", ch, msg[1], msg[2], semitones, pitchbendFactor)
+				s.SetPitchbend(ch, pitchbendFactor)
 			} else if ev >= midievent.Chan1ProgramChangeEvent && ev <= midievent.Chan16ProgramChangeEvent {
 				ch, ok := midievent.ChanOf(ev)
 				if ok {

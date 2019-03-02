@@ -36,3 +36,9 @@ func (c *MonophonicChannel) NoteOff(note int) {
 func (c *MonophonicChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
 	return c.Instrument.GetSamples(cfg, n)
 }
+
+func (c *MonophonicChannel) SetPitchbend(pitchbendFactor float64) {
+	if c.Instrument != nil {
+		c.Instrument.SetPitchbend(pitchbendFactor)
+	}
+}

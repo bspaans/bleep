@@ -35,3 +35,6 @@ func (s *WhiteNoiseGenerator) SetPitch(f float64) {
 func (s *WhiteNoiseGenerator) SetGain(f float64) {
 	s.Gain = f
 }
+
+func (s *WhiteNoiseGenerator) SetPitchbend(f float64) {
+}

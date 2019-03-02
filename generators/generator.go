@@ -8,6 +8,7 @@ import (
 type Generator interface {
 	GetSamples(cfg *audio.AudioConfig, n int) []float64 // return samples between -1.0 and 1.0
 	SetPitch(float64)
+	SetPitchbend(float64)
 	SetGain(float64)
 }
 
@@ -33,6 +34,10 @@ func (p *PitchControlledGenerator) SetPitch(f float64) {
 
 func (p *PitchControlledGenerator) SetGain(f float64) {
 	p.Generator.SetGain(f)
+}
+
+func (p *PitchControlledGenerator) SetPitchbend(f float64) {
+	p.Generator.SetPitchbend(f)
 }
 
 func NewConstantPitchGenerator(g Generator, c float64) Generator {
@@ -61,4 +66,7 @@ func (p *FilteredGenerator) SetPitch(f float64) {
 
 func (p *FilteredGenerator) SetGain(f float64) {
 	p.Generator.SetGain(f)
+}
+func (p *FilteredGenerator) SetPitchbend(f float64) {
+	p.Generator.SetPitchbend(f)
 }

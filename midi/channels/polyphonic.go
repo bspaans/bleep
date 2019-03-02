@@ -55,3 +55,9 @@ func (c *PolyphonicChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 	})
 	return c.Filter.Filter(cfg, result)
 }
+
+func (c *PolyphonicChannel) SetPitchbend(pitchbendFactor float64) {
+	for _, i := range c.Instruments {
+		i.SetPitchbend(pitchbendFactor)
+	}
+}
