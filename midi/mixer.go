@@ -35,12 +35,12 @@ func NewMixer() *Mixer {
 
 func (m *Mixer) AddChannel(ch channels.Channel) {
 	m.Channels = append(m.Channels, ch)
-	m.Gain = append(m.Gain, 0.1)
+	m.Gain = append(m.Gain, 0.15)
 }
 
-func (m *Mixer) NoteOn(channel, note int) {
+func (m *Mixer) NoteOn(channel, note int, velocity float64) {
 	if channel < len(m.Channels) {
-		m.Channels[channel].NoteOn(note)
+		m.Channels[channel].NoteOn(note, velocity)
 	}
 }
 

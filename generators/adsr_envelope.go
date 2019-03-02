@@ -51,7 +51,6 @@ func (e *EnvelopeGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 			decayDomain := e.Sustain - 1.0
 			decayPerPeriod := decayDomain / decayLength
 			s = s * (decayPerPeriod*p + 1.0)
-			//s = s * (1.0 - p) *((1.0-e.Sustain)/e.Decay))
 		} else if float64(e.Period) < sustainEnd {
 			s = s * e.Sustain
 		} else if float64(e.Period) < releaseEnd {
@@ -74,4 +73,8 @@ func (e *EnvelopeGenerator) SetPitch(f float64) {
 	if f == 0.0 {
 		e.Period = 0
 	}
+}
+
+func (e *EnvelopeGenerator) SetGain(f float64) {
+	e.Generator.SetGain(f)
 }

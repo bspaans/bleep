@@ -42,23 +42,20 @@ func main() {
 }
 
 func PlaySong(s *synth.Synth) {
-	s.NoteOn(0, notes.C4)
+	s.NoteOn(0, notes.C4, 0.7)
 	time.Sleep(500 * time.Millisecond)
-	s.NoteOn(0, notes.E4)
+	s.NoteOn(0, notes.E4, 0.6)
 	time.Sleep(375 * time.Millisecond)
-	s.NoteOn(0, notes.D4)
+	s.NoteOn(0, notes.D4, 0.6)
 	time.Sleep(125 * time.Millisecond)
-	s.NoteOn(0, notes.G4)
+	s.NoteOn(0, notes.G4, 0.7)
 	time.Sleep(250 * time.Millisecond)
-	s.NoteOn(0, notes.A4)
+	s.NoteOn(0, notes.A4, 0.7)
 	time.Sleep(250 * time.Millisecond)
-	s.NoteOn(0, notes.C5)
+	s.NoteOn(0, notes.C5, 0.7)
 	time.Sleep(125 * time.Millisecond)
-	s.NoteOn(0, notes.C3)
+	s.NoteOn(0, notes.C3, 0.7)
 	time.Sleep(375 * time.Millisecond)
-	s.NoteOff(0, notes.C3)
-	time.Sleep(500 * time.Millisecond)
-
 	s.SilenceAllChannels()
 
 	in, err := rtmidi.NewMIDIInDefault()
@@ -79,8 +76,9 @@ func PlaySong(s *synth.Synth) {
 				ch, ok := midievent.ChanOf(ev)
 				if ok {
 					ch -= 1
-					fmt.Println("NOTE ON", msg[1], ch)
-					s.NoteOn(ch, int(msg[1]))
+					velocity := float64(int(msg[2])) / 127
+					fmt.Println("NOTE ON", msg[1], velocity, ch)
+					s.NoteOn(ch, int(msg[1]), velocity)
 				}
 			} else if midievent.IsNoteOff(ev) {
 				ch, ok := midievent.ChanOf(ev)

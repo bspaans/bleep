@@ -2,8 +2,13 @@
 
 ## Features
 
-* Sine wave oscillators
-* Square wave oscillators
+* Sine wave oscillator
+* Square wave oscillator
+* White noise generator
+* ADSR envelopes
 * Channels
-* `.wav` output
+* Mixer
+* Basic percussion channel
+* `.wav` output *currenly broken* TODO
 * PortAudio output
+* Registers as virtual midi device

@@ -20,9 +20,10 @@ func (c *MonophonicChannel) SetInstrument(g func() generators.Generator) {
 	c.Instrument = g()
 }
 
-func (c *MonophonicChannel) NoteOn(note int) {
+func (c *MonophonicChannel) NoteOn(note int, velocity float64) {
 	if c.Instrument != nil {
 		c.Instrument.SetPitch(notes.NoteToPitch[note])
+		c.Instrument.SetGain(velocity)
 	}
 }
 

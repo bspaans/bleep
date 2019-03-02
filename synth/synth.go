@@ -55,8 +55,8 @@ func (s *Synth) WriteSamples() {
 	}
 }
 
-func (s *Synth) NoteOn(channel, note int) {
-	s.Mixer.NoteOn(channel, note)
+func (s *Synth) NoteOn(channel, note int, velocity float64) {
+	s.Mixer.NoteOn(channel, note, velocity)
 }
 
 func (s *Synth) NoteOff(channel, note int) {

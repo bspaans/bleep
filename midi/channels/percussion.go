@@ -29,9 +29,10 @@ func NewPercussionChannel() *PercussionChannel {
 func (c *PercussionChannel) SetInstrument(g func() generators.Generator) {
 }
 
-func (c *PercussionChannel) NoteOn(note int) {
+func (c *PercussionChannel) NoteOn(note int, velocity float64) {
 	if c.Instruments[note] != nil {
 		c.Instruments[note].SetPitch(notes.NoteToPitch[note])
+		c.Instruments[note].SetGain(velocity)
 		c.On.Store(note, true)
 	}
 }

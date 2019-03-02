@@ -13,6 +13,6 @@ func init() {
 		}
 	}
 	Bank[25] = func() generators.Generator {
-		return generators.NewEnvelopeGenerator(generators.NewSineWaveOscillator(), 0.1, 0.7, 0.8, 0.24)
+		return generators.NewEnvelopeGenerator(generators.NewSineWaveOscillator(), 0.001, 1.0, 0.8, 0.24)
 	}
 }

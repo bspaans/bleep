@@ -8,10 +8,13 @@ import (
 
 type WhiteNoiseGenerator struct {
 	Pitch float64
+	Gain  float64
 }
 
 func NewWhiteNoiseGenerator() Generator {
-	return &WhiteNoiseGenerator{}
+	return &WhiteNoiseGenerator{
+		Gain: 1.0,
+	}
 }
 
 func (s *WhiteNoiseGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
@@ -20,11 +23,15 @@ func (s *WhiteNoiseGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float6
 		return result
 	}
 	for i := 0; i < n; i++ {
-		result[i] = rand.Float64()*2 - 1
+		result[i] = rand.Float64()*2 - 1*s.Gain
 	}
 	return result
 }
 
 func (s *WhiteNoiseGenerator) SetPitch(f float64) {
 	s.Pitch = f
+}
+
+func (s *WhiteNoiseGenerator) SetGain(f float64) {
+	s.Gain = f
 }

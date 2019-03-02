@@ -6,7 +6,7 @@ import (
 )
 
 type Channel interface {
-	NoteOn(note int)
+	NoteOn(note int, velocity float64)
 	NoteOff(note int)
 	SetInstrument(func() generators.Generator)
 	GetSamples(cfg *audio.AudioConfig, n int) []float64

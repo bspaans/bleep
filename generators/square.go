@@ -9,12 +9,14 @@ import (
 type SquareWaveOscillator struct {
 	Pitch  float64
 	Period int
+	Gain   float64
 }
 
 func NewSquareWaveOscillator() Generator {
 	return &SquareWaveOscillator{
 		Pitch:  440.0,
 		Period: 0,
+		Gain:   1.0,
 	}
 }
 
@@ -29,7 +31,7 @@ func (s *SquareWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []float
 		if int(math.Floor(float64(s.Period)/flipEvery))%2 == 1 {
 			v = -1.0
 		}
-		result[i] = v
+		result[i] = v * s.Gain
 		s.Period++
 	}
 	return result
@@ -37,4 +39,8 @@ func (s *SquareWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []float
 
 func (s *SquareWaveOscillator) SetPitch(f float64) {
 	s.Pitch = f
+}
+
+func (s *SquareWaveOscillator) SetGain(f float64) {
+	s.Gain = f
 }

@@ -9,12 +9,14 @@ import (
 type SineWaveOscillator struct {
 	Pitch  float64
 	Period float64
+	Gain   float64
 }
 
 func NewSineWaveOscillator() Generator {
 	return &SineWaveOscillator{
 		Pitch:  440.0,
 		Period: 0.0,
+		Gain:   1.0,
 	}
 }
 
@@ -26,7 +28,7 @@ func (s *SineWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []float64
 	stepSize := (s.Pitch * math.Pi * 2) / float64(cfg.SampleRate)
 	for i := 0; i < n; i++ {
 		v := math.Sin(s.Period)
-		result[i] = v
+		result[i] = s.Gain * v
 		s.Period += stepSize
 	}
 	return result
@@ -34,4 +36,8 @@ func (s *SineWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []float64
 
 func (s *SineWaveOscillator) SetPitch(f float64) {
 	s.Pitch = f
+}
+
+func (s *SineWaveOscillator) SetGain(f float64) {
+	s.Gain = f
 }
