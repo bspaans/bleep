@@ -5,6 +5,8 @@ import (
 )
 
 var Bank = make([]func() generators.Generator, 128)
+var PercussionBank = make([]func() generators.Generator, 128)
+var Banks = [][]func() generators.Generator{Bank, PercussionBank}
 
 func init() {
 	for i := 0; i < len(Bank); i++ {

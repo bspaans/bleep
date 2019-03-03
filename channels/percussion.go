@@ -3,59 +3,55 @@ package channels
 import (
 	"sync"
 
-	"github.com/bspaans/bs8bs/filters"
-	"github.com/bspaans/bs8bs/generators/derived"
-
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bs8bs/instruments"
 	"github.com/bspaans/bs8bs/midi/notes"
 )
 
 type PercussionChannel struct {
-	Instruments []generators.Generator
 	On          *sync.Map
+	Instruments []generators.Generator
 }
 
 func NewPercussionChannel() *PercussionChannel {
-	instr := make([]generators.Generator, 128)
-	instr[35] = derived.NewFilteredGenerator(
-		derived.NewCombinedGenerators(
-			derived.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 100.0), 0.01, 0.01, 0.2, 0.01),
-			derived.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 80.0), 0.05, 0.01, 0.2, 0.01),
-			derived.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 40.0), 0.1, 0.01, 0.2, 0.01),
-		),
-		filters.NewOverdriveFilter(3.5),
-	)
-	instr[36] = derived.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
-	instr[40] = derived.NewCombinedGenerators(
-		derived.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
-		derived.NewFilteredGenerator(
-			derived.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
-			filters.NewOverdriveFilter(3.0),
-		),
-	)
-	instr[42] = derived.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01)
-	instr[46] = derived.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.5, 0.8, 0.1)
-	return &PercussionChannel{
-		Instruments: instr,
-		On:          &sync.Map{},
+	p := &PercussionChannel{
+		On: &sync.Map{},
 	}
+	p.LoadInstrumentsFromBank()
+	return p
+}
+
+func (c *PercussionChannel) LoadInstrumentsFromBank() {
+	instr := make([]generators.Generator, 128)
+	for i, gen := range instruments.Banks[1] {
+		if gen != nil {
+			instr[i] = gen()
+		}
+	}
+	c.Instruments = instr
+}
+
+func (c *PercussionChannel) getInstrument(note int) generators.Generator {
+	return c.Instruments[note]
 }
 
 func (c *PercussionChannel) SetInstrument(g func() generators.Generator) {
 }
 
 func (c *PercussionChannel) NoteOn(note int, velocity float64) {
-	if c.Instruments[note] != nil {
-		c.Instruments[note].SetPitch(notes.NoteToPitch[note])
-		c.Instruments[note].SetGain(velocity)
+	instr := c.getInstrument(note)
+	if instr != nil {
+		instr.SetPitch(notes.NoteToPitch[note])
+		instr.SetGain(velocity)
 		c.On.Store(note, true)
 	}
 }
 
 func (c *PercussionChannel) NoteOff(note int) {
-	if c.Instruments[note] != nil {
-		c.Instruments[note].SetPitch(0.0)
+	instr := c.getInstrument(note)
+	if instr != nil {
+		instr.SetPitch(0.0)
 		c.On.Delete(note)
 	}
 }

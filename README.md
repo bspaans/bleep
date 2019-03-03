@@ -44,7 +44,7 @@ Things that MIDI (`midi/`):
 
 Things that output:
 
-* `.wav` output 
+* `.wav` output (`--record`)
 * "Realtime" PortAudio output
 
 

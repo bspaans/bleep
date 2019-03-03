@@ -18,13 +18,20 @@ func main() {
 
 	cfg := audio.NewAudioConfig()
 	s := synth.NewSynth(cfg)
-	//if err := s.EnableWavSink("test.wav"); err != nil {
-	//	panic(err)
-	//}
+	for _, arg := range os.Args {
+		if arg == "--record" {
+			if err := s.EnableWavSink("test.wav"); err != nil {
+				panic(err)
+			}
+		}
+	}
 	if err := s.EnablePortAudioSink(); err != nil {
 		panic(err)
 	}
 	if err := s.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
+		panic(err)
+	}
+	if err := s.LoadPercussionBank("instruments/percussion_bank.yaml"); err != nil {
 		panic(err)
 	}
 
@@ -83,6 +90,9 @@ func WaitForUserInput(s *synth.Synth) {
 			} else if ev.Key == termbox.KeyCtrlR {
 				fmt.Println("Reloading MIDI banks")
 				if err := s.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
+					fmt.Println("Error:", err.Error())
+				}
+				if err := s.LoadPercussionBank("instruments/percussion_bank.yaml"); err != nil {
 					fmt.Println("Error:", err.Error())
 				}
 			}

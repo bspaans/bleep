@@ -17,17 +17,48 @@ type DelayOptionsDef struct {
 	Factor float64 `json:"factor" yaml:"factor"`
 }
 
+func (f *DelayOptionsDef) Validate() error {
+	if f.Time == 0.0 {
+		return fmt.Errorf("Missing 'time' in delay options")
+	}
+	if f.Factor == 0.0 {
+		return fmt.Errorf("Missing 'factor' in delay options")
+	}
+	return nil
+}
+
 type OverdriveOptionsDef struct {
 	Factor float64 `json:"factor" yaml:"factor"`
+}
+
+func (f *OverdriveOptionsDef) Validate() error {
+	if f.Factor == 0.0 {
+		return fmt.Errorf("Missing 'factor' in overdrive options")
+	}
+	return nil
 }
 
 type DistortionOptionsDef struct {
 	Level float64 `json:"level" yaml:"level"`
 }
 
+func (f *DistortionOptionsDef) Validate() error {
+	if f.Level == 0.0 {
+		return fmt.Errorf("Missing 'level' in distortion options")
+	}
+	return nil
+}
+
 type LPFOptionsDef struct {
 	Alpha  float64 `json:"alpha" yaml:"alpha"`
 	Cutoff float64 `json:"cutoff" yaml:"cutoff"`
+}
+
+func (f *LPFOptionsDef) Validate() error {
+	if f.Alpha == 0.0 && f.Cutoff == 0.0 {
+		return fmt.Errorf("Missing 'alpha' or 'cutoff' in lpf options")
+	}
+	return nil
 }
 
 type FilterOptionsDef struct {
@@ -53,13 +84,13 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 
 func (f *FilterOptionsDef) Validate() error {
 	if f.Delay != nil {
-		return nil
+		return f.Delay.Validate()
 	} else if f.Overdrive != nil {
-		return nil
+		return f.Overdrive.Validate()
 	} else if f.LPF != nil {
-		return nil
+		return f.LPF.Validate()
 	} else if f.Distortion != nil {
-		return nil
+		return f.Distortion.Validate()
 	} else {
 		return errors.New("Unknown filter")
 	}
@@ -79,6 +110,25 @@ func (f *FilterDef) Validate() error {
 		return f.Filter.Validate()
 	}
 	return f.On.Validate()
+}
+
+type ConstantPitchDef struct {
+	Pitch        float64      `json:"pitch" yaml:"pitch"`
+	GeneratorDef GeneratorDef `json:",inline" yaml:",inline"`
+}
+
+func (t *ConstantPitchDef) Generator() generators.Generator {
+	return derived.NewConstantPitchGenerator(
+		t.GeneratorDef.Generator(),
+		t.Pitch,
+	)
+}
+
+func (t *ConstantPitchDef) Validate() error {
+	if t.Pitch == 0.0 {
+		return errors.New("Missing pitch in constant_pitch control")
+	}
+	return t.GeneratorDef.Validate()
 }
 
 type TransposeDef struct {
@@ -131,13 +181,15 @@ func (g *GeneratorOptionsDef) Validate() error {
 }
 
 type GeneratorDef struct {
-	Filter    *FilterDef           `json:"filter" yaml:"filter"`
-	Transpose *TransposeDef        `json:"transpose" yaml:"transpose"`
-	Sine      *GeneratorOptionsDef `json:"sine" yaml:"sine"`
-	Square    *GeneratorOptionsDef `json:"square" yaml:"square"`
-	Sawtooth  *GeneratorOptionsDef `json:"sawtooth" yaml:"sawtooth"`
-	Triangle  *GeneratorOptionsDef `json:"triangle" yaml:"triangle"`
-	Combined  []*GeneratorDef      `json:"combined" yaml:"combined"`
+	Filter        *FilterDef           `json:"filter" yaml:"filter"`
+	Transpose     *TransposeDef        `json:"transpose" yaml:"transpose"`
+	ConstantPitch *ConstantPitchDef    `json:"constant_pitch" yaml:"constant_pitch"`
+	Sine          *GeneratorOptionsDef `json:"sine" yaml:"sine"`
+	Square        *GeneratorOptionsDef `json:"square" yaml:"square"`
+	Sawtooth      *GeneratorOptionsDef `json:"sawtooth" yaml:"sawtooth"`
+	Triangle      *GeneratorOptionsDef `json:"triangle" yaml:"triangle"`
+	WhiteNoise    *GeneratorOptionsDef `json:"white_noise" yaml:"white_noise"`
+	Combined      []*GeneratorDef      `json:"combined" yaml:"combined"`
 }
 
 func (d *GeneratorDef) Generator() generators.Generator {
@@ -150,10 +202,14 @@ func (d *GeneratorDef) Generator() generators.Generator {
 		g = d.Sawtooth.Generator(generators.NewSawtoothWaveOscillator())
 	} else if d.Triangle != nil {
 		g = d.Triangle.Generator(generators.NewTriangleWaveOscillator())
+	} else if d.WhiteNoise != nil {
+		g = d.WhiteNoise.Generator(generators.NewWhiteNoiseGenerator())
 	} else if d.Filter != nil {
 		g = d.Filter.Generator()
 	} else if d.Transpose != nil {
 		g = d.Transpose.Generator()
+	} else if d.ConstantPitch != nil {
+		g = d.ConstantPitch.Generator()
 	} else if len(d.Combined) > 0 {
 		gs := []generators.Generator{}
 		for _, gen := range d.Combined {
@@ -179,6 +235,10 @@ func (d *GeneratorDef) Validate() error {
 		return d.Filter.Validate()
 	} else if d.Transpose != nil {
 		return d.Transpose.Validate()
+	} else if d.ConstantPitch != nil {
+		return d.ConstantPitch.Validate()
+	} else if d.WhiteNoise != nil {
+		return d.WhiteNoise.Validate()
 	} else if len(d.Combined) > 0 {
 		gs := []string{}
 		for _, gen := range d.Combined {
@@ -244,9 +304,9 @@ func (b *BankDef) Validate() error {
 	return errors.New(strings.Join(str, "\n"))
 }
 
-func (b *BankDef) Activate() {
+func (b *BankDef) Activate(bank int) {
 	for _, instr := range b.Instruments {
 		fmt.Printf("Loading [%d] %s\n", instr.Index, instr.Name)
-		Bank[instr.Index] = instr.Generator
+		Banks[bank][instr.Index] = instr.Generator
 	}
 }

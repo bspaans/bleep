@@ -11,5 +11,11 @@ func NewGeneratorWithPitchControl(g generators.Generator, control func(float64) 
 }
 
 func NewConstantPitchGenerator(g generators.Generator, c float64) generators.Generator {
-	return NewGeneratorWithPitchControl(g, func(f float64) float64 { return c })
+	return NewGeneratorWithPitchControl(g, func(f float64) float64 {
+		if f == 0.0 {
+			g.SetPitch(f)
+			return 0.0
+		}
+		return c
+	})
 }

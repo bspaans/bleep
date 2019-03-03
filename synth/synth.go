@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bs8bs/channels"
 	"github.com/bspaans/bs8bs/instruments"
 	"github.com/bspaans/bs8bs/sinks"
 )
@@ -106,6 +107,19 @@ func (s *Synth) LoadInstrumentBank(file string) error {
 	if err := bankDef.Validate(); err != nil {
 		return err
 	}
-	bankDef.Activate()
+	bankDef.Activate(0)
+	return nil
+}
+
+func (s *Synth) LoadPercussionBank(file string) error {
+	bankDef, err := instruments.NewBankFromYamlFile(file)
+	if err != nil {
+		return err
+	}
+	if err := bankDef.Validate(); err != nil {
+		return err
+	}
+	bankDef.Activate(1)
+	s.Mixer.Channels[9].(*channels.PercussionChannel).LoadInstrumentsFromBank()
 	return nil
 }
