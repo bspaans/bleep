@@ -4,6 +4,8 @@ Hobby 8bit synthesizer that can be used as a virtual MIDI device.
 
 I don't really know what I'm doing, but it's #instructive.
 
+Shabby demo song [here](https://github.com/bspaans/bs8bs/raw/master/demo/demo.mp3)
+
 ## Features
 
 Things that generates waveforms (`generators/`):
