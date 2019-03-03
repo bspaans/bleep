@@ -89,11 +89,26 @@ bank:
 
 - index: 51
   name: Ride Cymbal 1
-  white_noise:
-    attack: 0.1
-    decay: 0.5
-    sustain: 0.8
-    release: 0.1
+  combined:
+  - constant_pitch:
+    pitch: 300.0
+    sine:
+      attack: 0.1
+      decay: 0.001
+      sustain: 0.01
+      release: 0.01
+  - constant_pitch:
+    pitch: 20400.0
+    sine:
+      attack: 0.01
+      decay: 0.1
+      sustain: 0.1
+      release: 0.01
+  - white_noise:
+      attack: 0.01
+      decay: 0.002
+      sustain: 0.8
+      release: 0.1
 
 - index: 53
   name: Ride Bell
