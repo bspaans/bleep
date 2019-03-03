@@ -28,6 +28,7 @@ Things that filter (`filters/`):
 
 * Overdrive filter
 * Delay filter
+* Low pass filter
 
 Things that mix: 
 
