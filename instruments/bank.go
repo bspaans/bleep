@@ -3,6 +3,7 @@ package instruments
 import (
 	"github.com/bspaans/bs8bs/filters"
 	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bs8bs/generators/derived"
 )
 
 var Bank = make([]func() generators.Generator, 128)
@@ -18,9 +19,9 @@ func init() {
 
 	// Bright piano
 	Bank[0] = func() generators.Generator {
-		return generators.NewFilteredGenerator(
+		return derived.NewFilteredGenerator(
 			generators.NewEnvelopeGenerator(
-				generators.NewHarmonicsGenerator(generators.NewSineWaveOscillator, 5),
+				derived.NewHarmonicsGenerator(generators.NewSineWaveOscillator, 5),
 				0.1, 0.5, 0.4, 1.0,
 			),
 			filters.NewDelayFilter(0.01, 0.4),
@@ -34,7 +35,7 @@ func init() {
 
 	// Overdrive guitar
 	Bank[29] = func() generators.Generator {
-		return generators.NewFilteredGenerator(
+		return derived.NewFilteredGenerator(
 			generators.NewEnvelopeGenerator(generators.NewSineWaveOscillator(), 0.001, 4.0, 0.8, 0.24),
 			filters.NewOverdriveFilter(4.5),
 		)
@@ -57,9 +58,9 @@ func init() {
 
 	// Fifths saw wave
 	Bank[86] = func() generators.Generator {
-		return generators.NewCombinedGenerators(
+		return derived.NewCombinedGenerators(
 			generators.NewEnvelopeGenerator(generators.NewSawtoothWaveOscillator(), 0.01, 4.0, 0.4, 0.25),
-			generators.NewTransposingGenerator(
+			derived.NewTransposingGenerator(
 				generators.NewEnvelopeGenerator(generators.NewSawtoothWaveOscillator(), 0.01, 4.0, 0.4, 0.25),
 				5.0, // semitones
 				0.5, // gain factor
@@ -69,7 +70,7 @@ func init() {
 
 	// Warm pad
 	Bank[89] = func() generators.Generator {
-		return generators.NewFilteredGenerator(
+		return derived.NewFilteredGenerator(
 			generators.NewEnvelopeGenerator(generators.NewSineWaveOscillator(), 0.5, 4.0, 0.4, 0.25),
 			filters.NewDelayFilter(1.0, 0.8),
 		)

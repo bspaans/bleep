@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/bspaans/bs8bs/filters"
+	"github.com/bspaans/bs8bs/generators/derived"
 
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/generators"
@@ -17,18 +18,18 @@ type PercussionChannel struct {
 
 func NewPercussionChannel() *PercussionChannel {
 	instr := make([]generators.Generator, 128)
-	instr[35] = generators.NewFilteredGenerator(
-		generators.NewCombinedGenerators(
-			generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 100.0), 0.01, 0.01, 0.2, 0.01),
-			generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 80.0), 0.05, 0.01, 0.2, 0.01),
-			generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 40.0), 0.1, 0.01, 0.2, 0.01),
+	instr[35] = derived.NewFilteredGenerator(
+		derived.NewCombinedGenerators(
+			generators.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 100.0), 0.01, 0.01, 0.2, 0.01),
+			generators.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 80.0), 0.05, 0.01, 0.2, 0.01),
+			generators.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 40.0), 0.1, 0.01, 0.2, 0.01),
 		),
 		filters.NewOverdriveFilter(3.5),
 	)
-	instr[36] = generators.NewEnvelopeGenerator(generators.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
-	instr[40] = generators.NewCombinedGenerators(
+	instr[36] = generators.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
+	instr[40] = derived.NewCombinedGenerators(
 		generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
-		generators.NewFilteredGenerator(
+		derived.NewFilteredGenerator(
 			generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
 			filters.NewOverdriveFilter(3.0),
 		),
