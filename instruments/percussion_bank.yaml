@@ -37,7 +37,7 @@ bank:
       factor: 4.5
     filter:
       distortion: 
-        level: 0.01
+        level: 0.1
       combined:
       - constant_pitch:
           pitch: 80.0

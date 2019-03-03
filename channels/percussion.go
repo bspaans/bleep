@@ -12,6 +12,7 @@ import (
 type PercussionChannel struct {
 	On          *sync.Map
 	Instruments []generators.Generator
+	FX          ChannelFX
 }
 
 func NewPercussionChannel() *PercussionChannel {
@@ -67,7 +68,13 @@ func (c *PercussionChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 		}
 		return true
 	})
-	return result
+	filter := c.FX.Filter()
+	if filter == nil {
+		return result
+	}
+	return filter.Filter(cfg, result)
 }
 
-func (c *PercussionChannel) SetFX(fx FX, value float64) {}
+func (c *PercussionChannel) SetFX(fx FX, value float64) {
+	c.FX.Set(fx, value)
+}
