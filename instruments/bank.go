@@ -29,6 +29,28 @@ func init() {
 		)
 	}
 
+	// Square wave
+	Bank[80] = func() generators.Generator {
+		return generators.NewEnvelopeGenerator(generators.NewSquareWaveOscillator(), 0.01, 4.0, 0.4, 0.25)
+	}
+
+	// Saw wave
+	Bank[81] = func() generators.Generator {
+		return generators.NewEnvelopeGenerator(generators.NewSawtoothWaveOscillator(), 0.01, 4.0, 0.4, 0.25)
+	}
+
+	// Fifths saw wave
+	Bank[86] = func() generators.Generator {
+		return generators.NewCombinedGenerators(
+			generators.NewEnvelopeGenerator(generators.NewSawtoothWaveOscillator(), 0.01, 4.0, 0.4, 0.25),
+			generators.NewTransposingGenerator(
+				generators.NewEnvelopeGenerator(generators.NewSawtoothWaveOscillator(), 0.01, 4.0, 0.4, 0.25),
+				5.0, // semitones
+				0.5, // gain factor
+			),
+		)
+	}
+
 	// Warm pad
 	Bank[89] = func() generators.Generator {
 		return generators.NewFilteredGenerator(

@@ -1,6 +1,8 @@
 package generators
 
 import (
+	"math"
+
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/filters"
 )
@@ -56,6 +58,18 @@ func NewGeneratorWithPitchControl(g Generator, control func(float64) float64) Ge
 	result := NewWrappedGenerator(g)
 	result.SetPitchFunc = func(f float64) {
 		g.SetPitch(control(f))
+	}
+	return result
+}
+
+func NewTransposingGenerator(g Generator, semitones, gainFactor float64) Generator {
+	factor := math.Pow(2, semitones/12)
+	result := NewWrappedGenerator(g)
+	result.SetPitchFunc = func(f float64) {
+		g.SetPitch(f * factor)
+	}
+	result.SetGainFunc = func(f float64) {
+		g.SetGain(f * gainFactor)
 	}
 	return result
 }
