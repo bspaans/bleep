@@ -13,6 +13,20 @@ bank:
       sustain: 0.4
       release: 0.1
 
+- index: 1
+  name: Bright Piano
+  combined:
+  - triangle: 
+      attack: 0.01
+      decay: 4.0
+      sustain: 0.2
+      release: 0.1
+  - square: 
+      attack: 0.01
+      decay: 2.5
+      sustain: 0.2
+      release: 0.1
+
 - index: 6
   name: Harpsichord
   combined:
@@ -54,8 +68,20 @@ bank:
     triangle: 
       attack: 0.001
       decay: 2.0
+      sustain: 0.3
+      release: 2.0
+
+- index: 36
+  name: Fretless Bass
+  filter:
+    lpf: 
+      alpha: 0.2
+    triangle: 
+      attack: 0.001
+      decay: 4.0
       sustain: 0.8
       release: 2.0
+
 
 - index: 38
   name: Synth Bass 1

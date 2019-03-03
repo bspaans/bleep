@@ -42,3 +42,5 @@ func (c *MonophonicChannel) SetPitchbend(pitchbendFactor float64) {
 		c.Instrument.SetPitchbend(pitchbendFactor)
 	}
 }
+
+func (c *MonophonicChannel) SetFX(fx FX, value float64) {}

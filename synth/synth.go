@@ -94,6 +94,10 @@ func (s *Synth) SetPitchbend(channel int, pitchbendFactor float64) {
 	s.Mixer.SetPitchbend(channel, pitchbendFactor)
 }
 
+func (s *Synth) SetReverb(channel int, reverb int) {
+	s.Mixer.SetReverb(channel, reverb)
+}
+
 func (s *Synth) LoadInstrumentBank(file string) error {
 	bankDef, err := instruments.NewBankFromYamlFile(file)
 	if err != nil {

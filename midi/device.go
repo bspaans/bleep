@@ -56,7 +56,10 @@ func StartVirtualMIDIDevice(s *synth.Synth) {
 				} else if ctrl == midievent.ExpressionControllerMSB {
 					//fmt.Println("EXPRESSION CONTROLLER", msg[2])
 				} else if ctrl == midievent.Effects1Depth {
-					//fmt.Println("REVERB", msg[2])
+					fmt.Println("REVERB", msg[2])
+					ch, _ := midievent.ChanOf(ev)
+					ch -= 1
+					s.SetReverb(ch, int(msg[2]))
 				} else if ctrl == midievent.Effects2Depth {
 					//fmt.Println("TREMELO", msg[2])
 				} else if ctrl == midievent.Effects3Depth {

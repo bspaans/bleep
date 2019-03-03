@@ -73,3 +73,5 @@ func (c *PercussionChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 	})
 	return result
 }
+
+func (c *PercussionChannel) SetFX(fx FX, value float64) {}
