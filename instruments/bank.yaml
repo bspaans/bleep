@@ -60,6 +60,17 @@ bank:
       sustain: 0.8
       release: 0.25
 
+- index: 30
+  name: Distortion Guitar
+  filter:
+    distortion: 
+      level: 0.01
+    sawtooth: 
+      attack: 0.001
+      decay: 4.0
+      sustain: 0.8
+      release: 0.25
+
 - index: 32
   name: Acoustic Bass
   filter:

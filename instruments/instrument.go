@@ -21,15 +21,20 @@ type OverdriveOptionsDef struct {
 	Factor float64 `json:"factor" yaml:"factor"`
 }
 
+type DistortionOptionsDef struct {
+	Level float64 `json:"level" yaml:"level"`
+}
+
 type LPFOptionsDef struct {
 	Alpha  float64 `json:"alpha" yaml:"alpha"`
 	Cutoff float64 `json:"cutoff" yaml:"cutoff"`
 }
 
 type FilterOptionsDef struct {
-	Delay     *DelayOptionsDef     `json:"delay" yaml:"delay"`
-	Overdrive *OverdriveOptionsDef `json:"overdrive" yaml:"overdrive"`
-	LPF       *LPFOptionsDef       `json:"lpf" yaml:"lpf"`
+	Delay      *DelayOptionsDef      `json:"delay" yaml:"delay"`
+	Overdrive  *OverdriveOptionsDef  `json:"overdrive" yaml:"overdrive"`
+	Distortion *DistortionOptionsDef `json:"distortion" yaml:"distortion"`
+	LPF        *LPFOptionsDef        `json:"lpf" yaml:"lpf"`
 }
 
 func (f *FilterOptionsDef) Filter() filters.Filter {
@@ -39,6 +44,8 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 		return filters.NewOverdriveFilter(f.Overdrive.Factor)
 	} else if f.LPF != nil {
 		return filters.NewLowPassFilter(f.LPF.Alpha)
+	} else if f.Distortion != nil {
+		return filters.NewDistortionFilter(f.Distortion.Level)
 	}
 	panic("unknown filter")
 	return nil
@@ -50,6 +57,8 @@ func (f *FilterOptionsDef) Validate() error {
 	} else if f.Overdrive != nil {
 		return nil
 	} else if f.LPF != nil {
+		return nil
+	} else if f.Distortion != nil {
 		return nil
 	} else {
 		return errors.New("Unknown filter")
