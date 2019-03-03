@@ -1,9 +1,13 @@
 # bs8bs
 
+Hobby 8bit synthesizer that can be used as a virtual MIDI device.
+
 ## Features
 
 * Sine wave oscillator
 * Square wave oscillator
+* Sawtooth wave oscillator
+* Triangle wave oscillator
 * White noise generator
 * Overdrive filter
 * Delay filter

@@ -43,7 +43,6 @@ func (s *SawtoothWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []flo
 
 func (s *SawtoothWaveOscillator) SetPitch(f float64) {
 	s.Pitch = f
-	s.Period = 0
 }
 
 func (s *SawtoothWaveOscillator) SetGain(f float64) {

@@ -16,6 +16,17 @@ func init() {
 		}
 	}
 
+	// Bright piano
+	Bank[0] = func() generators.Generator {
+		return generators.NewFilteredGenerator(
+			generators.NewEnvelopeGenerator(
+				generators.NewHarmonicsGenerator(generators.NewSineWaveOscillator, 5),
+				0.1, 0.5, 0.4, 1.0,
+			),
+			filters.NewDelayFilter(0.01, 0.4),
+		)
+	}
+
 	// Steel string guitar
 	Bank[25] = func() generators.Generator {
 		return generators.NewEnvelopeGenerator(generators.NewSineWaveOscillator(), 0.001, 4.0, 0.5, 0.24)
@@ -37,6 +48,11 @@ func init() {
 	// Saw wave
 	Bank[81] = func() generators.Generator {
 		return generators.NewEnvelopeGenerator(generators.NewSawtoothWaveOscillator(), 0.01, 4.0, 0.4, 0.25)
+	}
+
+	// Syn charang
+	Bank[84] = func() generators.Generator {
+		return generators.NewEnvelopeGenerator(generators.NewTriangleWaveOscillator(), 0.01, 4.0, 0.4, 0.25)
 	}
 
 	// Fifths saw wave

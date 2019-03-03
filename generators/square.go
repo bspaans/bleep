@@ -44,7 +44,6 @@ func (s *SquareWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []float
 
 func (s *SquareWaveOscillator) SetPitch(f float64) {
 	s.Pitch = f
-	s.Period = 0
 }
 
 func (s *SquareWaveOscillator) SetGain(f float64) {

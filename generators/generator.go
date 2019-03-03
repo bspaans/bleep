@@ -62,16 +62,20 @@ func NewGeneratorWithPitchControl(g Generator, control func(float64) float64) Ge
 	return result
 }
 
-func NewTransposingGenerator(g Generator, semitones, gainFactor float64) Generator {
-	factor := math.Pow(2, semitones/12)
+func NewHarmonicGenerator(g Generator, pitchFactor, gainFactor float64) Generator {
 	result := NewWrappedGenerator(g)
 	result.SetPitchFunc = func(f float64) {
-		g.SetPitch(f * factor)
+		g.SetPitch(f * pitchFactor)
 	}
 	result.SetGainFunc = func(f float64) {
 		g.SetGain(f * gainFactor)
 	}
 	return result
+}
+
+func NewTransposingGenerator(g Generator, semitones, gainFactor float64) Generator {
+	factor := math.Pow(2, semitones/12)
+	return NewHarmonicGenerator(g, factor, gainFactor)
 }
 
 func NewConstantPitchGenerator(g Generator, c float64) Generator {
@@ -113,4 +117,12 @@ func NewCombinedGenerators(g ...Generator) Generator {
 		}
 	}
 	return result
+}
+
+func NewHarmonicsGenerator(g func() Generator, harmonics int) Generator {
+	generators := []Generator{g()}
+	for i := 2; i < harmonics+2; i++ {
+		generators = append(generators, NewTransposingGenerator(g(), float64(i), 1.0/float64(i*4)))
+	}
+	return NewCombinedGenerators(generators...)
 }
