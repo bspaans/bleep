@@ -5,20 +5,20 @@ import (
 	"time"
 
 	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/midi"
+	"github.com/bspaans/bs8bs/instruments"
 	"github.com/bspaans/bs8bs/sinks"
 )
 
 type Synth struct {
 	Config *audio.AudioConfig
-	Mixer  *midi.Mixer
+	Mixer  *Mixer
 	Sinks  []sinks.Sink
 }
 
 func NewSynth(cfg *audio.AudioConfig) *Synth {
 	return &Synth{
 		Config: cfg,
-		Mixer:  midi.NewMixer(),
+		Mixer:  NewMixer(),
 		Sinks:  []sinks.Sink{},
 	}
 }
@@ -92,4 +92,16 @@ func (s *Synth) SilenceAllChannels() {
 
 func (s *Synth) SetPitchbend(channel int, pitchbendFactor float64) {
 	s.Mixer.SetPitchbend(channel, pitchbendFactor)
+}
+
+func (s *Synth) LoadInstrumentBank(file string) error {
+	bankDef, err := instruments.NewBankFromYamlFile(file)
+	if err != nil {
+		return err
+	}
+	if err := bankDef.Validate(); err != nil {
+		return err
+	}
+	bankDef.Activate()
+	return nil
 }

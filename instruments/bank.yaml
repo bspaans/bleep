@@ -1,0 +1,86 @@
+
+bank:
+
+- index: 0
+  name: Piano
+  filter:
+    delay:
+      time: 0.1
+      factor: 0.8
+    sine: 
+      attack: 0.1
+      decay: 0.5
+      sustain: 0.4
+      release: 0.1
+
+- index: 25
+  name: Steel String Guitar
+  sine: 
+    attack: 0.001
+    decay: 4.0
+    sustain: 0.5
+    release: 0.25
+
+- index: 29
+  name: Overdrive Guitar
+  filter:
+    overdrive: 
+      factor: 4.5
+    sine: 
+      attack: 0.001
+      decay: 4.0
+      sustain: 0.8
+      release: 0.25
+
+- index: 80
+  name: Syn Square
+  square: 
+    attack: 0.01
+    decay: 4.0
+    sustain: 0.4
+    release: 0.25
+
+- index: 81
+  name: Syn Saw
+  sawtooth: 
+    attack: 0.01
+    decay: 4.0
+    sustain: 0.4
+    release: 0.25
+
+- index: 84
+  name: Syn Charang 
+  triangle: 
+    attack: 0.01
+    decay: 4.0
+    sustain: 0.4
+    release: 0.25
+
+- index: 86
+  name: Syn Fifths Saw
+  combined:
+    - sawtooth:
+        attack: 0.01
+        decay: 4.0
+        sustain: 0.4
+        release: 0.25
+    - transpose: 
+        semitones: 5.0
+        gain: 0.5
+        sawtooth:
+          attack: 0.01
+          decay: 4.0
+          sustain: 0.4
+          release: 0.25
+
+- index: 89
+  name: Warm Pad
+  filter:
+    delay:
+      time: 1.0
+      factor: 0.8
+    sine:
+      attack: 0.5
+      decay: 4.0
+      sustain: 0.4
+      release: 0.25

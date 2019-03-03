@@ -29,10 +29,10 @@ Things that filter (`filters/`):
 
 Things that mix: 
 
-* Channels
-* Mixer
+* Channels (`channels/`)
+* Mixer (`synth/`)
 
-Things that MIDI:
+Things that MIDI (`midi/`):
 
 * MIDI note on, note off, program select, pitch bend
 * Basic percussion channel

@@ -1,11 +1,10 @@
-package midi
+package synth
 
 import (
 	"math"
 
-	"github.com/bspaans/bs8bs/midi/channels"
-
 	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bs8bs/channels"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/instruments"
 )

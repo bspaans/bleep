@@ -25,3 +25,6 @@ gitlab.com/gomidi/midi v1.10.4 h1:Zki+MX1moh1oMvOrGmXgIpaJO8M4Q5xEqzvxo6qvrvo=
 gitlab.com/gomidi/midi v1.10.4/go.mod h1:3ohtNOhqoSakkuLG/Li1OI6I3J1c2LErnJF5o/VBq1c=
 gitlab.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20190226224559-2e02e3e34693 h1:7Lkeor6pTMEtuVk+kMteUGAXIebDYEHNBG1/fTHEkN4=
 gitlab.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20190226224559-2e02e3e34693/go.mod h1:FYVFN2H23IsX56VntiDF9DgCIekHh359wW+iMl1W8rQ=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
+gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
