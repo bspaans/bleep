@@ -13,6 +13,20 @@ bank:
       sustain: 0.4
       release: 0.1
 
+- index: 6
+  name: Harpsichord
+  combined:
+  - triangle: 
+      attack: 0.01
+      decay: 1.0
+      sustain: 0.2
+      release: 0.1
+  - square: 
+      attack: 0.01
+      decay: 0.5
+      sustain: 0.2
+      release: 0.1
+
 - index: 25
   name: Steel String Guitar
   sine: 
