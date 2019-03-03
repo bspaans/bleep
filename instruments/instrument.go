@@ -13,17 +13,23 @@ import (
 )
 
 type DelayOptionsDef struct {
-	Time   float64 `json:"time",yaml:"time"`
-	Factor float64 `json:"factor",yaml:"factor"`
+	Time   float64 `json:"time" yaml:"time"`
+	Factor float64 `json:"factor" yaml:"factor"`
 }
 
 type OverdriveOptionsDef struct {
-	Factor float64 `json:"factor",yaml:"factor"`
+	Factor float64 `json:"factor" yaml:"factor"`
+}
+
+type LPFOptionsDef struct {
+	Alpha  float64 `json:"alpha" yaml:"alpha"`
+	Cutoff float64 `json:"cutoff" yaml:"cutoff"`
 }
 
 type FilterOptionsDef struct {
-	Delay     *DelayOptionsDef     `json:"delay",yaml:"delay"`
-	Overdrive *OverdriveOptionsDef `json:"overdrive",yaml:"overdrive"`
+	Delay     *DelayOptionsDef     `json:"delay" yaml:"delay"`
+	Overdrive *OverdriveOptionsDef `json:"overdrive" yaml:"overdrive"`
+	LPF       *LPFOptionsDef       `json:"lpf" yaml:"lpf"`
 }
 
 func (f *FilterOptionsDef) Filter() filters.Filter {
@@ -31,6 +37,8 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 		return filters.NewDelayFilter(f.Delay.Time, f.Delay.Factor)
 	} else if f.Overdrive != nil {
 		return filters.NewOverdriveFilter(f.Overdrive.Factor)
+	} else if f.LPF != nil {
+		return filters.NewLowPassFilter(f.LPF.Alpha)
 	}
 	panic("unknown filter")
 	return nil
@@ -40,6 +48,8 @@ func (f *FilterOptionsDef) Validate() error {
 	if f.Delay != nil {
 		return nil
 	} else if f.Overdrive != nil {
+		return nil
+	} else if f.LPF != nil {
 		return nil
 	} else {
 		return errors.New("Unknown filter")

@@ -17,7 +17,11 @@ github.com/gordonklaus/portaudio v0.0.0-20180817120803-00e7307ccd93 h1:TSG+DyZBn
 github.com/gordonklaus/portaudio v0.0.0-20180817120803-00e7307ccd93/go.mod h1:HfYnZi/ARQKG0dwH5HNDmPCHdLiFiBf+SI7DbhW7et4=
 github.com/mattetti/audio v0.0.0-20180912171649-01576cde1f21 h1:Hc1iKlyxNHp3CV59G2E/qabUkHvEwOIJxDK0CJ7CRjA=
 github.com/mattetti/audio v0.0.0-20180912171649-01576cde1f21/go.mod h1:LlQmBGkOuV/SKzEDXBPKauvN2UqCgzXO2XjecTGj40s=
+github.com/mattn/go-runewidth v0.0.4 h1:2BvfKmzob6Bmd4YsL0zygOqfdFnK7GR4QL06Do4/p7Y=
+github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/metakeule/mutex v0.0.1/go.mod h1:/rTh8BoStvpIqJdiFgDBHt9Ib1mMIziunxMenemvjcQ=
+github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d h1:x3S6kxmy49zXVVyhcnrFqxvNVCBPb2KZ9hV2RBdS840=
+github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d/go.mod h1:IuKpRQcYE1Tfu+oAQqaLisqDeXgjyyltCfsaoYN18NQ=
 github.com/thestk/rtmidi v3.0.0+incompatible h1:PnWbzFAaKFzNItn4Tqo+2o4Ty4k2fxKJZ/3Y0emv1gw=
 github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7 h1:GmnQBLZSOXI1F2hXKlyUuV19bW6DpCnWN14p/jP+WXA=
 github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7/go.mod h1:6Wezm38bOZuwEwcq0W+WIrLxkod95+jT5xxaqU9xcj4=

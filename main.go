@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,15 +11,16 @@ import (
 	"github.com/bspaans/bs8bs/midi"
 	"github.com/bspaans/bs8bs/midi/notes"
 	"github.com/bspaans/bs8bs/synth"
+	"github.com/nsf/termbox-go"
 )
 
 func main() {
 
 	cfg := audio.NewAudioConfig()
 	s := synth.NewSynth(cfg)
-	if err := s.EnableWavSink("test.wav"); err != nil {
-		panic(err)
-	}
+	//if err := s.EnableWavSink("test.wav"); err != nil {
+	//	panic(err)
+	//}
 	if err := s.EnablePortAudioSink(); err != nil {
 		panic(err)
 	}
@@ -37,7 +39,9 @@ func main() {
 	}()
 
 	//go PlaySong(s)
+	fmt.Println("Starting synth.")
 	go midi.StartVirtualMIDIDevice(s)
+	go WaitForUserInput(s)
 	s.Start()
 }
 
@@ -58,4 +62,31 @@ func PlaySong(s *synth.Synth) {
 	s.NoteOn(0, notes.C3, 0.7)
 	time.Sleep(375 * time.Millisecond)
 	s.SilenceAllChannels()
+}
+
+func WaitForUserInput(s *synth.Synth) {
+
+	err := termbox.Init()
+	if err != nil {
+		panic(err)
+	}
+	termbox.SetInputMode(termbox.InputCurrent)
+	defer termbox.Close()
+	for {
+		switch ev := termbox.PollEvent(); ev.Type {
+		case termbox.EventKey:
+			if ev.Key == termbox.KeyCtrlC {
+				fmt.Println("Goodbye!")
+				s.Close()
+				os.Exit(1)
+			} else if ev.Key == termbox.KeyCtrlR {
+				fmt.Println("Reloading MIDI banks")
+				if err := s.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
+					fmt.Println("Error:", err.Error())
+				}
+			}
+		case termbox.EventError:
+			panic(ev.Err)
+		}
+	}
 }

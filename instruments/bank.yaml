@@ -32,6 +32,18 @@ bank:
       sustain: 0.8
       release: 0.25
 
+- index: 32
+  name: Acoustic Bass
+  filter:
+    lpf: 
+      alpha: 0.2
+      cutoff: 5000.0
+    sine: 
+      attack: 0.001
+      decay: 2.0
+      sustain: 0.8
+      release: 2.0
+
 - index: 80
   name: Syn Square
   square: 
