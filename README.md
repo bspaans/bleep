@@ -27,6 +27,7 @@ Things that wrap things that generate waveforms (`generators/derived/`):
 Things that filter (`filters/`):
 
 * Overdrive filter
+* Distortion filter
 * Delay filter
 * Low pass filter
 
