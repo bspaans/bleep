@@ -2,25 +2,46 @@
 
 Hobby 8bit synthesizer that can be used as a virtual MIDI device.
 
-I don't really know what I'm doing.
+I don't really know what I'm doing, but it's #instructive.
 
 ## Features
+
+Things that generates waveforms (`generators/`):
 
 * Sine wave oscillator
 * Square wave oscillator
 * Sawtooth wave oscillator
 * Triangle wave oscillator
 * White noise generator
+
+Things that wrap things that generate waveforms (`generators/derived/`):
+
+* ADSHR envelopes (attack, decay, sustain, hold, release)
+* Transposing generator
+* Combining multiple generators into one
+* Harmonics generator
+* A filtered generator (see below)
+
+Things that filter (`filters/`):
+
 * Overdrive filter
 * Delay filter
-* ADSR envelopes
+
+Things that mix: 
+
 * Channels
 * Mixer
+
+Things that MIDI:
+
+* MIDI note on, note off, program select, pitch bend
 * Basic percussion channel
-* `.wav` output 
-* PortAudio output
-* MIDI note on, note off, program select, events
 * Registers as virtual midi device
+
+Things that output:
+
+* `.wav` output 
+* "Realtime" PortAudio output
 
 
 ## Usage
@@ -37,6 +58,6 @@ MIDI.
 
 ## Known issues
 
-* Some occasional buffering problems with realtime playback
+* Some occasional buffering problems during realtime playback
 * Minor clicks on note transitions
 * The drums sound like hot garbage
