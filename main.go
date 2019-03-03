@@ -78,6 +78,7 @@ func WaitForUserInput(s *synth.Synth) {
 			if ev.Key == termbox.KeyCtrlC {
 				fmt.Println("Goodbye!")
 				s.Close()
+				termbox.Close()
 				os.Exit(1)
 			} else if ev.Key == termbox.KeyCtrlR {
 				fmt.Println("Reloading MIDI banks")

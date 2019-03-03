@@ -36,9 +36,36 @@ bank:
   name: Acoustic Bass
   filter:
     lpf: 
+      alpha: 0.1
+    triangle: 
+      attack: 0.001
+      decay: 2.0
+      sustain: 0.8
+      release: 2.0
+
+- index: 38
+  name: Synth Bass 1
+  filter:
+    lpf: 
       alpha: 0.2
-      cutoff: 5000.0
-    sine: 
+    sawtooth: 
+      attack: 0.001
+      decay: 2.0
+      sustain: 0.8
+      release: 2.0
+
+- index: 39
+  name: Synth Bass 1
+  combined:
+  - filter:
+      lpf: 
+        alpha: 0.1
+      sawtooth: 
+        attack: 0.001
+        decay: 2.0
+        sustain: 0.8
+        release: 2.0
+  - triangle:
       attack: 0.001
       decay: 2.0
       sustain: 0.8
