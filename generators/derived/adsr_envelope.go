@@ -1,11 +1,12 @@
-package generators
+package derived
 
 import (
 	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bs8bs/generators"
 )
 
 type EnvelopeGenerator struct {
-	Generator   Generator
+	Generator   generators.Generator
 	Pitch       float64
 	Attack      float64
 	Decay       float64
@@ -15,7 +16,7 @@ type EnvelopeGenerator struct {
 	Period      int
 }
 
-func NewEnvelopeGenerator(g Generator, attack, decay, sustain, release float64) *EnvelopeGenerator {
+func NewEnvelopeGenerator(g generators.Generator, attack, decay, sustain, release float64) *EnvelopeGenerator {
 	return &EnvelopeGenerator{
 		Generator:   g,
 		Attack:      attack,

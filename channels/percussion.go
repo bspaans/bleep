@@ -20,22 +20,22 @@ func NewPercussionChannel() *PercussionChannel {
 	instr := make([]generators.Generator, 128)
 	instr[35] = derived.NewFilteredGenerator(
 		derived.NewCombinedGenerators(
-			generators.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 100.0), 0.01, 0.01, 0.2, 0.01),
-			generators.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 80.0), 0.05, 0.01, 0.2, 0.01),
-			generators.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 40.0), 0.1, 0.01, 0.2, 0.01),
+			derived.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 100.0), 0.01, 0.01, 0.2, 0.01),
+			derived.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 80.0), 0.05, 0.01, 0.2, 0.01),
+			derived.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSineWaveOscillator(), 40.0), 0.1, 0.01, 0.2, 0.01),
 		),
 		filters.NewOverdriveFilter(3.5),
 	)
-	instr[36] = generators.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
+	instr[36] = derived.NewEnvelopeGenerator(derived.NewConstantPitchGenerator(generators.NewSquareWaveOscillator(), 120.0), 0.01, 0.01, 0.4, 0.01)
 	instr[40] = derived.NewCombinedGenerators(
-		generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
+		derived.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
 		derived.NewFilteredGenerator(
-			generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
+			derived.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01),
 			filters.NewOverdriveFilter(3.0),
 		),
 	)
-	instr[42] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01)
-	instr[46] = generators.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.5, 0.8, 0.1)
+	instr[42] = derived.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.01, 0.2, 0.01)
+	instr[46] = derived.NewEnvelopeGenerator(generators.NewWhiteNoiseGenerator(), 0.1, 0.5, 0.8, 0.1)
 	return &PercussionChannel{
 		Instruments: instr,
 		On:          &sync.Map{},

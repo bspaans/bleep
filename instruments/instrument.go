@@ -102,7 +102,7 @@ func (g *GeneratorOptionsDef) Generator(gen generators.Generator) generators.Gen
 		if g.Release != nil {
 			release = *g.Release
 		}
-		gen = generators.NewEnvelopeGenerator(gen, attack, decay, sustain, release)
+		gen = derived.NewEnvelopeGenerator(gen, attack, decay, sustain, release)
 	}
 	return gen
 }

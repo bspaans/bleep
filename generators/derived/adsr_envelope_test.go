@@ -1,10 +1,11 @@
-package generators
+package derived
 
 import (
 	"math"
 	"testing"
 
 	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bs8bs/generators"
 )
 
 func testADSRSection(samples []float64, offset, n int, expect func(int) float64, t *testing.T) {
@@ -21,7 +22,7 @@ func testADSRSection(samples []float64, offset, n int, expect func(int) float64,
 func Test_ADSR_Sanity_check(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
-	g := NewSquareWaveOscillator()
+	g := generators.NewSquareWaveOscillator()
 	env := NewEnvelopeGenerator(g, 0.1, 0.1, 0.5, 0.1)
 	env.SustainHold = 0.1
 	env.SetPitch(0.5) // all 1s
@@ -41,7 +42,7 @@ func Test_ADSR_Sanity_check(t *testing.T) {
 func Test_ADSR_Sanity_check_attack(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
-	g := NewSquareWaveOscillator()
+	g := generators.NewSquareWaveOscillator()
 	env := NewEnvelopeGenerator(g, 0.2, 0.1, 0.5, 0.1)
 	env.SustainHold = 0.1
 	env.SetPitch(0.5) // all 1s
@@ -62,7 +63,7 @@ func Test_ADSR_Sanity_check_attack(t *testing.T) {
 func Test_ADSR_Sanity_check_sustain_level(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
-	g := NewSquareWaveOscillator()
+	g := generators.NewSquareWaveOscillator()
 	env := NewEnvelopeGenerator(g, 0.1, 0.1, 0.8, 0.1)
 	env.SustainHold = 0.1
 	env.SetPitch(0.5) // all 1s
@@ -83,7 +84,7 @@ func Test_ADSR_Sanity_check_sustain_level(t *testing.T) {
 func Test_ADSR_Sanity_check_release(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
-	g := NewSquareWaveOscillator()
+	g := generators.NewSquareWaveOscillator()
 	env := NewEnvelopeGenerator(g, 0.1, 0.1, 0.5, 0.2)
 	env.SustainHold = 0.1
 	env.SetPitch(0.5) // all 1s
