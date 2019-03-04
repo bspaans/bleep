@@ -30,7 +30,7 @@ Things that filter (`filters/`):
 * Overdrive filter
 * Distortion filter
 * Delay filter
-* Low pass filter
+* First order low pass filter
 
 Things that mix: 
 
@@ -47,6 +47,7 @@ Things that output:
 
 * `.wav` output (`--record`)
 * "Realtime" PortAudio output
+* Mono or stereo
 
 
 ## Usage

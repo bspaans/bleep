@@ -49,12 +49,15 @@ func (w *WavSink) Close(cfg *audio.AudioConfig) error {
 	}
 
 	numChans := 1
+	if cfg.Stereo {
+		numChans = 2
+	}
 	audioFormat := 1 // PCM
 	encoder := wav.NewEncoder(out, cfg.SampleRate, cfg.BitDepth, numChans, audioFormat)
 	if err := encoder.Write(&goaudio.IntBuffer{
 		Format: &goaudio.Format{
 			SampleRate:  cfg.SampleRate,
-			NumChannels: 1,
+			NumChannels: numChans,
 		},
 		Data:           w.Samples,
 		SourceBitDepth: cfg.BitDepth,

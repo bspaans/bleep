@@ -83,6 +83,7 @@ func WaitForUserInput(s *synth.Synth) {
 		panic(err)
 	}
 	termbox.SetInputMode(termbox.InputCurrent)
+	fmt.Println("Started bs8bs; press [Ctrl-R] to reload instrument banks; press [Ctrl-C] to quit")
 	defer termbox.Close()
 	for {
 		switch ev := termbox.PollEvent(); ev.Type {
