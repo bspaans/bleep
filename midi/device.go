@@ -86,6 +86,9 @@ func Dispatch(s *synth.Synth, ev *midievent.Event, et EventType, value ...int) {
 	} else if et == SetChannelVolume {
 		s.SetChannelVolume(ch, value[0])
 		supported = true
+	} else if et == SetChannelPanning {
+		s.SetChannelPanning(ch, value[0])
+		supported = true
 	} else if et == SetChannelExpressionVolume {
 		s.SetChannelExpressionVolume(ch, value[0])
 		supported = true

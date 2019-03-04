@@ -13,6 +13,7 @@ type Mixer struct {
 	Channels         []channels.Channel
 	Gain             []float64
 	ExpressionVolume []float64
+	Panning          []float64
 }
 
 func NewMixer() *Mixer {
@@ -20,6 +21,7 @@ func NewMixer() *Mixer {
 		Channels:         []channels.Channel{},
 		Gain:             []float64{},
 		ExpressionVolume: []float64{},
+		Panning:          []float64{},
 	}
 	for i := 0; i < 16; i++ {
 		ch := channels.NewPolyphonicChannel()
@@ -38,6 +40,7 @@ func (m *Mixer) AddChannel(ch channels.Channel) {
 	m.Channels = append(m.Channels, ch)
 	m.Gain = append(m.Gain, 0.15)
 	m.ExpressionVolume = append(m.ExpressionVolume, 1.0)
+	m.Panning = append(m.Panning, 0.5)
 }
 
 func (m *Mixer) NoteOn(channel, note int, velocity float64) {
@@ -74,8 +77,17 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	samples := generators.GetEmptySampleArray(cfg, n)
 
 	for channelNr, ch := range m.Channels {
-		for i, sample := range ch.GetSamples(cfg, n) {
-			samples[i] += sample * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+		chSamples := ch.GetSamples(cfg, n)
+		for i := 0; i < n; i++ {
+			if cfg.Stereo {
+				left := chSamples[i*2] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+				right := chSamples[i*2+1] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+				left, right = LinearPanning(left, right, m.Panning[channelNr])
+				samples[i*2] += left
+				samples[i*2+1] += right
+			} else {
+				samples[i] += chSamples[i] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+			}
 		}
 	}
 
@@ -114,5 +126,11 @@ func (m *Mixer) SetChannelVolume(ch int, volume int) {
 func (m *Mixer) SetChannelExpressionVolume(ch int, volume int) {
 	if ch < len(m.Channels) {
 		m.ExpressionVolume[ch] = float64(volume) / 127.0
+	}
+}
+
+func (m *Mixer) SetChannelPanning(ch int, panning int) {
+	if ch < len(m.Channels) {
+		m.Panning[ch] = float64(panning) / 127.0
 	}
 }
