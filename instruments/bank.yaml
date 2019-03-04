@@ -3,14 +3,27 @@ bank:
 
 - index: 0
   name: Piano
-  filter:
-    delay:
-      time: 0.1
-      factor: 0.8
-    sine: 
+  combined:
+  - sine: 
       attack: 0.01
       decay: 0.2
       sustain: 0.9
+      release: 4.0
+  - transpose:
+    semitones: 12.0
+    gain: 0.3
+    sawtooth: 
+      attack: 0.01
+      decay: 0.2
+      sustain: 0.4
+      release: 4.0
+  - transpose:
+    semitones: 24.0
+    gain: 0.1
+    square: 
+      attack: 0.01
+      decay: 0.2
+      sustain: 0.3
       release: 4.0
 
 - index: 1
@@ -18,14 +31,30 @@ bank:
   combined:
   - triangle: 
       attack: 0.01
-      decay: 4.0
-      sustain: 0.2
-      release: 0.1
+      decay: 1.0
+      sustain: 0.3
+      release: 4.0
   - square: 
+      attack: 0.001
+      decay: 0.5
+      sustain: 0.5
+      release: 4.0
+  - transpose:
+    semitones: 12.0
+    gain: 0.6
+    sawtooth: 
       attack: 0.01
-      decay: 2.5
-      sustain: 0.2
-      release: 0.1
+      decay: 0.2
+      sustain: 0.4
+      release: 4.0
+  - transpose:
+    semitones: 24.0
+    gain: 0.5
+    square: 
+      attack: 0.01
+      decay: 0.2
+      sustain: 0.3
+      release: 4.0
 
 - index: 2
   name: Electric Grand
@@ -51,6 +80,39 @@ bank:
           decay: 2.5
           sustain: 0.2
           release: 0.1
+
+- index: 1
+  name: Honky Tonk Piano
+  combined:
+  - triangle: 
+      attack: 0.01
+      decay: 1.0
+      sustain: 0.3
+      release: 4.0
+  - transpose:
+    semitones: 12.0
+    gain: 0.6
+    sawtooth: 
+      attack: 0.01
+      decay: 0.2
+      sustain: 0.4
+      release: 4.0
+  - transpose:
+    semitones: 19.0
+    gain: 0.4
+    sawtooth: 
+      attack: 0.01
+      decay: 0.2
+      sustain: 0.4
+      release: 4.0
+  - transpose:
+    semitones: 24.0
+    gain: 0.5
+    square: 
+      attack: 0.01
+      decay: 0.2
+      sustain: 0.3
+      release: 4.0
 
 - index: 6
   name: Harpsichord
@@ -99,24 +161,109 @@ bank:
         sustain: 0.5
         release: 0.1
 
+- index: 20
+  name: Reed Organ
+  combined:
+  - sine: 
+      attack: 0.01
+      decay: 1.0
+      sustain: 0.5
+      release: 0.1
+  - transpose:
+      semitones: 12.0
+      gain: 0.8 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+  - transpose:
+      semitones: 24.0
+      gain: 0.5 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+  - transpose:
+      semitones: 19.0
+      gain: 0.3 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+
+
+- index: 24
+  name: Nylon String Guitar
+  combined:
+  - sine: 
+      attack: 0.001
+      decay: 0.25
+      sustain: 0.7
+      release: 4.0
+  - transpose:
+      semitones: 12.0
+      gain: 0.5 
+      sine: 
+        attack: 0.001
+        decay: 0.25
+        sustain: 0.4
+        release: 4.0
+  - transpose:
+      semitones: 19.0
+      gain: 0.3 
+      sine: 
+        attack: 0.003
+        decay: 0.25
+        sustain: 0.2
+        release: 4.0
+
 - index: 25
   name: Steel String Guitar
-  sine: 
-    attack: 0.001
-    decay: 0.1
-    sustain: 0.7
-    release: 4.0
+  combined:
+  - sine: 
+      attack: 0.001
+      decay: 0.25
+      sustain: 0.7
+      release: 4.0
+  - transpose:
+      semitones: 12.0
+      gain: 0.5 
+      triangle: 
+        attack: 0.001
+        decay: 0.25
+        sustain: 0.4
+        release: 4.0
+  - transpose:
+      semitones: 19.0
+      gain: 0.3 
+      sawtooth: 
+        attack: 0.003
+        decay: 0.25
+        sustain: 0.2
+        release: 4.0
 
 - index: 26
   name: Jazz Guitar
-  filter:
-    overdrive:
-      factor: 1.3
-    square: 
-      attack: 0.001
-      decay: 4.0
-      sustain: 0.5
-      release: 0.25
+  combined:
+  - filter:
+      overdrive:
+        factor: 1.3
+      square: 
+        attack: 0.001
+        decay: 4.0
+        sustain: 0.5
+        release: 0.25
+  - transpose:
+      semitones: 12.0
+      gain: 0.5 
+      sine: 
+        attack: 0.001
+        decay: 0.1
+        sustain: 0.4
+        release: 4.0
 
 - index: 29
   name: Overdrive Guitar
@@ -129,25 +276,43 @@ bank:
       filter:
         distortion: 
           level: 0.5
-        sine: 
-          attack: 0.001
-          decay: 0.25
-          sustain: 0.8
-          release: 4.0
+        combined:
+        - sine: 
+            attack: 0.001
+            decay: 0.25
+            sustain: 0.8
+            release: 4.0
+        - transpose:
+            semitones: 12.0
+            gain: 0.8 
+            triangle: 
+              attack: 0.001
+              decay: 0.25
+              sustain: 0.8
+              release: 4.0
 
 - index: 30
   name: Distortion Guitar
   filter:
     overdrive:
-      factor: 2.5
+      factor: 3.0
     filter:
       distortion: 
-        level: 0.5
-      sawtooth: 
-        attack: 0.001
-        decay: 0.25
-        sustain: 0.8
-        release: 4.0
+        level: 0.4
+      combined:
+      - sawtooth: 
+          attack: 0.001
+          decay: 0.25
+          sustain: 0.8
+          release: 4.0
+      - transpose:
+          semitones: 12.0
+          gain: 0.8 
+          triangle: 
+            attack: 0.001
+            decay: 0.25
+            sustain: 0.8
+            release: 4.0
 
 - index: 32
   name: Acoustic Bass

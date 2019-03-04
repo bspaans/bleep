@@ -5,7 +5,7 @@ bank:
   name: Acoustic Bass Drum
   filter:
     lpf:
-      alpha: 0.1
+      alpha: 0.99
     filter:
       delay:
         time: 0.0001
@@ -126,20 +126,12 @@ bank:
         sustain: 0.2
         release: 0.01
 
-- index: 42
-  name: Closed Hi-hat
-  white_noise:
-    attack: 0.01
-    decay: 0.001
-    sustain: 0.2
-    release: 0.01
-
-
 - index: 41
   name: Low Floor Tom
   filter:
-    lpf:
-      alpha: 0.1
+    delay:
+      time: 0.0001
+      factor: 0.8
     combined:
     - constant_pitch:
         pitch: 80.0
@@ -157,7 +149,7 @@ bank:
           release: 0.001
 
 - index: 42
-  name: Pedal Hi-hat
+  name: Closed Hi-hat
   filter:
     delay:
       time: 0.0001
@@ -171,8 +163,9 @@ bank:
 - index: 43
   name: High Floor Tom
   filter:
-    lpf:
-      alpha: 0.1
+    delay:
+      time: 0.0001
+      factor: 0.8
     combined:
     - constant_pitch:
         pitch: 80.0
@@ -189,11 +182,25 @@ bank:
           sustain: 0.4
           release: 0.001
 
+- index: 44
+  name: Pedal Hi-hat
+  filter:
+    delay:
+      time: 0.0001
+      factor: 0.7
+    white_noise:
+      attack: 0.05
+      decay: 0.01
+      sustain: 0.4
+      release: 0.01
+
+
 - index: 45
   name: Low Tom
   filter:
-    lpf:
-      alpha: 0.1
+    delay:
+      time: 0.0001
+      factor: 0.8
     combined:
     - constant_pitch:
         pitch: 80.0
@@ -225,8 +232,9 @@ bank:
 - index: 47
   name: Low-Mid Tom
   filter:
-    lpf:
-      alpha: 0.1
+    delay:
+      time: 0.0001
+      factor: 0.8
     combined:
     - constant_pitch:
         pitch: 80.0
@@ -246,8 +254,9 @@ bank:
 - index: 48
   name: Hi-Mid Tom
   filter:
-    lpf:
-      alpha: 0.1
+    delay:
+      time: 0.0001
+      factor: 0.8
     combined:
     - constant_pitch:
         pitch: 80.0
