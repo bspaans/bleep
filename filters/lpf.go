@@ -16,7 +16,7 @@ func NewLowPassFilter(alpha float64) *LowPassFilter {
 
 func (f *LowPassFilter) Filter(cfg *audio.AudioConfig, samples []float64) []float64 {
 	for i, s := range samples {
-		samples[i] = f.Alpha*f.Previous + (1-f.Alpha)*s
+		samples[i] = f.Previous + f.Alpha*(samples[i]-f.Previous)
 		f.Previous = s
 	}
 	return samples
