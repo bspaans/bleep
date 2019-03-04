@@ -66,6 +66,39 @@ bank:
       sustain: 0.2
       release: 0.1
 
+- index: 11
+  name: Vibraphone
+  combined:
+  - sine: 
+      attack: 0.01
+      decay: 1.0
+      sustain: 0.5
+      release: 0.1
+  - transpose:
+      semitones: 12.0
+      gain: 0.8 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+  - transpose:
+      semitones: 24.0
+      gain: 0.5 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+  - transpose:
+      semitones: 19.0
+      gain: 0.3 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+
 - index: 25
   name: Steel String Guitar
   sine: 
@@ -73,6 +106,17 @@ bank:
     decay: 4.0
     sustain: 0.5
     release: 0.25
+
+- index: 26
+  name: Jazz Guitar
+  filter:
+    overdrive:
+      factor: 1.3
+    square: 
+      attack: 0.001
+      decay: 4.0
+      sustain: 0.5
+      release: 0.25
 
 - index: 29
   name: Overdrive Guitar
@@ -167,8 +211,29 @@ bank:
       sustain: 0.8
       release: 2.0
 
+- index: 48
+  name: String Ensemble 1
+  filter:
+    delay:
+      time: 1.0
+      factor: 0.8
+    combined:
+    - sine:
+        attack: 0.1
+        decay: 4.0
+        sustain: 0.4
+        release: 0.25
+    - transpose:
+        semitones: 12
+        gain: 0.5
+        sine:
+          attack: 0.1
+          decay: 4.0
+          sustain: 0.4
+          release: 0.25
+
 - index: 49
-  name: Synth Strings 2 (Slow Strings)
+  name: String Ensemble 2 (Slow Strings)
   filter:
     delay:
       time: 1.0
