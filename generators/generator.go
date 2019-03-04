@@ -5,6 +5,16 @@ import (
 )
 
 type Generator interface {
+
+	// GetSamples is the meat of each Generator and returns `n` samples.
+	//
+	// There are two important variables in cfg that should be considered:
+	// * cfg.SampleRate: the number of samples per second; affects pitch
+	// * cfg.Stereo: whether or not the output is stereo - should return n*2 samples if so
+	//
+	// `Pitch`, `PitchbendFactor` and `Gain` can in theory all be ignored
+	// (see WhiteNoiseGenerator for one such generator).
+	//
 	GetSamples(cfg *audio.AudioConfig, n int) []float64 // return samples between -1.0 and 1.0
 	SetPitch(float64)
 	SetPitchbend(float64)
@@ -17,10 +27,7 @@ type BaseGenerator struct {
 	Gain            float64
 	Phase           int // needs to be updated from GetSamplesFunc
 
-	GetSamplesFunc   func(cfg *audio.AudioConfig, n int) []float64
-	SetPitchFunc     func(f float64)
-	SetPitchbendFunc func(f float64)
-	SetGainFunc      func(f float64)
+	GetSamplesFunc func(cfg *audio.AudioConfig, n int) []float64
 }
 
 func NewBaseGenerator() *BaseGenerator {

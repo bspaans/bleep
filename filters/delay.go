@@ -7,33 +7,66 @@ import (
 )
 
 type DelayFilter struct {
-	Time    float64
-	Factor  float64
-	Delayed *ring.Ring
+	LeftTime     float64
+	LeftFactor   float64
+	LeftDelayed  *ring.Ring
+	RightTime    float64
+	RightFactor  float64
+	RightDelayed *ring.Ring
 }
 
 func NewDelayFilter(time, factor float64) *DelayFilter {
 	return &DelayFilter{
-		Time:    time,
-		Factor:  factor,
-		Delayed: nil,
+		LeftTime:     time,
+		LeftFactor:   factor,
+		LeftDelayed:  nil,
+		RightTime:    time,
+		RightFactor:  factor,
+		RightDelayed: nil,
 	}
 }
 
 func (f *DelayFilter) Filter(cfg *audio.AudioConfig, samples []float64) []float64 {
-	delayTime := int(float64(cfg.SampleRate) * f.Time)
-	if f.Delayed == nil {
-		f.Delayed = ring.New(delayTime)
+	leftDelayTime := int(float64(cfg.SampleRate) * f.LeftTime)
+	if f.LeftDelayed == nil {
+		f.LeftDelayed = ring.New(leftDelayTime)
+	}
+	if cfg.Stereo {
+		rightDelayTime := int(float64(cfg.SampleRate) * f.LeftTime)
+		if f.RightDelayed == nil {
+			f.RightDelayed = ring.New(rightDelayTime)
+		}
 	}
 
-	for i, s := range samples {
-		if f.Delayed.Value != nil {
-			prev := f.Delayed.Value.(float64)
-			s += prev * f.Factor
+	n := len(samples)
+	if cfg.Stereo {
+		n = n / 2
+	}
+	for i := 0; i < n; i++ {
+
+		ix := i
+		if cfg.Stereo {
+			ix *= 2
 		}
-		f.Delayed.Value = s
-		f.Delayed = f.Delayed.Next()
-		samples[i] = s
+
+		s := Delay(samples[ix], f.LeftFactor, f.LeftDelayed)
+		f.LeftDelayed = f.LeftDelayed.Next()
+		samples[ix] = s
+
+		if cfg.Stereo {
+			s := Delay(samples[ix+1], f.RightFactor, f.RightDelayed)
+			f.RightDelayed = f.RightDelayed.Next()
+			samples[ix] = s
+		}
 	}
 	return samples
+}
+
+func Delay(s, factor float64, ring *ring.Ring) float64 {
+	if ring.Value != nil {
+		prev := ring.Value.(float64)
+		s += prev * factor
+	}
+	ring.Value = s
+	return s
 }
