@@ -82,7 +82,7 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 			if cfg.Stereo {
 				left := chSamples[i*2] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
 				right := chSamples[i*2+1] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
-				left, right = LinearPanning(left, right, m.Panning[channelNr])
+				left, right = SquareRootPanning(left, right, m.Panning[channelNr])
 				samples[i*2] += left
 				samples[i*2+1] += right
 			} else {

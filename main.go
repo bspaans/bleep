@@ -17,11 +17,6 @@ import (
 func main() {
 
 	cfg := audio.NewAudioConfig()
-	for _, arg := range os.Args {
-		if arg == "--stereo" {
-			cfg.Stereo = true
-		}
-	}
 	s := synth.NewSynth(cfg)
 	for _, arg := range os.Args {
 		if arg == "--record" {
