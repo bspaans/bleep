@@ -61,7 +61,7 @@ func (c *PercussionChannel) SetPitchbend(f float64) {
 }
 
 func (c *PercussionChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
-	result := make([]float64, n)
+	result := generators.GetEmptySampleArray(cfg, n)
 	c.On.Range(func(on, value interface{}) bool {
 		for i, s := range c.Instruments[on.(int)].GetSamples(cfg, n) {
 			result[i] += s

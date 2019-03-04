@@ -13,6 +13,7 @@ type PortAudioSink struct {
 	WriteFrom  *ring.Ring
 	Samples    []int
 	TargetFile string
+	Stereo     bool
 }
 
 func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
@@ -32,6 +33,7 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 	p := &PortAudioSink{
 		Buffer:     buffer,
 		WriteFrom:  buffer,
+		Stereo:     cfg.Stereo,
 		TargetFile: "test.wav",
 	}
 	callback := p.Callback
@@ -52,9 +54,16 @@ func (p *PortAudioSink) Callback(in, out []uint8, timeInfo portaudio.StreamCallb
 	for i := 0; i < len(out)/2; i++ {
 		v := uint8(p.WriteFrom.Value.(int))
 		out[ix] = v
-		out[ix+1] = v
-		ix += 2
 		p.WriteFrom = p.WriteFrom.Next()
+
+		if p.Stereo {
+			v := uint8(p.WriteFrom.Value.(int))
+			out[ix+1] = v
+			p.WriteFrom = p.WriteFrom.Next()
+		} else {
+			out[ix+1] = v
+		}
+		ix += 2
 	}
 }
 

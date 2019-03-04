@@ -71,7 +71,7 @@ func (m *Mixer) ChangeInstrument(channel, instr int) {
 }
 
 func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
-	samples := make([]float64, n)
+	samples := generators.GetEmptySampleArray(cfg, n)
 
 	for channelNr, ch := range m.Channels {
 		for i, sample := range ch.GetSamples(cfg, n) {
@@ -79,7 +79,7 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 		}
 	}
 
-	result := make([]int, n)
+	result := make([]int, len(samples))
 	maxValue := math.Pow(2, float64(cfg.BitDepth))
 	for i, sample := range samples {
 		scaled := (sample + 1) * (maxValue / 2)

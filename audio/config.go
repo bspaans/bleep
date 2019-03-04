@@ -12,6 +12,6 @@ func NewAudioConfig() *AudioConfig {
 		BitDepth:   8,
 		SampleRate: 44100,
 		StepSize:   1024,
-		Stereo:     false,
+		Stereo:     true,
 	}
 }
