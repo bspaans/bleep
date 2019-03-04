@@ -10,21 +10,21 @@ bank:
     - constant_pitch:
         pitch: 100.0
         square:
-          attack: 0.01
+          attack: 0.001
           decay: 0.01
           sustain: 0.2
           release: 0.01
     - constant_pitch:
         pitch: 80.0
         sine:
-          attack: 0.05
+          attack: 0.001
           decay: 0.01
           sustain: 0.2
           release: 0.01
     - constant_pitch:
         pitch: 60.0
         sine:
-          attack: 0.1
+          attack: 0.001
           decay: 0.01
           sustain: 0.2
           release: 0.01
@@ -43,16 +43,41 @@ bank:
           pitch: 80.0
           sine:
             attack: 0.001
-            decay: 0.01
+            decay: 0.005
             sustain: 0.4
             release: 0.01
       - constant_pitch:
           pitch: 120.0
           square:
             attack: 0.001
-            decay: 0.01
+            decay: 0.005
             sustain: 0.4
             release: 0.01
+
+- index: 39
+  name: Hand Clap
+  combined:
+  - filter:
+      overdrive: 
+        factor: 3.5
+      white_noise:
+        attack: 0.001
+        decay: 0.05
+        sustain: 0.2
+        release: 0.01
+  - white_noise:
+      attack: 0.1
+      decay: 0.01
+      sustain: 0.2
+      release: 0.01
+  - constant_pitch:
+      pitch: 360.0
+      square:
+        attack: 0.001
+        decay: 0.01
+        sustain: 0.4
+        release: 0.01
+
 
 - index: 40
   name: Electric Snare
@@ -79,6 +104,78 @@ bank:
     sustain: 0.2
     release: 0.01
 
+
+- index: 41
+  name: Low Floor Tom
+  filter:
+    lpf:
+      alpha: 0.1
+    combined:
+    - constant_pitch:
+        pitch: 80.0
+        sine:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.01
+    - constant_pitch:
+        pitch: 98.0
+        square:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.001
+
+- index: 42
+  name: Pedal Hi-hat
+  white_noise:
+    attack: 0.05
+    decay: 0.01
+    sustain: 0.4
+    release: 0.01
+
+- index: 43
+  name: High Floor Tom
+  filter:
+    lpf:
+      alpha: 0.1
+    combined:
+    - constant_pitch:
+        pitch: 80.0
+        sine:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.01
+    - constant_pitch:
+        pitch: 110.0
+        square:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.001
+
+- index: 45
+  name: Low Tom
+  filter:
+    lpf:
+      alpha: 0.1
+    combined:
+    - constant_pitch:
+        pitch: 80.0
+        sine:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.01
+    - constant_pitch:
+        pitch: 124.0
+        square:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.001
+
 - index: 46
   name: Open Hi-hat
   white_noise:
@@ -86,6 +183,56 @@ bank:
     decay: 0.5
     sustain: 0.8
     release: 0.1
+
+- index: 47
+  name: Low-Mid Tom
+  filter:
+    lpf:
+      alpha: 0.1
+    combined:
+    - constant_pitch:
+        pitch: 80.0
+        sine:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.01
+    - constant_pitch:
+        pitch: 131.0
+        square:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.001
+
+- index: 48
+  name: Hi-Mid Tom
+  filter:
+    lpf:
+      alpha: 0.1
+    combined:
+    - constant_pitch:
+        pitch: 80.0
+        sine:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.01
+    - constant_pitch:
+        pitch: 165.0
+        square:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.001
+
+- index: 49
+  name: Crash Cymbal 1
+  white_noise:
+    attack: 0.01
+    decay: 1.0
+    sustain: 0.8
+    release: 0.5
 
 - index: 51
   name: Ride Cymbal 1
@@ -117,3 +264,19 @@ bank:
     decay: 0.5
     sustain: 0.8
     release: 0.1
+
+- index: 55
+  name: Splash Cymbal
+  white_noise:
+    attack: 0.01
+    decay: 1.0
+    sustain: 0.8
+    release: 0.5
+
+- index: 57
+  name: Crash Cymbal 2
+  white_noise:
+    attack: 0.01
+    decay: 1.0
+    sustain: 0.8
+    release: 0.5

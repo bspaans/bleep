@@ -27,6 +27,31 @@ bank:
       sustain: 0.2
       release: 0.1
 
+- index: 2
+  name: Electric Grand
+  filter:
+    lpf:
+      alpha: 0.8
+    combined:
+    - triangle: 
+        attack: 0.01
+        decay: 4.0
+        sustain: 0.2
+        release: 0.1
+    - sine: 
+        attack: 0.1
+        decay: 2.5
+        sustain: 0.2
+        release: 0.1
+    - transpose:
+        semitones: 12.0
+        gain: 0.5
+        sine: 
+          attack: 0.1
+          decay: 2.5
+          sustain: 0.2
+          release: 0.1
+
 - index: 6
   name: Harpsichord
   combined:
@@ -52,13 +77,19 @@ bank:
 - index: 29
   name: Overdrive Guitar
   filter:
-    overdrive: 
-      factor: 4.5
-    sine: 
-      attack: 0.001
-      decay: 4.0
-      sustain: 0.8
-      release: 0.25
+    lpf: 
+      alpha: 0.7
+    filter:
+      overdrive: 
+        factor: 3.5
+      filter:
+        distortion: 
+          level: 0.01
+        sine: 
+          attack: 0.001
+          decay: 4.0
+          sustain: 0.8
+          release: 0.25
 
 - index: 30
   name: Distortion Guitar
@@ -83,6 +114,17 @@ bank:
       attack: 0.001
       decay: 2.0
       sustain: 0.3
+      release: 2.0
+
+- index: 34
+  name: Fingered Bass
+  filter:
+    lpf: 
+      alpha: 0.1
+    sine: 
+      attack: 0.001
+      decay: 4.0
+      sustain: 0.8
       release: 2.0
 
 - index: 36
@@ -124,6 +166,27 @@ bank:
       decay: 2.0
       sustain: 0.8
       release: 2.0
+
+- index: 49
+  name: Synth Strings 2 (Slow Strings)
+  filter:
+    delay:
+      time: 1.0
+      factor: 0.8
+    combined:
+    - sine:
+        attack: 0.5
+        decay: 4.0
+        sustain: 0.4
+        release: 0.25
+    - transpose:
+        semitones: 12
+        gain: 0.5
+        sine:
+          attack: 0.5
+          decay: 4.0
+          sustain: 0.4
+          release: 0.25
 
 - index: 80
   name: Syn Square

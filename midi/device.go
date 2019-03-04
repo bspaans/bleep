@@ -11,6 +11,64 @@ import (
 	"github.com/xlab/midievent"
 )
 
+type EventType int
+
+const (
+	NoteOn         EventType = iota
+	NoteOff        EventType = iota
+	SetReverb      EventType = iota
+	ProgramChange  EventType = iota
+	SilenceChannel EventType = iota
+	PitchBend      EventType = iota
+)
+
+func (s EventType) String() string {
+	if s == NoteOn {
+		return "Note on"
+	} else if s == NoteOff {
+		return "Note off"
+	} else if s == SetReverb {
+		return "Set reverb"
+	} else if s == ProgramChange {
+		return "Program change"
+	} else if s == SilenceChannel {
+		return "Silence channel"
+	} else if s == PitchBend {
+		return "Pitch bend"
+	}
+	return "Unknown event"
+}
+
+func Dispatch(s *synth.Synth, ev *midievent.Event, et EventType, value ...int) {
+	ch, ok := midievent.ChanOf(*ev)
+	if !ok {
+		panic("Missing channel")
+	}
+	ch -= 1
+	if len(value) == 0 {
+		fmt.Println(et, "on channel", ch)
+	} else {
+		fmt.Println(et, "on channel", ch, value)
+	}
+	if et == NoteOn {
+		velocity := float64(int(value[1])) / 127
+		s.NoteOn(ch, value[0], velocity)
+	} else if et == NoteOff {
+		s.NoteOff(ch, value[0])
+	} else if et == SetReverb {
+		s.SetReverb(ch, value[0])
+	} else if et == ProgramChange {
+		s.ChangeInstrument(ch, value[0])
+	} else if et == SilenceChannel {
+		s.SilenceChannel(ch)
+	} else if et == PitchBend {
+		semitones := float64(value[0]-64) / 64.0 // -1.0 <-> 1.0
+		semitones *= (64 / 5)
+		pitchbendFactor := math.Pow(2, semitones/12)
+		s.SetPitchbend(ch, pitchbendFactor)
+	}
+}
+
 func StartVirtualMIDIDevice(s *synth.Synth) {
 
 	time.Sleep(time.Second)
@@ -33,20 +91,9 @@ func StartVirtualMIDIDevice(s *synth.Synth) {
 		if len(msg) > 0 {
 			ev := midievent.Event(msg[0])
 			if midievent.IsNoteOn(ev) {
-				ch, ok := midievent.ChanOf(ev)
-				if ok {
-					ch -= 1
-					velocity := float64(int(msg[2])) / 127
-					//fmt.Println("NOTE ON", msg[1], velocity, ch)
-					s.NoteOn(ch, int(msg[1]), velocity)
-				}
+				Dispatch(s, &ev, NoteOn, int(msg[1]), int(msg[2]))
 			} else if midievent.IsNoteOff(ev) {
-				ch, ok := midievent.ChanOf(ev)
-				if ok {
-					ch -= 1
-					//fmt.Println("NOTE OFF", msg[1], ch)
-					s.NoteOff(ch, int(msg[1]))
-				}
+				Dispatch(s, &ev, NoteOff, int(msg[1]))
 			} else if ev >= midievent.Chan1ControlModeChangeEvent && ev <= midievent.Chan16ControlModeChangeEvent {
 				ctrl := midievent.Control(msg[1])
 				if ctrl == midievent.ChannelVolumeMSB {
@@ -56,10 +103,7 @@ func StartVirtualMIDIDevice(s *synth.Synth) {
 				} else if ctrl == midievent.ExpressionControllerMSB {
 					//fmt.Println("EXPRESSION CONTROLLER", msg[2])
 				} else if ctrl == midievent.Effects1Depth {
-					fmt.Println("REVERB", msg[2])
-					ch, _ := midievent.ChanOf(ev)
-					ch -= 1
-					s.SetReverb(ch, int(msg[2]))
+					Dispatch(s, &ev, SetReverb, int(msg[2]))
 				} else if ctrl == midievent.Effects2Depth {
 					//fmt.Println("TREMELO", msg[2])
 				} else if ctrl == midievent.Effects3Depth {
@@ -69,28 +113,14 @@ func StartVirtualMIDIDevice(s *synth.Synth) {
 				} else if ctrl == midievent.Effects5Depth {
 					//fmt.Println("PHASER", msg[2])
 				} else if ctrl == midievent.AllNotesOff {
-					ch, _ := midievent.ChanOf(ev)
-					ch -= 1
-					//fmt.Println("ALL NOTES OFF", ch)
-					s.SilenceChannel(ch)
+					Dispatch(s, &ev, SilenceChannel)
 				} else {
 					//fmt.Printf("UNSUPPORTED CONTROL MODE CHANGE %x %x\n", msg[1], msg)
 				}
 			} else if ev >= midievent.Chan1PitchWheelRangeEvent && ev <= midievent.Chan16PitchWheelRangeEvent {
-				ch, _ := midievent.ChanOf(ev)
-				ch -= 1
-				semitones := float64(int(msg[2])-64) / 64.0 // -1.0 <-> 1.0
-				semitones *= (64 / 5)
-				pitchbendFactor := math.Pow(2, semitones/12)
-				//fmt.Println("PITCH WHEEL RANGE EVENT", ch, msg[1], msg[2], semitones, pitchbendFactor)
-				s.SetPitchbend(ch, pitchbendFactor)
+				Dispatch(s, &ev, PitchBend, int(msg[2]))
 			} else if ev >= midievent.Chan1ProgramChangeEvent && ev <= midievent.Chan16ProgramChangeEvent {
-				ch, ok := midievent.ChanOf(ev)
-				if ok {
-					ch -= 1
-					fmt.Println("CHANGE INSTRUMENTS ", msg[1], ch)
-					s.ChangeInstrument(ch, int(msg[1]))
-				}
+				Dispatch(s, &ev, ProgramChange, int(msg[1]))
 			} else {
 				log.Println(msg, timeDelta, err)
 			}
