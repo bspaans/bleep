@@ -39,6 +39,26 @@ func Test_ADSR_Sanity_check(t *testing.T) {
 	testADSRSection(samples, 20, 10, func(i int) float64 { return env.Sustain }, t)
 	testADSRSection(samples, 30, 10, func(i int) float64 { return 0.5 - float64(i)*0.05 }, t)
 }
+
+func Test_ADSR_stereo_Sanity_check(t *testing.T) {
+	cfg := audio.NewAudioConfig()
+	cfg.SampleRate = 100
+	cfg.Stereo = true
+	g := generators.NewSquareWaveOscillator()
+	env := NewEnvelopeGenerator(g, 0.1, 0.1, 0.5, 0.1)
+	env.SustainHold = 0.1
+	env.SetPitch(0.5) // all 1s
+
+	samples := env.GetSamples(cfg, 100)
+	if len(samples) != 200 {
+		t.Errorf("Want 100x2 samples, got %v", len(samples))
+	}
+	testADSRSection(samples, 0, 20, func(i int) float64 { return float64(i/2) * 0.1 }, t)
+	testADSRSection(samples, 20, 20, func(i int) float64 { return 1.0 - float64(i/2)*0.05 }, t)
+	testADSRSection(samples, 40, 20, func(i int) float64 { return env.Sustain }, t)
+	testADSRSection(samples, 60, 20, func(i int) float64 { return 0.5 - float64(i/2)*0.05 }, t)
+}
+
 func Test_ADSR_Sanity_check_attack(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100

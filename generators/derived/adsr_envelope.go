@@ -43,27 +43,33 @@ func (e *EnvelopeGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 	releaseEnd := sustainEnd + releaseLength
 
 	samples := e.Generator.GetSamples(cfg, n)
-	for i, s := range samples {
+
+	for i := 0; i < n; i++ {
+
+		factor := 0.0
+
 		if float64(e.Period) < attackLength {
-			p := float64(e.Period)
-			s = s * p * (1.0 / attackLength)
+			factor = float64(e.Period) * (1.0 / attackLength)
 		} else if float64(e.Period) < decayEnd {
 			p := float64(e.Period) - attackLength
 			decayDomain := e.Sustain - 1.0
 			decayPerPeriod := decayDomain / decayLength
-			s = s * (decayPerPeriod*p + 1.0)
+			factor = (decayPerPeriod*p + 1.0)
 		} else if float64(e.Period) < sustainEnd {
-			s = s * e.Sustain
+			factor = e.Sustain
 		} else if float64(e.Period) < releaseEnd {
 			p := float64(e.Period) - sustainEnd
 			releasePerPeriod := (0 - e.Sustain) / releaseLength
-			s = s * (releasePerPeriod*p + e.Sustain)
-		} else {
-			s = 0.0
+			factor = releasePerPeriod*p + e.Sustain
 		}
 		e.Period++
 
-		result[i] = s
+		if !cfg.Stereo {
+			result[i] = samples[i] * factor
+		} else {
+			result[i*2] = samples[i*2] * factor
+			result[i*2+1] = samples[i*2+1] * factor
+		}
 	}
 	return result
 }
