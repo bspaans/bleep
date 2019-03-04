@@ -56,7 +56,7 @@ func (f *DelayFilter) Filter(cfg *audio.AudioConfig, samples []float64) []float6
 		if cfg.Stereo {
 			s := Delay(samples[ix+1], f.RightFactor, f.RightDelayed)
 			f.RightDelayed = f.RightDelayed.Next()
-			samples[ix] = s
+			samples[ix+1] = s
 		}
 	}
 	return samples
