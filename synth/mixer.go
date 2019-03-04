@@ -1,7 +1,6 @@
 package synth
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/bspaans/bs8bs/audio"
@@ -108,14 +107,12 @@ func (m *Mixer) SilenceAllChannels() {
 
 func (m *Mixer) SetChannelVolume(ch int, volume int) {
 	if ch < len(m.Channels) {
-		fmt.Println("Setting channel", ch, float64(volume)/127.0)
 		m.Gain[ch] = float64(volume) / 127.0
 	}
 }
 
 func (m *Mixer) SetChannelExpressionVolume(ch int, volume int) {
 	if ch < len(m.Channels) {
-		fmt.Println("Setting expression channel", ch, float64(volume)/127.0)
 		m.ExpressionVolume[ch] = float64(volume) / 127.0
 	}
 }
