@@ -7,7 +7,7 @@ import (
 func NewTriangleWaveOscillator() Generator {
 	g := NewBaseGenerator()
 	g.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
-		result := g.GetEmptySampleArray(cfg, n)
+		result := GetEmptySampleArray(cfg, n)
 		if g.Pitch == 0.0 {
 			return result
 		}
@@ -21,7 +21,7 @@ func NewTriangleWaveOscillator() Generator {
 			} else {
 				v = 1.0 - (float64(g.Phase)-flipEvery)*stepSize
 			}
-			g.SetResult(cfg, result, i, v)
+			SetResult(cfg, result, i, v)
 			g.Phase++
 			if g.Phase >= int(flipEvery*2) {
 				g.Phase = 0

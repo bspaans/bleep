@@ -10,7 +10,7 @@ func NewSineWaveOscillator() Generator {
 	g := NewBaseGenerator()
 	var phase float64
 	g.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
-		result := g.GetEmptySampleArray(cfg, n)
+		result := GetEmptySampleArray(cfg, n)
 		if g.Pitch == 0.0 {
 			return result
 		}
@@ -18,7 +18,7 @@ func NewSineWaveOscillator() Generator {
 		stepSize := (pitch * math.Pi * 2) / float64(cfg.SampleRate)
 		for i := 0; i < n; i++ {
 			v := math.Sin(phase) * g.Gain
-			g.SetResult(cfg, result, i, v)
+			SetResult(cfg, result, i, v)
 			phase += stepSize
 		}
 		return result

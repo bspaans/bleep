@@ -8,7 +8,7 @@ import (
 func NewCombinedGenerators(g ...generators.Generator) generators.Generator {
 	result := NewWrappedGenerator(g[0])
 	result.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
-		result := make([]float64, n)
+		result := generators.GetEmptySampleArray(cfg, n)
 		for _, generator := range g {
 			for i, sample := range generator.GetSamples(cfg, n) {
 				result[i] += sample

@@ -13,7 +13,7 @@ func NewSquareWaveOscillator() Generator {
 	g := NewBaseGenerator()
 	g.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
 
-		result := g.GetEmptySampleArray(cfg, n)
+		result := GetEmptySampleArray(cfg, n)
 		if g.Pitch == 0.0 {
 			return result
 		}
@@ -27,7 +27,7 @@ func NewSquareWaveOscillator() Generator {
 			}
 			v *= g.Gain
 
-			g.SetResult(cfg, result, i, v)
+			SetResult(cfg, result, i, v)
 			g.IncrementPhase(int(flipEvery))
 		}
 		return result
