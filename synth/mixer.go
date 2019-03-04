@@ -1,6 +1,7 @@
 package synth
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/bspaans/bs8bs/audio"
@@ -10,14 +11,16 @@ import (
 )
 
 type Mixer struct {
-	Channels []channels.Channel
-	Gain     []float64
+	Channels         []channels.Channel
+	Gain             []float64
+	ExpressionVolume []float64
 }
 
 func NewMixer() *Mixer {
 	m := &Mixer{
-		Channels: []channels.Channel{},
-		Gain:     []float64{},
+		Channels:         []channels.Channel{},
+		Gain:             []float64{},
+		ExpressionVolume: []float64{},
 	}
 	for i := 0; i < 16; i++ {
 		ch := channels.NewPolyphonicChannel()
@@ -28,7 +31,6 @@ func NewMixer() *Mixer {
 		})
 		m.AddChannel(ch)
 	}
-	//m.Channels[0].(*channels.PolyphonicChannel).Filter = filters.NewDelayFilter(1.0, 0.8)
 	m.Channels[9] = channels.NewPercussionChannel()
 	return m
 }
@@ -36,6 +38,7 @@ func NewMixer() *Mixer {
 func (m *Mixer) AddChannel(ch channels.Channel) {
 	m.Channels = append(m.Channels, ch)
 	m.Gain = append(m.Gain, 0.15)
+	m.ExpressionVolume = append(m.ExpressionVolume, 1.0)
 }
 
 func (m *Mixer) NoteOn(channel, note int, velocity float64) {
@@ -73,7 +76,7 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 
 	for channelNr, ch := range m.Channels {
 		for i, sample := range ch.GetSamples(cfg, n) {
-			samples[i] += sample * m.Gain[channelNr]
+			samples[i] += sample * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
 		}
 	}
 
@@ -100,5 +103,19 @@ func (m *Mixer) SilenceAllChannels() {
 		for i := 0; i < 128; i++ {
 			ch.NoteOff(i)
 		}
+	}
+}
+
+func (m *Mixer) SetChannelVolume(ch int, volume int) {
+	if ch < len(m.Channels) {
+		fmt.Println("Setting channel", ch, float64(volume)/127.0)
+		m.Gain[ch] = float64(volume) / 127.0
+	}
+}
+
+func (m *Mixer) SetChannelExpressionVolume(ch int, volume int) {
+	if ch < len(m.Channels) {
+		fmt.Println("Setting expression channel", ch, float64(volume)/127.0)
+		m.ExpressionVolume[ch] = float64(volume) / 127.0
 	}
 }

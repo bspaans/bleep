@@ -8,10 +8,10 @@ bank:
       time: 0.1
       factor: 0.8
     sine: 
-      attack: 0.1
-      decay: 0.5
-      sustain: 0.4
-      release: 0.1
+      attack: 0.01
+      decay: 0.2
+      sustain: 0.9
+      release: 4.0
 
 - index: 1
   name: Bright Piano
@@ -103,9 +103,9 @@ bank:
   name: Steel String Guitar
   sine: 
     attack: 0.001
-    decay: 4.0
-    sustain: 0.5
-    release: 0.25
+    decay: 0.1
+    sustain: 0.7
+    release: 4.0
 
 - index: 26
   name: Jazz Guitar
@@ -128,26 +128,26 @@ bank:
         factor: 3.5
       filter:
         distortion: 
-          level: 0.01
+          level: 0.5
         sine: 
           attack: 0.001
-          decay: 4.0
+          decay: 0.25
           sustain: 0.8
-          release: 0.25
+          release: 4.0
 
 - index: 30
   name: Distortion Guitar
   filter:
     overdrive:
-      factor: 4.5
+      factor: 2.5
     filter:
       distortion: 
-        level: 0.01
+        level: 0.5
       sawtooth: 
         attack: 0.001
-        decay: 4.0
+        decay: 0.25
         sustain: 0.8
-        release: 0.25
+        release: 4.0
 
 - index: 32
   name: Acoustic Bass

@@ -14,12 +14,19 @@ import (
 type EventType int
 
 const (
-	NoteOn         EventType = iota
-	NoteOff        EventType = iota
-	SetReverb      EventType = iota
-	ProgramChange  EventType = iota
-	SilenceChannel EventType = iota
-	PitchBend      EventType = iota
+	NoteOn                     EventType = iota
+	NoteOff                    EventType = iota
+	SetChannelVolume           EventType = iota
+	SetChannelExpressionVolume EventType = iota
+	SetChannelPanning          EventType = iota
+	SetReverb                  EventType = iota
+	SetTremelo                 EventType = iota
+	SetChorus                  EventType = iota
+	SetDetuneEffect            EventType = iota
+	SetPhaser                  EventType = iota
+	ProgramChange              EventType = iota
+	SilenceChannel             EventType = iota
+	PitchBend                  EventType = iota
 )
 
 func (s EventType) String() string {
@@ -29,12 +36,26 @@ func (s EventType) String() string {
 		return "Note off"
 	} else if s == SetReverb {
 		return "Set reverb"
+	} else if s == SetTremelo {
+		return "Set tremelo"
+	} else if s == SetChorus {
+		return "Set chorus"
+	} else if s == SetDetuneEffect {
+		return "Set detune effect"
+	} else if s == SetPhaser {
+		return "Set phaser"
 	} else if s == ProgramChange {
 		return "Program change"
 	} else if s == SilenceChannel {
 		return "Silence channel"
 	} else if s == PitchBend {
 		return "Pitch bend"
+	} else if s == SetChannelVolume {
+		return "Set channel volume"
+	} else if s == SetChannelExpressionVolume {
+		return "Set channel expression volume"
+	} else if s == SetChannelPanning {
+		return "Set channel panning"
 	}
 	return "Unknown event"
 }
@@ -45,27 +66,43 @@ func Dispatch(s *synth.Synth, ev *midievent.Event, et EventType, value ...int) {
 		panic("Missing channel")
 	}
 	ch -= 1
-	if len(value) == 0 {
-		fmt.Println(et, "on channel", ch)
-	} else {
-		fmt.Println(et, "on channel", ch, value)
-	}
+	supported := false
 	if et == NoteOn {
 		velocity := float64(int(value[1])) / 127
 		s.NoteOn(ch, value[0], velocity)
+		supported = true
 	} else if et == NoteOff {
 		s.NoteOff(ch, value[0])
+		supported = true
 	} else if et == SetReverb {
 		s.SetReverb(ch, value[0])
+		supported = true
 	} else if et == ProgramChange {
 		s.ChangeInstrument(ch, value[0])
+		supported = true
 	} else if et == SilenceChannel {
 		s.SilenceChannel(ch)
+		supported = true
+	} else if et == SetChannelVolume {
+		s.SetChannelVolume(ch, value[0])
+		supported = true
+	} else if et == SetChannelExpressionVolume {
+		s.SetChannelExpressionVolume(ch, value[0])
+		supported = true
 	} else if et == PitchBend {
 		semitones := float64(value[0]-64) / 64.0 // -1.0 <-> 1.0
 		semitones *= (64 / 5)
 		pitchbendFactor := math.Pow(2, semitones/12)
 		s.SetPitchbend(ch, pitchbendFactor)
+		supported = true
+	}
+
+	if !supported || false { // switch to true for debug mode
+		if len(value) == 0 {
+			fmt.Println(et, "on channel", ch)
+		} else {
+			fmt.Println(et, "on channel", ch, value)
+		}
 	}
 }
 
@@ -97,25 +134,25 @@ func StartVirtualMIDIDevice(s *synth.Synth) {
 			} else if ev >= midievent.Chan1ControlModeChangeEvent && ev <= midievent.Chan16ControlModeChangeEvent {
 				ctrl := midievent.Control(msg[1])
 				if ctrl == midievent.ChannelVolumeMSB {
-					//fmt.Println("CHANNEL VOLUME", msg[2])
+					Dispatch(s, &ev, SetChannelVolume, int(msg[2]))
 				} else if ctrl == midievent.PanMSB {
-					//fmt.Println("CHANNEL PANNING", msg[2])
+					Dispatch(s, &ev, SetChannelPanning, int(msg[2]))
 				} else if ctrl == midievent.ExpressionControllerMSB {
-					//fmt.Println("EXPRESSION CONTROLLER", msg[2])
+					Dispatch(s, &ev, SetChannelExpressionVolume, int(msg[2]))
 				} else if ctrl == midievent.Effects1Depth {
 					Dispatch(s, &ev, SetReverb, int(msg[2]))
 				} else if ctrl == midievent.Effects2Depth {
-					//fmt.Println("TREMELO", msg[2])
+					Dispatch(s, &ev, SetTremelo, int(msg[2]))
 				} else if ctrl == midievent.Effects3Depth {
-					//fmt.Println("CHORUS", msg[2])
+					Dispatch(s, &ev, SetChorus, int(msg[2]))
 				} else if ctrl == midievent.Effects4Depth {
-					//fmt.Println("DETUNE", msg[2])
+					Dispatch(s, &ev, SetDetuneEffect, int(msg[2]))
 				} else if ctrl == midievent.Effects5Depth {
-					//fmt.Println("PHASER", msg[2])
+					Dispatch(s, &ev, SetPhaser, int(msg[2]))
 				} else if ctrl == midievent.AllNotesOff {
 					Dispatch(s, &ev, SilenceChannel)
 				} else {
-					//fmt.Printf("UNSUPPORTED CONTROL MODE CHANGE %x %x\n", msg[1], msg)
+					fmt.Printf("UNSUPPORTED CONTROL MODE CHANGE %x %x\n", msg[1], msg)
 				}
 			} else if ev >= midievent.Chan1PitchWheelRangeEvent && ev <= midievent.Chan16PitchWheelRangeEvent {
 				Dispatch(s, &ev, PitchBend, int(msg[2]))

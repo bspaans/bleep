@@ -4,30 +4,37 @@ bank:
 - index: 35
   name: Acoustic Bass Drum
   filter:
-    overdrive:
-      factor: 3.5
-    combined:
-    - constant_pitch:
-        pitch: 100.0
-        square:
-          attack: 0.001
-          decay: 0.01
-          sustain: 0.2
-          release: 0.01
-    - constant_pitch:
-        pitch: 80.0
-        sine:
-          attack: 0.001
-          decay: 0.01
-          sustain: 0.2
-          release: 0.01
-    - constant_pitch:
-        pitch: 60.0
-        sine:
-          attack: 0.001
-          decay: 0.01
-          sustain: 0.2
-          release: 0.01
+    lpf:
+      alpha: 0.1
+    filter:
+      delay:
+        time: 0.0001
+        factor: 0.5
+      filter:
+        overdrive:
+          factor: 3.5
+        combined:
+        - constant_pitch:
+            pitch: 40.0
+            square:
+              attack: 0.001
+              decay: 0.01
+              sustain: 0.0
+              release: 0.01
+        - constant_pitch:
+            pitch: 80.0
+            sine:
+              attack: 0.001
+              decay: 0.01
+              sustain: 0.0
+              release: 0.01
+        - constant_pitch:
+            pitch: 60.0
+            sine:
+              attack: 0.001
+              decay: 0.01
+              sustain: 0.0
+              release: 0.01
 
 
 - index: 36
@@ -78,9 +85,8 @@ bank:
         sustain: 0.4
         release: 0.01
 
-
-- index: 40
-  name: Electric Snare
+- index: 38
+  name: Acoustic Snare
   combined:
   - filter:
       overdrive: 
@@ -90,11 +96,35 @@ bank:
         decay: 0.1
         sustain: 0.2
         release: 0.01
-  - white_noise:
-      attack: 0.1
-      decay: 0.01
-      sustain: 0.2
-      release: 0.01
+  - filter:
+      lpf:
+        alpha: 0.1
+      white_noise:
+        attack: 0.00001
+        decay: 0.01
+        sustain: 0.2
+        release: 0.01
+
+- index: 40
+  name: Electric Snare
+  filter:
+    delay:
+      time: 0.001
+      factor: 0.2
+    combined:
+    - filter:
+        overdrive: 
+          factor: 4.5
+        white_noise:
+          attack: 0.001
+          decay: 0.1
+          sustain: 0.2
+          release: 0.01
+    - white_noise:
+        attack: 0.1
+        decay: 0.01
+        sustain: 0.2
+        release: 0.01
 
 - index: 42
   name: Closed Hi-hat
@@ -128,11 +158,15 @@ bank:
 
 - index: 42
   name: Pedal Hi-hat
-  white_noise:
-    attack: 0.05
-    decay: 0.01
-    sustain: 0.4
-    release: 0.01
+  filter:
+    delay:
+      time: 0.0001
+      factor: 0.7
+    white_noise:
+      attack: 0.05
+      decay: 0.01
+      sustain: 0.4
+      release: 0.01
 
 - index: 43
   name: High Floor Tom
@@ -178,11 +212,15 @@ bank:
 
 - index: 46
   name: Open Hi-hat
-  white_noise:
-    attack: 0.1
-    decay: 0.5
-    sustain: 0.8
-    release: 0.1
+  filter:
+    delay:
+      time: 0.0001
+      factor: 0.3
+    white_noise:
+      attack: 0.01
+      decay: 0.5
+      sustain: 0.8
+      release: 0.1
 
 - index: 47
   name: Low-Mid Tom
@@ -236,26 +274,30 @@ bank:
 
 - index: 51
   name: Ride Cymbal 1
-  combined:
-  - constant_pitch:
-    pitch: 300.0
-    sine:
-      attack: 0.1
-      decay: 0.001
-      sustain: 0.01
-      release: 0.01
-  - constant_pitch:
-    pitch: 20400.0
-    sine:
-      attack: 0.01
-      decay: 0.1
-      sustain: 0.1
-      release: 0.01
-  - white_noise:
-      attack: 0.01
-      decay: 0.002
-      sustain: 0.8
-      release: 0.1
+  filter:
+    delay:
+      time: 0.0001
+      factor: 0.1
+    combined:
+    - constant_pitch:
+      pitch: 300.0
+      sine:
+        attack: 0.01
+        decay: 0.001
+        sustain: 0.01
+        release: 0.01
+    - constant_pitch:
+      pitch: 20400.0
+      sine:
+        attack: 0.01
+        decay: 0.1
+        sustain: 0.1
+        release: 0.01
+    - white_noise:
+        attack: 0.01
+        decay: 0.002
+        sustain: 0.8
+        release: 0.1
 
 - index: 53
   name: Ride Bell

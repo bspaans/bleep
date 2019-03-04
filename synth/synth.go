@@ -99,6 +99,14 @@ func (s *Synth) SetReverb(channel int, reverb int) {
 	s.Mixer.SetReverb(channel, reverb)
 }
 
+func (s *Synth) SetChannelVolume(channel int, volume int) {
+	s.Mixer.SetChannelVolume(channel, volume)
+}
+
+func (s *Synth) SetChannelExpressionVolume(channel int, volume int) {
+	s.Mixer.SetChannelExpressionVolume(channel, volume)
+}
+
 func (s *Synth) LoadInstrumentBank(file string) error {
 	bankDef, err := instruments.NewBankFromYamlFile(file)
 	if err != nil {

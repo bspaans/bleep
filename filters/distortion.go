@@ -16,6 +16,8 @@ func (f *DistortionFilter) Filter(cfg *audio.AudioConfig, samples []float64) []f
 	for i, s := range samples {
 		if s >= f.Level {
 			s = f.Level
+		} else if s <= -1*f.Level {
+			s = -1 * f.Level
 		}
 		samples[i] = s
 	}
