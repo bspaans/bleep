@@ -6,47 +6,22 @@ import (
 	"github.com/bspaans/bs8bs/audio"
 )
 
-type SineWaveOscillator struct {
-	Pitch           float64
-	PitchbendFactor float64
-	Period          float64
-	Gain            float64
-}
-
 func NewSineWaveOscillator() Generator {
-	return &SineWaveOscillator{
-		Pitch:  440.0,
-		Period: 0.0,
-		Gain:   1.0,
-	}
-}
-
-func (s *SineWaveOscillator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
-	result := make([]float64, n)
-	if s.Pitch == 0.0 {
+	g := NewBaseGenerator()
+	var phase float64
+	g.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
+		result := g.GetEmptySampleArray(cfg, n)
+		if g.Pitch == 0.0 {
+			return result
+		}
+		pitch := g.GetPitch()
+		stepSize := (pitch * math.Pi * 2) / float64(cfg.SampleRate)
+		for i := 0; i < n; i++ {
+			v := math.Sin(phase) * g.Gain
+			g.SetResult(cfg, result, i, v)
+			phase += stepSize
+		}
 		return result
 	}
-	pitch := s.Pitch
-	if s.PitchbendFactor != 0.0 {
-		pitch *= s.PitchbendFactor
-	}
-	stepSize := (pitch * math.Pi * 2) / float64(cfg.SampleRate)
-	for i := 0; i < n; i++ {
-		v := math.Sin(s.Period)
-		result[i] = s.Gain * v
-		s.Period += stepSize
-	}
-	return result
-}
-
-func (s *SineWaveOscillator) SetPitch(f float64) {
-	s.Pitch = f
-}
-
-func (s *SineWaveOscillator) SetGain(f float64) {
-	s.Gain = f
-}
-
-func (s *SineWaveOscillator) SetPitchbend(f float64) {
-	s.PitchbendFactor = f
+	return g
 }
