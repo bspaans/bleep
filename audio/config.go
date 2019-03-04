@@ -9,7 +9,7 @@ type AudioConfig struct {
 func NewAudioConfig() *AudioConfig {
 	return &AudioConfig{
 		BitDepth:   8,
-		SampleRate: 44000,
+		SampleRate: 44100,
 		StepSize:   1024,
 	}
 }
