@@ -15,9 +15,12 @@ func NewSawtoothWaveOscillator() Generator {
 		flipEvery := (float64(cfg.SampleRate)) / pitch
 		stepSize := 2.0 / flipEvery
 		for i := 0; i < n; i++ {
-			v := -1.0 + float64(g.Phase)*stepSize*g.Gain
+			v := (-1.0 + float64(g.Phase)*stepSize) * g.Gain
 			SetResult(cfg, result, i, v)
 			g.IncrementPhase(int(flipEvery))
+			if float64(g.Phase) > flipEvery {
+				g.Phase -= int(flipEvery)
+			}
 		}
 		return result
 	}

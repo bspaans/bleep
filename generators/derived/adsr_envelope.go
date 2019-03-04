@@ -29,7 +29,7 @@ func NewEnvelopeGenerator(g generators.Generator, attack, decay, sustain, releas
 }
 
 func (e *EnvelopeGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
-	result := make([]float64, n)
+	result := generators.GetEmptySampleArray(cfg, n)
 	if e.Pitch == 0.0 {
 		return result
 	}
