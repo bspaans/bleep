@@ -25,8 +25,8 @@ func NewSynth(cfg *audio.AudioConfig) *Synth {
 		Config: cfg,
 		Mixer:  NewMixer(),
 		Sinks:  []sinks.Sink{},
-		Inputs: make(chan *Event, 32),
-		Debug:  false,
+		Inputs: make(chan *Event, cfg.MidiEventInputBufferSize),
+		Debug:  cfg.Debug,
 	}
 }
 
@@ -56,18 +56,13 @@ func (s *Synth) Start() {
 	for {
 		s.WriteSamples(s.Config.StepSize)
 		canRead := true
-		read := 0
 		for canRead {
 			select {
 			case ev := <-s.Inputs:
 				s.DispatchEvents(ev)
-				read++
 			default:
 				canRead = false
 			}
-		}
-		if read > 1 {
-			fmt.Println(read)
 		}
 		now := time.Now()
 		sub := nextStep.Sub(now)

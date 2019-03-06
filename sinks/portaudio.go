@@ -2,18 +2,18 @@ package sinks
 
 import (
 	"container/ring"
+	"math"
 
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/gordonklaus/portaudio"
 )
 
 type PortAudioSink struct {
-	Stream     *portaudio.Stream
-	Buffer     *ring.Ring
-	WriteFrom  *ring.Ring
-	Samples    []int
-	TargetFile string
-	Stereo     bool
+	Stream    *portaudio.Stream
+	Buffer    *ring.Ring
+	WriteFrom *ring.Ring
+	Samples   []int
+	Stereo    bool
 }
 
 func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
@@ -26,15 +26,14 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 	}
 	buffer := ring.New(44096)
 	for buffer.Value == nil {
-		buffer.Value = 127
+		buffer.Value = int(math.Pow(float64(cfg.BitDepth), 2.0)/2 - 1)
 		buffer = buffer.Next()
 	}
 	streamParams := portaudio.LowLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)
 	p := &PortAudioSink{
-		Buffer:     buffer,
-		WriteFrom:  buffer,
-		Stereo:     cfg.Stereo,
-		TargetFile: "test.wav",
+		Buffer:    buffer,
+		WriteFrom: buffer,
+		Stereo:    cfg.Stereo,
 	}
 	callback := p.Callback
 

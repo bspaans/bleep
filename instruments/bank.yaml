@@ -121,12 +121,20 @@ bank:
       attack: 0.01
       decay: 1.0
       sustain: 0.2
-      release: 0.1
+      release: 0.5
   - square: 
       attack: 0.01
       decay: 0.5
       sustain: 0.2
-      release: 0.1
+      release: 0.5
+  - transpose:
+      semitones: 24.0
+      gain: 0.3 
+      sine: 
+        attack: 0.01
+        decay: 0.1
+        sustain: 0.1
+        release: 0.5
 
 - index: 11
   name: Vibraphone
@@ -268,28 +276,25 @@ bank:
 - index: 29
   name: Overdrive Guitar
   filter:
-    lpf: 
-      alpha: 0.7
+    overdrive: 
+      factor: 3.5
     filter:
-      overdrive: 
-        factor: 3.5
-      filter:
-        distortion: 
-          level: 0.5
-        combined:
-        - sine: 
+      distortion: 
+        level: 0.5
+      combined:
+      - sine: 
+          attack: 0.001
+          decay: 0.25
+          sustain: 0.8
+          release: 4.0
+      - transpose:
+          semitones: 12.0
+          gain: 0.8 
+          triangle: 
             attack: 0.001
             decay: 0.25
             sustain: 0.8
             release: 4.0
-        - transpose:
-            semitones: 12.0
-            gain: 0.8 
-            triangle: 
-              attack: 0.001
-              decay: 0.25
-              sustain: 0.8
-              release: 4.0
 
 - index: 30
   name: Distortion Guitar
@@ -375,6 +380,23 @@ bank:
       decay: 2.0
       sustain: 0.8
       release: 2.0
+
+- index: 40
+  name: Violin
+  combined:
+  - filter:
+      overdrive: 
+        factor: 1.1
+      sawtooth: 
+        attack: 0.05
+        decay: 0.5
+        sustain: 0.8
+        release: 4.0
+  - triangle:
+      attack: 0.05
+      decay: 0.5
+      sustain: 0.8
+      release: 4.0
 
 - index: 48
   name: String Ensemble 1

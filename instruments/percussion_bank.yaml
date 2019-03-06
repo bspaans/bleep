@@ -4,62 +4,56 @@ bank:
 - index: 35
   name: Acoustic Bass Drum
   filter:
-    lpf:
-      alpha: 0.99
+    delay:
+      time: 0.0001
+      factor: 0.5
     filter:
-      delay:
-        time: 0.0001
-        factor: 0.5
-      filter:
-        overdrive:
-          factor: 3.5
-        combined:
-        - constant_pitch:
-            pitch: 40.0
-            square:
-              attack: 0.001
-              decay: 0.01
-              sustain: 0.0
-              release: 0.01
-        - constant_pitch:
-            pitch: 80.0
-            sine:
-              attack: 0.001
-              decay: 0.01
-              sustain: 0.0
-              release: 0.01
-        - constant_pitch:
-            pitch: 60.0
-            sine:
-              attack: 0.001
-              decay: 0.01
-              sustain: 0.0
-              release: 0.01
+      overdrive:
+        factor: 3.5
+      combined:
+      - constant_pitch:
+          pitch: 40.0
+          square:
+            attack: 0.001
+            decay: 0.01
+            sustain: 0.0
+            release: 0.01
+      - constant_pitch:
+          pitch: 80.0
+          sine:
+            attack: 0.001
+            decay: 0.01
+            sustain: 0.0
+            release: 0.01
+      - constant_pitch:
+          pitch: 60.0
+          sine:
+            attack: 0.001
+            decay: 0.01
+            sustain: 0.0
+            release: 0.01
 
 
 - index: 36
   name: Bass Drum 1
   filter:
-    overdrive: 
-      factor: 4.5
-    filter:
-      distortion: 
-        level: 0.1
-      combined:
-      - constant_pitch:
-          pitch: 80.0
-          sine:
-            attack: 0.001
-            decay: 0.005
-            sustain: 0.4
-            release: 0.01
-      - constant_pitch:
-          pitch: 120.0
-          square:
-            attack: 0.001
-            decay: 0.005
-            sustain: 0.4
-            release: 0.01
+    distortion: 
+      level: 0.1
+    combined:
+    - constant_pitch:
+        pitch: 80.0
+        sine:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.01
+    - constant_pitch:
+        pitch: 120.0
+        square:
+          attack: 0.001
+          decay: 0.005
+          sustain: 0.4
+          release: 0.01
 
 - index: 39
   name: Hand Clap
