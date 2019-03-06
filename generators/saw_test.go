@@ -9,6 +9,7 @@ import (
 func Test_Sawtooth_GetSamples_sanity_check(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
+	cfg.Stereo = false
 	osc := NewSawtoothWaveOscillator()
 	osc.SetPitch(1.0)
 	samples := osc.GetSamples(cfg, 100)

@@ -1,3 +1,5 @@
+github.com/barnex/fftw v0.0.0-20181125072904-b800f77a10de h1:IUKWQeq/KJwcblO3mKiyeT6iz6DDYVVIoDiG+4GnTjM=
+github.com/barnex/fftw v0.0.0-20181125072904-b800f77a10de/go.mod h1:18E8YpOFQFEoG+0SwUnE01ow15ccx/DV3TgCZeLWHrg=
 github.com/go-audio/aiff v0.0.0-20180403003018-6c3a8a6aff12/go.mod h1:AMSAp6W1zd0koOdX6QDgGIuBDTUvLa2SLQtm7d9eM3c=
 github.com/go-audio/audio v0.0.0-20180206231410-b697a35b5608 h1:PHEBf8t8q21RNXEBzgg15sqaX06CdG1kngmhX+NvQAI=
 github.com/go-audio/audio v0.0.0-20180206231410-b697a35b5608/go.mod h1:6uAu0+H2lHkwdGsAY+j2wHPNPpPoeg5AaEFh9FlA+Zs=

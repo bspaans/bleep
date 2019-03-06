@@ -9,6 +9,7 @@ import (
 func Test_Triangle_GetSamples_sanity_check(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
+	cfg.Stereo = false
 	osc := NewTriangleWaveOscillator()
 	osc.SetPitch(1.0)
 	samples := osc.GetSamples(cfg, 101)

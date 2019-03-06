@@ -9,6 +9,7 @@ import (
 func Test_Sine_GetSamples_sanity_check(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 100
+	cfg.Stereo = false
 	osc := NewSineWaveOscillator()
 	osc.SetPitch(1.0)
 	samples := osc.GetSamples(cfg, 100)
@@ -32,6 +33,7 @@ func Test_Sine_GetSamples_sanity_check(t *testing.T) {
 func Test_Sine_GetSamples_number_of_peaks_equals_pitch(t *testing.T) {
 	cfg := audio.NewAudioConfig()
 	cfg.SampleRate = 44000
+	cfg.Stereo = false
 	osc := NewSineWaveOscillator()
 	osc.SetPitch(440.0)
 	samples := osc.GetSamples(cfg, 44000)
