@@ -1,7 +1,9 @@
 package synth
 
 import (
+	"fmt"
 	"log"
+	"math"
 	"time"
 
 	"github.com/bspaans/bs8bs/audio"
@@ -14,6 +16,8 @@ type Synth struct {
 	Config *audio.AudioConfig
 	Mixer  *Mixer
 	Sinks  []sinks.Sink
+	Inputs chan *Event
+	Debug  bool
 }
 
 func NewSynth(cfg *audio.AudioConfig) *Synth {
@@ -21,6 +25,8 @@ func NewSynth(cfg *audio.AudioConfig) *Synth {
 		Config: cfg,
 		Mixer:  NewMixer(),
 		Sinks:  []sinks.Sink{},
+		Inputs: make(chan *Event, 32),
+		Debug:  false,
 	}
 }
 
@@ -49,11 +55,64 @@ func (s *Synth) Start() {
 	nextStep := time.Now().Add(stepDuration)
 	for {
 		s.WriteSamples(s.Config.StepSize)
+		canRead := true
+		read := 0
+		for canRead {
+			select {
+			case ev := <-s.Inputs:
+				s.DispatchEvents(ev)
+				read++
+			default:
+				canRead = false
+			}
+		}
+		if read > 1 {
+			fmt.Println(read)
+		}
 		now := time.Now()
 		sub := nextStep.Sub(now)
 		time.Sleep(sub + (-1 * time.Millisecond))
 		nextStep = nextStep.Add(stepDuration)
 	}
+}
+
+func (s *Synth) DispatchEvents(ev *Event) {
+	et := ev.Type
+	ch := ev.Channel
+	values := ev.Values
+	if et == NoteOn {
+		velocity := float64(int(values[1])) / 127
+		s.NoteOn(ch, values[0], velocity)
+	} else if et == NoteOff {
+		s.NoteOff(ch, values[0])
+	} else if et == SetReverb {
+		s.SetReverb(ch, values[0])
+	} else if et == ProgramChange {
+		s.ChangeInstrument(ch, values[0])
+	} else if et == SilenceChannel {
+		s.SilenceChannel(ch)
+	} else if et == SetChannelVolume {
+		s.SetChannelVolume(ch, values[0])
+	} else if et == SetChannelPanning {
+		s.SetChannelPanning(ch, values[0])
+	} else if et == SetChannelExpressionVolume {
+		s.SetChannelExpressionVolume(ch, values[0])
+	} else if et == PitchBend {
+		semitones := float64(values[0]-64) / 64.0 // -1.0 <-> 1.0
+		semitones *= (64 / 5)
+		pitchbendFactor := math.Pow(2, semitones/12)
+		s.SetPitchbend(ch, pitchbendFactor)
+	} else {
+	}
+
+	if s.Debug {
+		if len(values) == 0 {
+			fmt.Println(et, "on channel", ch)
+		} else {
+			fmt.Println(et, "on channel", ch, values)
+		}
+	}
+
 }
 
 func (s *Synth) WriteSamples(n int) {
