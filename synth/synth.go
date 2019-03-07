@@ -82,6 +82,8 @@ func (s *Synth) DispatchEvents(ev *Event) {
 		s.NoteOff(ch, values[0])
 	} else if et == SetReverb {
 		s.SetReverb(ch, values[0])
+	} else if et == SetTremelo {
+		s.SetTremelo(ch, values[0])
 	} else if et == ProgramChange {
 		s.ChangeInstrument(ch, values[0])
 	} else if et == SilenceChannel {
@@ -151,6 +153,9 @@ func (s *Synth) SetPitchbend(channel int, pitchbendFactor float64) {
 
 func (s *Synth) SetReverb(channel int, reverb int) {
 	s.Mixer.SetReverb(channel, reverb)
+}
+func (s *Synth) SetTremelo(channel int, tremelo int) {
+	s.Mixer.SetTremelo(channel, tremelo)
 }
 
 func (s *Synth) SetChannelVolume(channel int, volume int) {

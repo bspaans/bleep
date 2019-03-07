@@ -37,29 +37,35 @@ func (f *FlangerFilter) Filter(cfg *audio.AudioConfig, samples []float64) []floa
 	if cfg.Stereo {
 		n = n / 2
 	}
-	stepSize := (f.LFORate * math.Pi * 2) / float64(cfg.SampleRate)
+	stepSize := (f.LFORate * math.Pi) / float64(cfg.SampleRate)
+	result := make([]float64, len(samples))
 	for i := 0; i < n; i++ {
 
 		ix := i
 		if cfg.Stereo {
 			ix *= 2
 		}
-		s := samples[ix]
 
 		currentDelay := time - int(math.Ceil(float64(time)*math.Abs(math.Sin(float64(f.Phase)*stepSize))))
 		delayedIx := f.Phase - currentDelay
-		if delayedIx <= 0 {
+		if delayedIx < 0 {
 			delayedIx += time
 		}
 
-		samples[ix] = f.Factor*samples[ix] + f.Factor*samples[delayedIx]
+		f.LeftDelayed[f.Phase] = samples[ix]
+		if cfg.Stereo {
+			f.RightDelayed[f.Phase] = samples[ix+1]
+		}
 
-		f.LeftDelayed[f.Phase] = s
-		f.RightDelayed[f.Phase] = s
+		result[ix] = f.Factor*samples[ix] + f.Factor*f.LeftDelayed[delayedIx]
+		if cfg.Stereo {
+			result[ix+1] = f.Factor*samples[ix+1] + f.Factor*f.RightDelayed[delayedIx]
+		}
+
 		f.Phase += 1
 		if f.Phase >= len(f.LeftDelayed) {
 			f.Phase = 0
 		}
 	}
-	return samples
+	return result
 }

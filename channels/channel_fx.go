@@ -1,6 +1,8 @@
 package channels
 
-import "github.com/bspaans/bs8bs/filters"
+import (
+	"github.com/bspaans/bs8bs/filters"
+)
 
 type FX int
 
@@ -31,8 +33,17 @@ func (f *ChannelFX) Filter() filters.Filter {
 		return nil
 	}
 	var filter filters.Filter
+	if f.Tremelo != 0.0 {
+		filter = filters.ComposedFilter(
+			filters.NewTremeloFilter(5.0, 1.0-(f.Tremelo/2)),
+			filter,
+		)
+	}
 	if f.Reverb != 0.0 {
-		filter = filters.NewDelayFilter(0.2, f.Reverb)
+		filter = filters.ComposedFilter(
+			filters.NewDelayFilter(0.2, f.Reverb),
+			filter,
+		)
 	}
 	f.CachedFilter = filter
 	return filter
@@ -41,6 +52,9 @@ func (f *ChannelFX) Filter() filters.Filter {
 func (f *ChannelFX) Set(fx FX, value float64) {
 	if fx == Reverb {
 		f.Reverb = value
+		f.CachedFilter = nil
+	} else if fx == Tremelo {
+		f.Tremelo = value
 		f.CachedFilter = nil
 	}
 }

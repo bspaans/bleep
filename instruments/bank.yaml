@@ -124,7 +124,7 @@ bank:
   combined:
   - triangle: 
       attack: 0.01
-      decay: 1.0
+      decay: 0.5
       sustain: 0.2
       release: 0.5
   - square: 
@@ -340,16 +340,27 @@ bank:
       sustain: 0.3
       release: 2.0
 
-- index: 34
+- index: 33
   name: Fingered Bass
+  sine: 
+    attack: 0.001
+    decay: 4.0
+    sustain: 0.8
+    release: 2.0
+
+- index: 34
+  name: Picked Bass
   filter:
-    lpf: 
-      alpha: 0.1
-    sine: 
-      attack: 0.001
-      decay: 4.0
-      sustain: 0.8
-      release: 2.0
+    flanger: 
+      time: 0.001
+      factor: 0.7
+      rate: 1.0
+    combined:
+    - triangle: 
+        attack: 0.001
+        decay: 4.0
+        sustain: 0.8
+        release: 2.0
 
 - index: 36
   name: Fretless Bass
@@ -393,20 +404,25 @@ bank:
 
 - index: 40
   name: Violin
-  combined:
-  - filter:
-      overdrive: 
-        factor: 1.1
-      sawtooth: 
+  filter:
+    flanger: 
+      time: 0.01
+      factor: 0.7
+      rate: 5.0
+    combined:
+    - filter:
+        overdrive: 
+          factor: 1.1
+        sawtooth: 
+          attack: 0.05
+          decay: 0.5
+          sustain: 0.8
+          release: 4.0
+    - triangle:
         attack: 0.05
         decay: 0.5
         sustain: 0.8
         release: 4.0
-  - triangle:
-      attack: 0.05
-      decay: 0.5
-      sustain: 0.8
-      release: 4.0
 
 - index: 48
   name: String Ensemble 1
@@ -506,12 +522,36 @@ bank:
 - index: 91
   name: Space Vox
   filter:
-    flanger:
-      time: 0.005
+    delay:
+      time: 1.0
       factor: 0.7
-      rate: 10
-    square:
-      attack: 0.5
-      decay: 4.0
-      sustain: 0.4
-      release: 0.25
+    filter:
+      flanger:
+        time: 0.005
+        factor: 0.7
+        rate: 1
+      combined:
+      - square:
+          attack: 0.5
+          decay: 4.0
+          sustain: 0.4
+          release: 0.25
+      - sine:
+          attack: 0.5
+          decay: 4.0
+          sustain: 0.4
+          release: 0.25
+
+- index: 125
+  name: Helicopter
+  filter:
+    flanger: 
+      time: 0.1
+      factor: 0.5
+      rate: 5.0
+    combined:
+    - triangle: 
+        attack: 0.001
+        decay: 4.0
+        sustain: 0.8
+        release: 2.0
