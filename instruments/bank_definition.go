@@ -49,6 +49,25 @@ func (f *DistortionOptionsDef) Validate() error {
 	return nil
 }
 
+type FlangerOptionsDef struct {
+	Time   float64 `json:"time" yaml:"time"`
+	Factor float64 `json:"factor" yaml:"factor"`
+	Rate   float64 `json:"rate" yaml:"rate"`
+}
+
+func (f *FlangerOptionsDef) Validate() error {
+	if f.Time == 0.0 {
+		return fmt.Errorf("Missing 'time' in flanger options [recommended < 0.015]")
+	}
+	if f.Factor == 0.0 {
+		return fmt.Errorf("Missing 'factor' in flanger options [recommended ~0.7]")
+	}
+	if f.Rate == 0.0 {
+		return fmt.Errorf("Missing 'rate' in flanger options [recommended range: 1-10]")
+	}
+	return nil
+}
+
 type LPFOptionsDef struct {
 	Alpha  float64 `json:"alpha" yaml:"alpha"`
 	Cutoff float64 `json:"cutoff" yaml:"cutoff"`
@@ -65,6 +84,7 @@ type FilterOptionsDef struct {
 	Delay      *DelayOptionsDef      `json:"delay" yaml:"delay"`
 	Overdrive  *OverdriveOptionsDef  `json:"overdrive" yaml:"overdrive"`
 	Distortion *DistortionOptionsDef `json:"distortion" yaml:"distortion"`
+	Flanger    *FlangerOptionsDef    `json:"flanger" yaml:"flanger"`
 	LPF        *LPFOptionsDef        `json:"lpf" yaml:"lpf"`
 }
 
@@ -77,6 +97,8 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 		return filters.NewLowPassFilter(f.LPF.Alpha)
 	} else if f.Distortion != nil {
 		return filters.NewDistortionFilter(f.Distortion.Level)
+	} else if f.Flanger != nil {
+		return filters.NewFlangerFilter(f.Flanger.Time, f.Flanger.Factor, f.Flanger.Rate)
 	}
 	panic("unknown filter")
 	return nil
@@ -91,6 +113,8 @@ func (f *FilterOptionsDef) Validate() error {
 		return f.LPF.Validate()
 	} else if f.Distortion != nil {
 		return f.Distortion.Validate()
+	} else if f.Flanger != nil {
+		return f.Flanger.Validate()
 	} else {
 		return errors.New("Unknown filter")
 	}

@@ -30,6 +30,7 @@ Things that filter (`filters/`):
 * Overdrive filter
 * Distortion filter
 * Delay filter
+* Flanger filter
 * First order low pass filter
 
 Things that mix: 
@@ -55,8 +56,9 @@ Things that output:
 This thing uses Go modules and requires Go 1.11+
 
 ```
-go get -u github.com/bspaans/bs8bs
-bs8bs
+git clone github.com/bspaans/bs8bs
+cd bs8bs
+go run main.go
 ```
 
 And then you'll be able to connect to it from other programs that can output
@@ -64,6 +66,5 @@ MIDI.
 
 ## Known issues
 
-* Some occasional buffering problems during realtime playback
 * Minor clicks on note transitions
 * The drums sound like hot garbage

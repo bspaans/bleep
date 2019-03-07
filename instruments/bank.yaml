@@ -81,38 +81,43 @@ bank:
           sustain: 0.2
           release: 0.1
 
-- index: 1
+- index: 3
   name: Honky Tonk Piano
-  combined:
-  - triangle: 
-      attack: 0.01
-      decay: 1.0
-      sustain: 0.3
-      release: 4.0
-  - transpose:
-    semitones: 12.0
-    gain: 0.6
-    sawtooth: 
-      attack: 0.01
-      decay: 0.2
-      sustain: 0.4
-      release: 4.0
-  - transpose:
-    semitones: 19.0
-    gain: 0.4
-    sawtooth: 
-      attack: 0.01
-      decay: 0.2
-      sustain: 0.4
-      release: 4.0
-  - transpose:
-    semitones: 24.0
-    gain: 0.5
-    square: 
-      attack: 0.01
-      decay: 0.2
-      sustain: 0.3
-      release: 4.0
+  filter:
+    flanger:
+      time: 0.008
+      factor: 0.3
+      rate: 5
+    combined:
+    - triangle: 
+        attack: 0.01
+        decay: 1.0
+        sustain: 0.3
+        release: 4.0
+    - transpose:
+      semitones: 12.0
+      gain: 0.6
+      sawtooth: 
+        attack: 0.01
+        decay: 0.2
+        sustain: 0.4
+        release: 4.0
+    - transpose:
+      semitones: 19.0
+      gain: 0.4
+      sawtooth: 
+        attack: 0.01
+        decay: 0.2
+        sustain: 0.4
+        release: 4.0
+    - transpose:
+      semitones: 24.0
+      gain: 0.5
+      square: 
+        attack: 0.01
+        decay: 0.2
+        sustain: 0.3
+        release: 4.0
 
 - index: 6
   name: Harpsichord
@@ -276,25 +281,30 @@ bank:
 - index: 29
   name: Overdrive Guitar
   filter:
-    overdrive: 
-      factor: 3.5
+    flanger:
+      time: 0.015
+      factor: 0.4
+      rate: 1
     filter:
-      distortion: 
-        level: 0.5
-      combined:
-      - sine: 
-          attack: 0.001
-          decay: 0.25
-          sustain: 0.8
-          release: 4.0
-      - transpose:
-          semitones: 12.0
-          gain: 0.8 
-          triangle: 
+      overdrive: 
+        factor: 3.5
+      filter:
+        distortion: 
+          level: 0.5
+        combined:
+        - sine: 
             attack: 0.001
             decay: 0.25
             sustain: 0.8
             release: 4.0
+        - transpose:
+            semitones: 12.0
+            gain: 0.8 
+            triangle: 
+              attack: 0.001
+              decay: 0.25
+              sustain: 0.8
+              release: 4.0
 
 - index: 30
   name: Distortion Guitar
@@ -488,6 +498,19 @@ bank:
       time: 1.0
       factor: 0.8
     sine:
+      attack: 0.5
+      decay: 4.0
+      sustain: 0.4
+      release: 0.25
+
+- index: 91
+  name: Space Vox
+  filter:
+    flanger:
+      time: 0.005
+      factor: 0.7
+      rate: 10
+    square:
       attack: 0.5
       decay: 4.0
       sustain: 0.4
