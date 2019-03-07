@@ -21,23 +21,22 @@ func Test_DFTBaseFilter_picks_up_right_freq_with_N_equals_sample_rate(t *testing
 	sine.SetPitch(440.0)
 	samples := sine.GetSamples(cfg, 44100)
 
-	filter := NewDFTBaseFilter()
-
 	max := 0.0
 	maxMagnitude := 0.0
 
-	filter.FreqFilter = func(cfg *audio.AudioConfig, freqs []complex64) []complex64 {
-		for k, c := range freqs {
-			freq := float64(k) * (float64(cfg.SampleRate) / float64(len(freqs)))
-			magnitude := math.Sqrt(math.Pow(float64(real(c)), 2) + math.Pow(float64(imag(c)), 2))
-			if magnitude >= maxMagnitude {
-				max = freq
-				maxMagnitude = magnitude
+	newSamples := DFT(samples,
+		func(freqs []complex64) []complex64 {
+			for k, c := range freqs {
+				freq := float64(k) * (float64(cfg.SampleRate) / float64(len(freqs)))
+				magnitude := math.Sqrt(math.Pow(float64(real(c)), 2) + math.Pow(float64(imag(c)), 2))
+				if magnitude >= maxMagnitude {
+					max = freq
+					maxMagnitude = magnitude
+				}
 			}
-		}
-		return freqs
-	}
-	newSamples := filter.Filter(cfg, samples)
+			return freqs
+		},
+	)
 
 	if max != 440 {
 		t.Errorf("Expecting DFT to pick up sample pitch of 440Hz, got %fHz", max)
@@ -58,23 +57,22 @@ func Test_DFTBaseFilter_picks_up_right_freq_with_N_smaller_than_sample_rate(t *t
 	sine.SetPitch(4400.0)
 	samples := sine.GetSamples(cfg, 441)
 
-	filter := NewDFTBaseFilter()
-
 	max := 0.0
 	maxMagnitude := 0.0
 
-	filter.FreqFilter = func(cfg *audio.AudioConfig, freqs []complex64) []complex64 {
-		for k, c := range freqs {
-			freq := float64(k) * (float64(cfg.SampleRate) / float64(len(freqs)))
-			magnitude := math.Sqrt(math.Pow(float64(real(c)), 2) + math.Pow(float64(imag(c)), 2))
-			if magnitude >= maxMagnitude {
-				max = freq
-				maxMagnitude = magnitude
+	newSamples := DFT(samples,
+		func(freqs []complex64) []complex64 {
+			for k, c := range freqs {
+				freq := float64(k) * (float64(cfg.SampleRate) / float64(len(freqs)))
+				magnitude := math.Sqrt(math.Pow(float64(real(c)), 2) + math.Pow(float64(imag(c)), 2))
+				if magnitude >= maxMagnitude {
+					max = freq
+					maxMagnitude = magnitude
+				}
 			}
-		}
-		return freqs
-	}
-	newSamples := filter.Filter(cfg, samples)
+			return freqs
+		},
+	)
 
 	if max != 4400 {
 		t.Errorf("Expecting DFT to pick up sample pitch of 4400Hz, got %fHz", max)

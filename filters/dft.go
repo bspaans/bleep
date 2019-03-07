@@ -2,18 +2,9 @@ package filters
 
 import (
 	"github.com/barnex/fftw"
-	"github.com/bspaans/bs8bs/audio"
 )
 
-type DFTBaseFilter struct {
-	FreqFilter func(cfg *audio.AudioConfig, freq []complex64) []complex64
-}
-
-func NewDFTBaseFilter() *DFTBaseFilter {
-	return &DFTBaseFilter{}
-}
-
-func (f *DFTBaseFilter) Filter(cfg *audio.AudioConfig, samples []float64) []float64 {
+func DFT(samples []float64, filter func([]complex64) []complex64) []float64 {
 
 	N := len(samples)
 	in := make([]float32, N)
@@ -27,7 +18,7 @@ func (f *DFTBaseFilter) Filter(cfg *audio.AudioConfig, samples []float64) []floa
 
 	plan.Execute()
 
-	out = f.FreqFilter(cfg, out)
+	out = filter(out)
 
 	newSamples := make([]float32, N)
 	plan = fftw.PlanC2R([]int{N}, out, newSamples, fftw.ESTIMATE)
