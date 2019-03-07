@@ -31,6 +31,7 @@ Things that filter (`filters/`):
 * Distortion filter
 * Delay filter
 * Flanger filter
+* Tremelo filter
 * First order low pass filter
 
 Things that mix: 

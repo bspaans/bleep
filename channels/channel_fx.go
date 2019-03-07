@@ -35,7 +35,7 @@ func (f *ChannelFX) Filter() filters.Filter {
 	var filter filters.Filter
 	if f.Tremelo != 0.0 {
 		filter = filters.ComposedFilter(
-			filters.NewTremeloFilter(5.0, 1.0-(f.Tremelo/2)),
+			filters.NewTremeloFilter(5.0, 0.5+(f.Tremelo/2)),
 			filter,
 		)
 	}

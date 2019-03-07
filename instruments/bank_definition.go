@@ -68,6 +68,21 @@ func (f *FlangerOptionsDef) Validate() error {
 	return nil
 }
 
+type TremeloOptionsDef struct {
+	Factor float64 `json:"factor" yaml:"factor"`
+	Rate   float64 `json:"rate" yaml:"rate"`
+}
+
+func (f *TremeloOptionsDef) Validate() error {
+	if f.Factor == 0.0 {
+		return fmt.Errorf("Missing 'factor' in tremelo options [recommended ~0.5]")
+	}
+	if f.Rate == 0.0 {
+		return fmt.Errorf("Missing 'rate' in tremelo options [recommended range: 5-10]")
+	}
+	return nil
+}
+
 type LPFOptionsDef struct {
 	Alpha  float64 `json:"alpha" yaml:"alpha"`
 	Cutoff float64 `json:"cutoff" yaml:"cutoff"`
@@ -85,6 +100,7 @@ type FilterOptionsDef struct {
 	Overdrive  *OverdriveOptionsDef  `json:"overdrive" yaml:"overdrive"`
 	Distortion *DistortionOptionsDef `json:"distortion" yaml:"distortion"`
 	Flanger    *FlangerOptionsDef    `json:"flanger" yaml:"flanger"`
+	Tremelo    *TremeloOptionsDef    `json:"tremelo" yaml:"tremelo"`
 	LPF        *LPFOptionsDef        `json:"lpf" yaml:"lpf"`
 }
 
@@ -99,6 +115,8 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 		return filters.NewDistortionFilter(f.Distortion.Level)
 	} else if f.Flanger != nil {
 		return filters.NewFlangerFilter(f.Flanger.Time, f.Flanger.Factor, f.Flanger.Rate)
+	} else if f.Tremelo != nil {
+		return filters.NewTremeloFilter(f.Tremelo.Rate, f.Tremelo.Factor)
 	}
 	panic("unknown filter")
 	return nil
@@ -115,6 +133,8 @@ func (f *FilterOptionsDef) Validate() error {
 		return f.Distortion.Validate()
 	} else if f.Flanger != nil {
 		return f.Flanger.Validate()
+	} else if f.Tremelo != nil {
+		return f.Tremelo.Validate()
 	} else {
 		return errors.New("Unknown filter")
 	}

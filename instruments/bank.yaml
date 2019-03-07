@@ -542,6 +542,29 @@ bank:
           sustain: 0.4
           release: 0.25
 
+- index: 95
+  name: Sweep
+  filter:
+    tremelo:
+      rate: 10.0
+      factor: 0.7
+    filter:
+      flanger:
+        time: 0.005
+        factor: 0.7
+        rate: 1
+      combined:
+      - square:
+          attack: 0.5
+          decay: 4.0
+          sustain: 0.4
+          release: 0.25
+      - sine:
+          attack: 0.5
+          decay: 4.0
+          sustain: 0.4
+          release: 0.25
+
 - index: 125
   name: Helicopter
   filter:
