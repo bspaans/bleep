@@ -19,23 +19,18 @@ type WavSink struct {
 }
 
 func NewWavSink(cfg *audio.AudioConfig, file string) (*WavSink, error) {
-	out, err := os.Create(file)
-	if err != nil {
-		return nil, err
-	}
-	numChans := 1
-	audioFormat := 1 // PCM
-	encoder := wav.NewEncoder(out, cfg.SampleRate, cfg.BitDepth, numChans, audioFormat)
 	return &WavSink{
 		TargetFile:  file,
 		AudioBuffer: nil,
-		Encoder:     encoder,
 		Samples:     []int{},
 	}, nil
 }
 
 func (w *WavSink) Write(cfg *audio.AudioConfig, samples []int) error {
 	for _, s := range samples {
+		if cfg.BitDepth == 16 {
+			s = s - (2 << 15)
+		}
 		w.Samples = append(w.Samples, s)
 	}
 	return nil

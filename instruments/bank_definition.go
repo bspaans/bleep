@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/bspaans/bs8bs/filters"
@@ -193,6 +194,27 @@ func (t *TransposeDef) Validate() error {
 	return t.GeneratorDef.Validate()
 }
 
+type WavOptionsDef struct {
+	File    string              `json:"file" yaml:"file"`
+	Options GeneratorOptionsDef `json:",inline" yaml:",inline"`
+}
+
+func (w *WavOptionsDef) Generator() generators.Generator {
+	g, err := generators.NewWavGenerator(w.File)
+	if err != nil {
+		panic(err)
+	}
+	return g
+}
+
+func (w *WavOptionsDef) Validate() error {
+	_, err := os.Stat(w.File)
+	if err != nil {
+		return err
+	}
+	return w.Options.Validate()
+}
+
 type GeneratorOptionsDef struct {
 	Attack  *float64 `json:"attack" yaml:"attack"`
 	Decay   *float64 `json:"decay" yaml:"decay"`
@@ -233,6 +255,7 @@ type GeneratorDef struct {
 	Sawtooth      *GeneratorOptionsDef `json:"sawtooth" yaml:"sawtooth"`
 	Triangle      *GeneratorOptionsDef `json:"triangle" yaml:"triangle"`
 	WhiteNoise    *GeneratorOptionsDef `json:"white_noise" yaml:"white_noise"`
+	Wav           *WavOptionsDef       `json:"wav" yaml:"wav"`
 	Combined      []*GeneratorDef      `json:"combined" yaml:"combined"`
 }
 
@@ -252,6 +275,8 @@ func (d *GeneratorDef) Generator() generators.Generator {
 		g = d.Filter.Generator()
 	} else if d.Transpose != nil {
 		g = d.Transpose.Generator()
+	} else if d.Wav != nil {
+		g = d.Wav.Generator()
 	} else if d.ConstantPitch != nil {
 		g = d.ConstantPitch.Generator()
 	} else if len(d.Combined) > 0 {
@@ -283,6 +308,8 @@ func (d *GeneratorDef) Validate() error {
 		return d.ConstantPitch.Validate()
 	} else if d.WhiteNoise != nil {
 		return d.WhiteNoise.Validate()
+	} else if d.Wav != nil {
+		return d.Wav.Validate()
 	} else if len(d.Combined) > 0 {
 		gs := []string{}
 		for _, gen := range d.Combined {

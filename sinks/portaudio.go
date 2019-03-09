@@ -2,6 +2,7 @@ package sinks
 
 import (
 	"container/ring"
+	"fmt"
 	"math"
 
 	"github.com/bspaans/bs8bs/audio"
@@ -30,12 +31,17 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 		buffer = buffer.Next()
 	}
 	streamParams := portaudio.LowLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)
+	fmt.Println(streamParams)
 	p := &PortAudioSink{
 		Buffer:    buffer,
 		WriteFrom: buffer,
 		Stereo:    cfg.Stereo,
 	}
-	callback := p.Callback
+	var callback interface{}
+	callback = p.Callback_8bit
+	if cfg.BitDepth == 16 {
+		callback = p.Callback_16bit
+	}
 
 	stream, err := portaudio.OpenStream(streamParams, callback)
 	if err != nil {
@@ -48,7 +54,7 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 	return p, nil
 }
 
-func (p *PortAudioSink) Callback(in, out []uint8, timeInfo portaudio.StreamCallbackTimeInfo, flags portaudio.StreamCallbackFlags) {
+func (p *PortAudioSink) Callback_8bit(in, out []uint8, timeInfo portaudio.StreamCallbackTimeInfo, flags portaudio.StreamCallbackFlags) {
 	ix := 0
 	for i := 0; i < len(out)/2; i++ {
 		v := uint8(p.WriteFrom.Value.(int))
@@ -57,6 +63,25 @@ func (p *PortAudioSink) Callback(in, out []uint8, timeInfo portaudio.StreamCallb
 
 		if p.Stereo {
 			v := uint8(p.WriteFrom.Value.(int))
+			out[ix+1] = v
+			p.WriteFrom = p.WriteFrom.Next()
+		} else {
+			out[ix+1] = v
+		}
+		ix += 2
+	}
+}
+
+func (p *PortAudioSink) Callback_16bit(in, out []int16, timeInfo portaudio.StreamCallbackTimeInfo, flags portaudio.StreamCallbackFlags) {
+	m := int16(math.Pow(2, 15))
+	ix := 0
+	for i := 0; i < len(out)/2; i++ {
+		v := int16(p.WriteFrom.Value.(int)) - m
+		out[ix] = v
+		p.WriteFrom = p.WriteFrom.Next()
+
+		if p.Stereo {
+			v := int16(p.WriteFrom.Value.(int)) - m
 			out[ix+1] = v
 			p.WriteFrom = p.WriteFrom.Next()
 		} else {

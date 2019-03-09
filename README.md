@@ -16,6 +16,7 @@ Things that generates waveforms (`generators/`):
 * Sawtooth wave oscillator
 * Triangle wave oscillator
 * White noise generator
+* .wav playback
 
 Things that wrap things that generate waveforms (`generators/derived/`):
 
