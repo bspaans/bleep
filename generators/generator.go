@@ -28,6 +28,7 @@ type BaseGenerator struct {
 	Phase           int // needs to be updated from GetSamplesFunc
 
 	GetSamplesFunc func(cfg *audio.AudioConfig, n int) []float64
+	SetPitchFunc   func(float64)
 }
 
 func NewBaseGenerator() *BaseGenerator {
@@ -53,7 +54,11 @@ func (s *BaseGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
 }
 
 func (s *BaseGenerator) SetPitch(f float64) {
-	s.Pitch = f
+	if s.SetPitchFunc != nil {
+		s.SetPitchFunc(f)
+	} else {
+		s.Pitch = f
+	}
 }
 
 func (s *BaseGenerator) SetGain(f float64) {
