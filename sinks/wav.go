@@ -29,7 +29,7 @@ func NewWavSink(cfg *audio.AudioConfig, file string) (*WavSink, error) {
 func (w *WavSink) Write(cfg *audio.AudioConfig, samples []int) error {
 	for _, s := range samples {
 		if cfg.BitDepth == 16 {
-			s = s - (2 << 15)
+			s = s - (2 << 14)
 		}
 		w.Samples = append(w.Samples, s)
 	}

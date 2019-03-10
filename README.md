@@ -2,6 +2,8 @@
 
 Hobby 8bit synthesizer that can be used as a virtual MIDI device.
 
+This is just in: it also does 16 bit now.
+
 I don't really know what I'm doing, but it's #instructive.
 
 Shabby demo songs [here](https://github.com/bspaans/bs8bs/raw/master/demo/demo.mp3)
