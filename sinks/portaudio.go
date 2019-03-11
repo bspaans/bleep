@@ -31,6 +31,7 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 		buffer = buffer.Next()
 	}
 	streamParams := portaudio.LowLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)
+	streamParams.SampleRate = float64(cfg.SampleRate)
 	fmt.Println(streamParams)
 	p := &PortAudioSink{
 		Buffer:    buffer,

@@ -11,7 +11,7 @@ type AudioConfig struct {
 
 func NewAudioConfig() *AudioConfig {
 	return &AudioConfig{
-		BitDepth:                 8,
+		BitDepth:                 16,
 		SampleRate:               44100,
 		StepSize:                 441,
 		Stereo:                   true,
