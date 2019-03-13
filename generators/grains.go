@@ -6,15 +6,22 @@ import (
 	"github.com/bspaans/bs8bs/audio"
 )
 
-func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, density int, spread float64, repeat bool) (Generator, error) {
+func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, density int, spread, speed float64, repeat bool) (Generator, error) {
 	data, err := LoadWavData(file)
 	if err != nil {
 		return nil, err
 	}
-	return NewGrainsGenerator(cfg, data, grainSize, birthrate, density, spread, repeat), nil
+	return NewGrainsGenerator(cfg, data, grainSize, birthrate, density, spread, speed, repeat), nil
 }
 
-func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64, density int, spread float64, repeat bool) Generator {
+// grainsize: in milliseconds
+// birthrate: in milliseconds
+// density: number of grain generators
+// spread: milliseconds between generators
+// speed: default 1.0; negative for reverse
+// repeat: whether or not to loop through the sample
+//
+func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64, density int, spread, speed float64, repeat bool) Generator {
 
 	g := NewBaseGenerator()
 
@@ -26,13 +33,13 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 
 		for i := 0; i < n; i++ {
 
-			// TODO we can modulate the grain size, birth rate and generator spread
+			// TODO we can modulate the grain size, birth rate, generator spread, speed, etc.
 
 			grainWaveLength := int(math.Ceil(float64(cfg.SampleRate) * (grainSize / 1000))) // eg. 441 samples
 			nrOfGrains := int(math.Ceil(float64(len(sample)/2) / float64(grainWaveLength))) // eg. 44100 / 441 => 100 stereo grain
 
-			birthRateLength := int(float64(cfg.SampleRate) * (birthrate / 1000))
-			loopLength := nrOfGrains * birthRateLength
+			birthRateLength := int(float64(cfg.SampleRate) * (birthrate / 1000))           // eg one grain every 441
+			loopLength := nrOfGrains*birthRateLength + (grainWaveLength - birthRateLength) // eg 100*441 + 0
 
 			generatorSpread := int(math.Ceil(float64(cfg.SampleRate)) * spread / 1000)
 
@@ -41,14 +48,20 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 			for generatorNr := 0; generatorNr < density; generatorNr++ {
 
 				// phase modulo (len(sample)/2) == where in `sample` are we?
-				phase := g.Phase + (generatorNr * generatorSpread)
+				phase := int((speed*2)*float64(g.Phase)) + (generatorNr * generatorSpread)
 				if repeat {
-					phase = phase % loopLength
+					phase = (phase % len(sample) / 2) % loopLength
+				} else if phase*2 >= len(sample) {
+					continue
 				}
-				phase = phase % (len(sample) / 2)
+				if phase < 0 {
+					phase = (len(sample) / 2) + phase
+				}
 
 				// copy sample from grain to result
 				grainIx := 0
+
+				// offset is the start of the grain
 				for offset := 0; offset < loopLength; offset += birthRateLength {
 
 					if phase >= offset && phase < offset+grainWaveLength {

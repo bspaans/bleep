@@ -200,10 +200,13 @@ type GrainsOptionsDef struct {
 	GrainSize float64 `json:"grain_size" yaml:"grain_size"`
 	BirthRate float64 `json:"birth_rate" yaml:"birth_rate"`
 	Repeat    bool    `json:"repeat" yaml:"repeat"`
+	Density   int     `json:"density" yaml:"density"`
+	Spread    float64 `json:"spread" yaml:"spread"`
+	Speed     float64 `json:"speed" yaml:"speed"`
 }
 
 func (w *GrainsOptionsDef) Generator(cfg *audio.AudioConfig) generators.Generator {
-	g, err := generators.NewGrainsGeneratorForWavFile(cfg, w.File, w.GrainSize, w.BirthRate, w.Repeat)
+	g, err := generators.NewGrainsGeneratorForWavFile(cfg, w.File, w.GrainSize, w.BirthRate, w.Density, w.Spread, w.Speed, w.Repeat)
 	if err != nil {
 		panic(err)
 	}
@@ -214,6 +217,9 @@ func (w *GrainsOptionsDef) Validate() error {
 	_, err := os.Stat(w.File)
 	if err != nil {
 		return err
+	}
+	if w.Density == 0 {
+		w.Density = 1
 	}
 	return nil
 }
