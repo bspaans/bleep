@@ -16,14 +16,7 @@ func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize
 	return NewGrainsGenerator(cfg, data, grainSize, birthrate, repeat), nil
 }
 
-// Create a new grains generator for the given stereo sample
-// grainSize and birthrate in milliseconds
-//
 func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64, repeat bool) Generator {
-
-	grains := CreateGrainsForSteroSample(cfg, sample, grainSize)
-	offsets, loopLength := GetStartingOffsetsForGrains(cfg, birthrate, len(grains))
-	grainWaveLength := int(float64(cfg.SampleRate) * (grainSize / 1000))
 
 	g := NewBaseGenerator()
 
@@ -34,71 +27,41 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 		}
 
 		for i := 0; i < n; i++ {
+
+			grainWaveLength := int(math.Ceil(float64(cfg.SampleRate) * (grainSize / 1000))) // eg. 441 samples
+			nrOfGrains := int(math.Ceil(float64(len(sample)/2) / float64(grainWaveLength))) // eg. 44100 / 441 => 100 stereo grain
+
+			birthRateLength := int(float64(cfg.SampleRate) * (birthrate / 1000))
+			loopLength := nrOfGrains * birthRateLength
+
+			// phase modulo len(sample) = where in `sample` are we?
 			phase := g.Phase
 			if repeat {
 				phase = phase % loopLength
 			}
 
-			if cfg.Stereo {
-				for grainIx, offset := range offsets {
-					if phase >= offset && phase < offset+grainWaveLength {
-						ix := phase - offset
-						grain := grains[grainIx]
-						result[i*2] += grain[ix*2]
-						result[i*2+1] += grain[ix*2+1]
+			// copy sample from grain to result
+			grainIx := 0
+			for offset := 0; offset < loopLength; offset += birthRateLength {
+
+				if phase >= offset && phase < offset+grainWaveLength {
+					if cfg.Stereo {
+						result[i*2] += sample[phase*2]
+						result[i*2+1] += sample[phase*2+1]
+					} else {
+						result[i] += sample[phase*2]
 					}
 				}
-			} else {
-				for grainIx, offset := range offsets {
-					if phase >= offset && phase < offset+grainWaveLength {
-						ix := phase - offset
-						result[i] += grains[grainIx][ix*2]
-					}
-				}
+
+				grainIx++
 			}
 
-			g.Phase += 1
+			g.Phase++
 		}
-
 		return result
 	}
 	g.SetPitchFunc = func(f float64) {
 		g.Phase = 0
 	}
 	return g
-}
-
-// sample is a stereo sample
-// grainSize in milliseconds
-//
-func CreateGrainsForSteroSample(cfg *audio.AudioConfig, sample []float64, grainSize float64) [][]float64 {
-	grainWaveLength := int(math.Ceil(float64(cfg.SampleRate) * (grainSize / 1000))) // eg. 441 samples
-	nrOfGrains := int(math.Ceil(float64(len(sample)/2) / float64(grainWaveLength))) // eg. 44100 / 441 => 100 stereo grain
-	grains := make([][]float64, nrOfGrains)
-
-	for i := 0; i < nrOfGrains; i++ {
-		grain := make([]float64, grainWaveLength*2) // eg. one stereo grain of 882 samples
-
-		for j := 0; j < grainWaveLength*2; j++ { // read the next 882 samples
-			ix := i*grainWaveLength*2 + j
-			if ix < len(sample) {
-				grain[j] = sample[ix]
-			}
-		}
-
-		grains[i] = grain
-	}
-	return grains
-}
-
-// Returns an array containing the starting offset for each grain
-// given the birth rate (= grains spawn period)
-//
-func GetStartingOffsetsForGrains(cfg *audio.AudioConfig, birthrate float64, grains int) ([]int, int) {
-	birthRateLength := int(float64(cfg.SampleRate) * (birthrate / 1000))
-	result := make([]int, grains)
-	for i := 0; i < grains; i++ {
-		result[i] = birthRateLength * i
-	}
-	return result, grains * birthRateLength
 }
