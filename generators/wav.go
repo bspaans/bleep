@@ -1,6 +1,7 @@
 package generators
 
 import (
+	"fmt"
 	"math"
 	"os"
 
@@ -8,7 +9,7 @@ import (
 	"github.com/go-audio/wav"
 )
 
-func NewWavGenerator(file string) (Generator, error) {
+func NewWavGenerator(file string, gain float64) (Generator, error) {
 	g := NewBaseGenerator()
 	data, err := LoadWavData(file)
 	if err != nil {
@@ -26,10 +27,10 @@ func NewWavGenerator(file string) (Generator, error) {
 				continue
 			}
 			if cfg.Stereo {
-				result[i] = data[g.Phase*2]
-				result[i+1] = data[g.Phase*2+1]
+				result[i*2] = data[g.Phase*2] * gain
+				result[i*2+1] = data[g.Phase*2+1] * gain
 			} else {
-				result[i] = data[i*2]
+				result[i] = data[g.Phase*2] * gain
 			}
 			g.Phase++
 		}
@@ -41,7 +42,14 @@ func NewWavGenerator(file string) (Generator, error) {
 	return g, nil
 }
 
+var WavCache = map[string][]float64{}
+
 func LoadWavData(file string) ([]float64, error) {
+	cached, ok := WavCache[file]
+	if ok {
+		return cached, nil
+	}
+	fmt.Println("Loading", file)
 	f, err := os.Open(file)
 	if err != nil {
 		return nil, err
@@ -59,6 +67,7 @@ func LoadWavData(file string) ([]float64, error) {
 	data := make([]float64, l)
 	maxV := math.Pow(2, float64(buffer.SourceBitDepth)-1)
 	j := 0
+
 	for i := 0; i < len(buffer.Data); i++ {
 		if buffer.Format.NumChannels == 2 {
 			data[i] = float64(buffer.Data[i]) / maxV
@@ -68,5 +77,6 @@ func LoadWavData(file string) ([]float64, error) {
 			j++
 		}
 	}
+	WavCache[file] = data
 	return data, err
 }

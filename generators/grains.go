@@ -1,12 +1,13 @@
 package generators
 
 import (
+	"fmt"
+
 	"github.com/bspaans/bs8bs/audio"
 )
 
-func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string) (Generator, error) {
-	grainSize := 10.0  // ms
-	birthrate := 100.0 // ms
+func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64) (Generator, error) {
+	fmt.Println("New grains")
 	data, err := LoadWavData(file)
 	if err != nil {
 		return nil, err
@@ -54,7 +55,7 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 			g.Phase += 1
 		}
 
-		return []float64{}
+		return result
 	}
 	g.SetPitchFunc = func(f float64) {
 		g.Phase = 0
@@ -72,10 +73,14 @@ func CreateGrainsForSteroSample(cfg *audio.AudioConfig, sample []float64, grainS
 
 	for i := 0; i < nrOfGrains; i++ {
 		grain := make([]float64, grainWaveLength*2)
+
 		for j := 0; j < grainWaveLength*2; j++ {
 			ix := i*grainWaveLength + j
-			grain[j] = sample[ix]
+			if ix < len(sample) {
+				grain[j] = sample[ix]
+			}
 		}
+
 		grains[i] = grain
 	}
 	return grains

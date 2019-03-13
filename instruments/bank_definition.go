@@ -196,11 +196,13 @@ func (t *TransposeDef) Validate() error {
 }
 
 type GrainsOptionsDef struct {
-	File string `json:"file" yaml:"file"`
+	File      string  `json:"file" yaml:"file"`
+	GrainSize float64 `json:"grain_size" yaml:"grain_size"`
+	BirthRate float64 `json:"birth_rate" yaml:"birth_rate"`
 }
 
 func (w *GrainsOptionsDef) Generator(cfg *audio.AudioConfig) generators.Generator {
-	g, err := generators.NewGrainsGeneratorForWavFile(cfg, w.File)
+	g, err := generators.NewGrainsGeneratorForWavFile(cfg, w.File, w.GrainSize, w.BirthRate)
 	if err != nil {
 		panic(err)
 	}
@@ -217,11 +219,12 @@ func (w *GrainsOptionsDef) Validate() error {
 
 type WavOptionsDef struct {
 	File    string              `json:"file" yaml:"file"`
+	Gain    float64             `json:"gain" yaml:"gain"`
 	Options GeneratorOptionsDef `json:",inline" yaml:",inline"`
 }
 
 func (w *WavOptionsDef) Generator() generators.Generator {
-	g, err := generators.NewWavGenerator(w.File)
+	g, err := generators.NewWavGenerator(w.File, w.Gain)
 	if err != nil {
 		panic(err)
 	}
@@ -232,6 +235,9 @@ func (w *WavOptionsDef) Validate() error {
 	_, err := os.Stat(w.File)
 	if err != nil {
 		return err
+	}
+	if w.Gain == 0.0 {
+		return fmt.Errorf("Missing 'gain' for wav generator")
 	}
 	return w.Options.Validate()
 }
