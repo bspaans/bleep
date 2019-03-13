@@ -19,15 +19,14 @@ func NewPercussionChannel() *PercussionChannel {
 	p := &PercussionChannel{
 		On: &sync.Map{},
 	}
-	p.LoadInstrumentsFromBank()
 	return p
 }
 
-func (c *PercussionChannel) LoadInstrumentsFromBank() {
+func (c *PercussionChannel) LoadInstrumentsFromBank(cfg *audio.AudioConfig) {
 	instr := make([]generators.Generator, 128)
 	for i, gen := range instruments.Banks[1] {
 		if gen != nil {
-			instr[i] = gen()
+			instr[i] = gen(cfg)
 		}
 	}
 	c.Instruments = instr

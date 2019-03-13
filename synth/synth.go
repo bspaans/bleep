@@ -130,7 +130,7 @@ func (s *Synth) NoteOff(channel, note int) {
 }
 
 func (s *Synth) ChangeInstrument(channel, instrument int) {
-	s.Mixer.ChangeInstrument(channel, instrument)
+	s.Mixer.ChangeInstrument(s.Config, channel, instrument)
 }
 
 func (s *Synth) Close() {
@@ -190,6 +190,6 @@ func (s *Synth) LoadPercussionBank(file string) error {
 		return err
 	}
 	bankDef.Activate(1)
-	s.Mixer.Channels[9].(*channels.PercussionChannel).LoadInstrumentsFromBank()
+	s.Mixer.Channels[9].(*channels.PercussionChannel).LoadInstrumentsFromBank(s.Config)
 	return nil
 }

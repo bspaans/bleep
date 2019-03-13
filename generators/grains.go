@@ -5,19 +5,20 @@ import (
 )
 
 func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string) (Generator, error) {
+	grainSize := 10.0  // ms
+	birthrate := 100.0 // ms
 	data, err := LoadWavData(file)
 	if err != nil {
 		return nil, err
 	}
-	return NewGrainsGenerator(cfg, data), nil
+	return NewGrainsGenerator(cfg, data, grainSize, birthrate), nil
 }
 
 // Create a new grains generator for the given stereo sample
+// grainSize and birthrate in milliseconds
 //
-func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64) Generator {
+func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64) Generator {
 
-	grainSize := 10.0  // ms
-	birthrate := 100.0 // ms
 	grains := CreateGrainsForSteroSample(cfg, sample, grainSize)
 	offsets := GetStartingOffsetsForGrains(cfg, birthrate, len(grains))
 	grainWaveLength := int(float64(cfg.SampleRate) * (grainSize / 1000))

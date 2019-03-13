@@ -73,9 +73,9 @@ func (m *Mixer) SetTremelo(channel, reverb int) {
 	}
 }
 
-func (m *Mixer) ChangeInstrument(channel, instr int) {
+func (m *Mixer) ChangeInstrument(cfg *audio.AudioConfig, channel, instr int) {
 	if channel < len(m.Channels) {
-		m.Channels[channel].SetInstrument(instruments.Bank[instr])
+		m.Channels[channel].SetInstrument(func() generators.Generator { return instruments.Bank[instr](cfg) })
 	}
 }
 

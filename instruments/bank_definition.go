@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/filters"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/generators/derived"
@@ -146,8 +147,8 @@ type FilterDef struct {
 	On     GeneratorDef     `json:",inline" yaml:",inline"`
 }
 
-func (f *FilterDef) Generator() generators.Generator {
-	return derived.NewFilteredGenerator(f.On.Generator(), f.Filter.Filter())
+func (f *FilterDef) Generator(cfg *audio.AudioConfig) generators.Generator {
+	return derived.NewFilteredGenerator(f.On.Generator(cfg), f.Filter.Filter())
 }
 
 func (f *FilterDef) Validate() error {
@@ -162,9 +163,9 @@ type ConstantPitchDef struct {
 	GeneratorDef GeneratorDef `json:",inline" yaml:",inline"`
 }
 
-func (t *ConstantPitchDef) Generator() generators.Generator {
+func (t *ConstantPitchDef) Generator(cfg *audio.AudioConfig) generators.Generator {
 	return derived.NewConstantPitchGenerator(
-		t.GeneratorDef.Generator(),
+		t.GeneratorDef.Generator(cfg),
 		t.Pitch,
 	)
 }
@@ -182,9 +183,9 @@ type TransposeDef struct {
 	GeneratorDef GeneratorDef `json:",inline" yaml:",inline"`
 }
 
-func (t *TransposeDef) Generator() generators.Generator {
+func (t *TransposeDef) Generator(cfg *audio.AudioConfig) generators.Generator {
 	return derived.NewTransposingGenerator(
-		t.GeneratorDef.Generator(),
+		t.GeneratorDef.Generator(cfg),
 		t.Semitones,
 		t.Gain,
 	)
@@ -192,6 +193,26 @@ func (t *TransposeDef) Generator() generators.Generator {
 
 func (t *TransposeDef) Validate() error {
 	return t.GeneratorDef.Validate()
+}
+
+type GrainsOptionsDef struct {
+	File string `json:"file" yaml:"file"`
+}
+
+func (w *GrainsOptionsDef) Generator(cfg *audio.AudioConfig) generators.Generator {
+	g, err := generators.NewGrainsGeneratorForWavFile(cfg, w.File)
+	if err != nil {
+		panic(err)
+	}
+	return g
+}
+
+func (w *GrainsOptionsDef) Validate() error {
+	_, err := os.Stat(w.File)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 type WavOptionsDef struct {
@@ -256,10 +277,11 @@ type GeneratorDef struct {
 	Triangle      *GeneratorOptionsDef `json:"triangle" yaml:"triangle"`
 	WhiteNoise    *GeneratorOptionsDef `json:"white_noise" yaml:"white_noise"`
 	Wav           *WavOptionsDef       `json:"wav" yaml:"wav"`
+	Grains        *GrainsOptionsDef    `json:"grains" yaml:"grains"`
 	Combined      []*GeneratorDef      `json:"combined" yaml:"combined"`
 }
 
-func (d *GeneratorDef) Generator() generators.Generator {
+func (d *GeneratorDef) Generator(cfg *audio.AudioConfig) generators.Generator {
 	var g generators.Generator
 	if d.Sine != nil {
 		g = d.Sine.Generator(generators.NewSineWaveOscillator())
@@ -272,17 +294,19 @@ func (d *GeneratorDef) Generator() generators.Generator {
 	} else if d.WhiteNoise != nil {
 		g = d.WhiteNoise.Generator(generators.NewWhiteNoiseGenerator())
 	} else if d.Filter != nil {
-		g = d.Filter.Generator()
+		g = d.Filter.Generator(cfg)
 	} else if d.Transpose != nil {
-		g = d.Transpose.Generator()
+		g = d.Transpose.Generator(cfg)
 	} else if d.Wav != nil {
 		g = d.Wav.Generator()
 	} else if d.ConstantPitch != nil {
-		g = d.ConstantPitch.Generator()
+		g = d.ConstantPitch.Generator(cfg)
+	} else if d.Grains != nil {
+		g = d.Grains.Generator(cfg)
 	} else if len(d.Combined) > 0 {
 		gs := []generators.Generator{}
 		for _, gen := range d.Combined {
-			gs = append(gs, gen.Generator())
+			gs = append(gs, gen.Generator(cfg))
 		}
 		g = derived.NewCombinedGenerators(gs...)
 	} else {
@@ -302,6 +326,8 @@ func (d *GeneratorDef) Validate() error {
 		return d.Triangle.Validate()
 	} else if d.Filter != nil {
 		return d.Filter.Validate()
+	} else if d.Grains != nil {
+		return d.Grains.Validate()
 	} else if d.Transpose != nil {
 		return d.Transpose.Validate()
 	} else if d.ConstantPitch != nil {
@@ -332,8 +358,8 @@ type InstrumentDef struct {
 	GeneratorDef GeneratorDef `json:",inline" yaml:",inline"`
 }
 
-func (i *InstrumentDef) Generator() generators.Generator {
-	return i.GeneratorDef.Generator()
+func (i *InstrumentDef) Generator(cfg *audio.AudioConfig) generators.Generator {
+	return i.GeneratorDef.Generator(cfg)
 }
 
 func (i *InstrumentDef) Validate() error {
