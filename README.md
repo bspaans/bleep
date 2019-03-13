@@ -6,8 +6,11 @@ This is just in: it also does 16 bit now.
 
 I don't really know what I'm doing, but it's #instructive.
 
-Shabby demo songs [here](https://github.com/bspaans/bs8bs/raw/master/demo/demo.mp3)
-and [here](https://github.com/bspaans/bs8bs/raw/master/demo/demo2.mp3) 
+## Demo songs / Progress
+
+1. [basic wave forms and delay](https://github.com/bspaans/bs8bs/raw/master/demo/demo.mp3)
+2. [the shabbiest percussion channel](https://github.com/bspaans/bs8bs/raw/master/demo/demo2.mp3) 
+3. [stereo, 16bit, tremelo](https://github.com/bspaans/bs8bs/raw/master/demo/demo3.mp3) 
 
 ## Features
 
@@ -18,6 +21,7 @@ Things that generates waveforms (`generators/`):
 * Sawtooth wave oscillator
 * Triangle wave oscillator
 * White noise generator
+* Grain generator
 * .wav playback
 
 Things that wrap things that generate waveforms (`generators/derived/`):
