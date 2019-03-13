@@ -27,8 +27,8 @@ func NewWavGenerator(file string, gain float64) (Generator, error) {
 				continue
 			}
 			if cfg.Stereo {
-				result[i*2] = data[g.Phase*2] * gain
-				result[i*2+1] = data[g.Phase*2+1] * gain
+				result[i*2] = data[g.Phase*2] * gain * g.Gain
+				result[i*2+1] = data[g.Phase*2+1] * gain * g.Gain
 			} else {
 				result[i] = data[g.Phase*2] * gain
 			}
