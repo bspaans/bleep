@@ -1,22 +1,20 @@
 package generators
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/bspaans/bs8bs/audio"
 )
 
-func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, repeat bool) (Generator, error) {
-	fmt.Println("New grains")
+func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, density int, spread float64, repeat bool) (Generator, error) {
 	data, err := LoadWavData(file)
 	if err != nil {
 		return nil, err
 	}
-	return NewGrainsGenerator(cfg, data, grainSize, birthrate, repeat), nil
+	return NewGrainsGenerator(cfg, data, grainSize, birthrate, density, spread, repeat), nil
 }
 
-func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64, repeat bool) Generator {
+func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64, density int, spread float64, repeat bool) Generator {
 
 	g := NewBaseGenerator()
 
@@ -28,32 +26,42 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 
 		for i := 0; i < n; i++ {
 
+			// TODO we can modulate the grain size, birth rate and generator spread
+
 			grainWaveLength := int(math.Ceil(float64(cfg.SampleRate) * (grainSize / 1000))) // eg. 441 samples
 			nrOfGrains := int(math.Ceil(float64(len(sample)/2) / float64(grainWaveLength))) // eg. 44100 / 441 => 100 stereo grain
 
 			birthRateLength := int(float64(cfg.SampleRate) * (birthrate / 1000))
 			loopLength := nrOfGrains * birthRateLength
 
-			// phase modulo len(sample) = where in `sample` are we?
-			phase := g.Phase
-			if repeat {
-				phase = phase % loopLength
-			}
+			generatorSpread := int(math.Ceil(float64(cfg.SampleRate)) * spread / 1000)
 
-			// copy sample from grain to result
-			grainIx := 0
-			for offset := 0; offset < loopLength; offset += birthRateLength {
+			// FOR EACH GENERATOR {
 
-				if phase >= offset && phase < offset+grainWaveLength {
-					if cfg.Stereo {
-						result[i*2] += sample[phase*2]
-						result[i*2+1] += sample[phase*2+1]
-					} else {
-						result[i] += sample[phase*2]
-					}
+			for generatorNr := 0; generatorNr < density; generatorNr++ {
+
+				// phase modulo (len(sample)/2) == where in `sample` are we?
+				phase := g.Phase + (generatorNr * generatorSpread)
+				if repeat {
+					phase = phase % loopLength
 				}
+				phase = phase % (len(sample) / 2)
 
-				grainIx++
+				// copy sample from grain to result
+				grainIx := 0
+				for offset := 0; offset < loopLength; offset += birthRateLength {
+
+					if phase >= offset && phase < offset+grainWaveLength {
+						if cfg.Stereo {
+							result[i*2] += sample[phase*2]
+							result[i*2+1] += sample[phase*2+1]
+						} else {
+							result[i] += sample[phase*2]
+						}
+					}
+
+					grainIx++
+				}
 			}
 
 			g.Phase++
