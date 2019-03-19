@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"os/signal"
@@ -12,15 +13,18 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
+var record = flag.Bool("record", false, "Record .wav output")
+var percussion = flag.String("percussion", "instruments/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
+
 func main() {
+
+	flag.Parse()
 
 	cfg := audio.NewAudioConfig()
 	s := synth.NewSynth(cfg)
-	for _, arg := range os.Args {
-		if arg == "--record" {
-			if err := s.EnableWavSink("test.wav"); err != nil {
-				panic(err)
-			}
+	if *record {
+		if err := s.EnableWavSink("test.wav"); err != nil {
+			panic(err)
 		}
 	}
 	if err := s.EnablePortAudioSink(); err != nil {
@@ -29,7 +33,7 @@ func main() {
 	if err := s.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
 		panic(err)
 	}
-	if err := s.LoadPercussionBank("instruments/percussion_bank.yaml"); err != nil {
+	if err := s.LoadPercussionBank(*percussion); err != nil {
 		panic(err)
 	}
 
@@ -70,7 +74,7 @@ func WaitForUserInput(s *synth.Synth) {
 				if err := s.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
 					fmt.Println("Error:", err.Error())
 				}
-				if err := s.LoadPercussionBank("instruments/percussion_bank.yaml"); err != nil {
+				if err := s.LoadPercussionBank(*percussion); err != nil {
 					fmt.Println("Error:", err.Error())
 				}
 			}
