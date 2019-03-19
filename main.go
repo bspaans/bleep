@@ -9,10 +9,12 @@ import (
 
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/midi"
+	"github.com/bspaans/bs8bs/sequencer"
 	"github.com/bspaans/bs8bs/synth"
 	"github.com/nsf/termbox-go"
 )
 
+var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
 var record = flag.Bool("record", false, "Record .wav output")
 var percussion = flag.String("percussion", "instruments/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
 
@@ -47,7 +49,11 @@ func main() {
 		os.Exit(1)
 	}()
 
-	go midi.StartVirtualMIDIDevice(s.Inputs)
+	if *virtualMidi {
+		go midi.StartVirtualMIDIDevice(s.Inputs)
+	}
+	//go arpeggiator.StartArpeggiator(60, 2, 2, arpeggiator.Chords["m67"], s.Inputs)
+	go sequencer.NewSequencer(120.0).Start(s.Inputs)
 	go WaitForUserInput(s)
 	s.Start()
 }
