@@ -25,9 +25,13 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 	if err != nil {
 		return nil, err
 	}
+	defaultValue := 0
+	if cfg.BitDepth == 8 {
+		defaultValue = int(math.Pow(float64(cfg.BitDepth), 2.0)/2 - 1)
+	}
 	buffer := ring.New(44096)
 	for buffer.Value == nil {
-		buffer.Value = int(math.Pow(float64(cfg.BitDepth), 2.0)/2 - 1)
+		buffer.Value = defaultValue
 		buffer = buffer.Next()
 	}
 	streamParams := portaudio.LowLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)

@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/bspaans/bs8bs/arpeggiator"
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/midi"
 	"github.com/bspaans/bs8bs/sequencer"
@@ -15,6 +16,8 @@ import (
 )
 
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
+var enableArpeggiator = flag.Bool("arpeggiator", false, "Enable arpeggiator (plays demo song)")
+var enableSequencer = flag.Bool("sequencer", true, "Enable sequencer (work in progress - demo mode)")
 var record = flag.Bool("record", false, "Record .wav output")
 var percussion = flag.String("percussion", "instruments/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
 
@@ -52,8 +55,12 @@ func main() {
 	if *virtualMidi {
 		go midi.StartVirtualMIDIDevice(s.Inputs)
 	}
-	//go arpeggiator.StartArpeggiator(60, 2, 2, arpeggiator.Chords["m67"], s.Inputs)
-	go sequencer.NewSequencer(120.0).Start(s.Inputs)
+	if *enableArpeggiator {
+		go arpeggiator.StartArpeggiator(60, 2, 2, arpeggiator.Chords["m67"], s.Inputs)
+	}
+	if *enableSequencer {
+		go sequencer.NewSequencer(120.0).Start(s.Inputs)
+	}
 	go WaitForUserInput(s)
 	s.Start()
 }

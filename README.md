@@ -4,7 +4,7 @@ Hobby 8bit synthesizer that can be used as a virtual MIDI device.
 
 This is just in: it also does 16 bit now.
 
-I don't really know what I'm doing, but it's #instructive.
+I don't really have any goals for this project, but it's #instructive.
 
 ## Demo songs / Progress
 
@@ -21,8 +21,15 @@ Things that generates waveforms (`generators/`):
 * Sawtooth wave oscillator
 * Triangle wave oscillator
 * White noise generator
-* Grain generator
 * .wav playback
+* Grain generator
+  * Configurable grain size
+  * Configurable birth rate
+  * Configurable density/nr of generators
+  * Configurable speed (=position in sample)
+  * Position randomization
+  * TODO: windowing
+  * TODO: pitch control (= grain playback speed)
 
 Things that wrap things that generate waveforms (`generators/derived/`):
 
@@ -45,6 +52,12 @@ Things that mix:
 
 * Channels (`channels/`)
 * Mixer (`synth/`)
+
+Things that control things that mix:
+
+* Sequencer (work in progress)
+    * Automations
+* Arpeggiator (work in progress) 
 
 Things that MIDI (`midi/`):
 

@@ -1,17 +1,44 @@
 package sequencer
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/bspaans/bs8bs/synth"
 )
 
 type Sequence func(t uint, s chan *synth.Event)
+type IntAutomation func(t uint) int
+type FloatAutomation func(t uint) float64
+
+func IntIdAutomation(id int) IntAutomation {
+	return func(t uint) int {
+		return id
+	}
+}
+func IntRangeAutomation(min, max int) IntAutomation {
+	return func(t uint) int {
+		intRange := uint(max - min)
+		v := min + int(t%intRange)
+		return v
+	}
+}
+
+func OffsetAutomation(offset uint, a IntAutomation) IntAutomation {
+	return func(t uint) int {
+		return a(t + offset)
+	}
+}
+
+func NegativeOffsetAutomation(offset uint, a IntAutomation) IntAutomation {
+	return func(t uint) int {
+		return a(t - offset)
+	}
+}
 
 func Quarter(seq *Sequencer) uint {
 	return uint(seq.Granularity)
 }
+
 func Eight(seq *Sequencer) uint {
 	return uint(seq.Granularity / 2)
 }
@@ -23,28 +50,69 @@ func Every(n uint, seq Sequence) Sequence {
 		}
 	}
 }
-
-func NoteOn(note int) Sequence {
+func Offset(offset uint, seq Sequence) Sequence {
 	return func(t uint, s chan *synth.Event) {
-		channel := 1
-		velocity := 127
-		s <- synth.NewEvent(synth.NoteOn, channel, []int{note, velocity})
+		seq(t+offset, s)
+	}
+}
+func EveryWithOffset(n, offset uint, seq Sequence) Sequence {
+	return func(t uint, s chan *synth.Event) {
+		if (t+offset)%n == 0 {
+			seq(t, s)
+		}
 	}
 }
 
-func NoteOff(note int) Sequence {
+func NoteOnAutomation(channelF, noteF, velocityF IntAutomation) Sequence {
 	return func(t uint, s chan *synth.Event) {
-		channel := 3
-		s <- synth.NewEvent(synth.NoteOff, channel, []int{note})
+		s <- synth.NewEvent(synth.NoteOn, channelF(t), []int{noteF(t), velocityF(t)})
 	}
 }
 
-func PlayNoteEvery(n uint, duration uint, note int) Sequence {
+func NoteOn(channel, note, velocity int) Sequence {
+	return NoteOnAutomation(
+		IntIdAutomation(channel),
+		IntIdAutomation(note),
+		IntIdAutomation(velocity),
+	)
+}
+
+func NoteOffAutomation(channelF, noteF IntAutomation) Sequence {
 	return func(t uint, s chan *synth.Event) {
-		fmt.Println("playing note")
-		Every(n, NoteOn(note))
-		Every(n+duration, NoteOff(note))
+		s <- synth.NewEvent(synth.NoteOff, channelF(t), []int{noteF(t)})
 	}
+}
+
+func NoteOff(channel, note int) Sequence {
+	return NoteOffAutomation(
+		IntIdAutomation(channel),
+		IntIdAutomation(note),
+	)
+}
+
+func Combine(seqs ...Sequence) Sequence {
+	return func(t uint, s chan *synth.Event) {
+		for _, seq := range seqs {
+			seq(t, s)
+		}
+	}
+}
+
+func PlayNoteEvery(n uint, duration uint, channel, note, velocity int) Sequence {
+	return Combine(
+		Every(n, NoteOn(channel, note, velocity)),
+		EveryWithOffset(n, duration, NoteOff(channel, note)),
+	)
+}
+
+func PlayNoteEveryAutomation(n uint, duration uint, channel int, noteF IntAutomation, velocityF IntAutomation) Sequence {
+	return Combine(
+		Every(n, NoteOnAutomation(IntIdAutomation(channel), noteF, velocityF)),
+		EveryWithOffset(n, duration, NoteOffAutomation(
+			NegativeOffsetAutomation(duration, IntIdAutomation(channel)),
+			NegativeOffsetAutomation(duration, noteF)),
+		),
+	)
 }
 
 type Sequencer struct {
@@ -59,8 +127,10 @@ func NewSequencer(bpm float64) *Sequencer {
 		Granularity: 16,
 		Sequences:   []Sequence{},
 	}
-	s := PlayNoteEvery(Quarter(seq), Eight(seq), 60)
-	seq.Sequences = append(seq.Sequences, s)
+	//s1 := PlayNoteEvery(Quarter(seq), Eight(seq), 1, 60, 127)
+	s2 := PlayNoteEveryAutomation(Quarter(seq), Eight(seq), 2, IntRangeAutomation(60, 80), IntRangeAutomation(10, 127))
+	//seq.Sequences = append(seq.Sequences, s1)
+	seq.Sequences = append(seq.Sequences, s2)
 	return seq
 }
 
