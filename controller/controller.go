@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/midi"
 	"github.com/bspaans/bs8bs/sequencer"
@@ -46,6 +48,7 @@ func (c *Controller) LoadInstrumentBank(file string) error {
 // Reload the instrument bank by reloading the file.
 func (c *Controller) ReloadInstrumentBank() error {
 	if c.InstrumentBankFile != "" {
+		fmt.Println("Loading", c.InstrumentBankFile)
 		return c.Synth.LoadInstrumentBank(c.InstrumentBankFile)
 	}
 	return nil
@@ -60,6 +63,7 @@ func (c *Controller) LoadPercussionBank(file string) error {
 // Reload the instrument percussion bank by reloading the file.
 func (c *Controller) ReloadPercussionBank() error {
 	if c.PercussionBankFile != "" {
+		fmt.Println("Loading", c.PercussionBankFile)
 		return c.Synth.LoadPercussionBank(c.PercussionBankFile)
 	}
 	return nil

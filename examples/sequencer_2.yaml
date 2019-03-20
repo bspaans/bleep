@@ -1,0 +1,17 @@
+bpm: 120.0
+granularity: 16.0
+
+channels:
+- channel: 1
+  instrument: 34
+  reverb: 20
+  volume: 10
+  panning: 67
+
+sequences:
+- play_note:
+    duration: Quarter
+    channel: 1
+    note: 40
+    velocity: 40
+    every: Quarter

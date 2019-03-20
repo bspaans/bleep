@@ -543,7 +543,7 @@ bank:
           release: 0.25
 
 - index: 95
-  name: Sweep
+  name: Sweep pad
   filter:
     tremelo:
       rate: 10.0

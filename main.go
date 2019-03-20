@@ -15,7 +15,8 @@ import (
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
 var sequencer = flag.String("sequencer", "", "Load sequencer from file")
 var record = flag.String("record", "", "Record .wav output")
-var percussion = flag.String("percussion", "instruments/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
+var instruments = flag.String("instruments", "examples/bank.yaml", "The instruments bank to load")
+var percussion = flag.String("percussion", "examples/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
 var enableUI = flag.Bool("ui", false, "Enable terminal UI")
 
 func QuitWithError(err error) {
@@ -38,7 +39,7 @@ func main() {
 	if err := ctrl.EnablePortAudioSink(); err != nil {
 		QuitWithError(err)
 	}
-	if err := ctrl.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
+	if err := ctrl.LoadInstrumentBank(*instruments); err != nil {
 		QuitWithError(err)
 	}
 	if err := ctrl.LoadPercussionBank(*percussion); err != nil {

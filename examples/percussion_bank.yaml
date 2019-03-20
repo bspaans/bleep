@@ -1,37 +1,23 @@
 
 bank:
 
+
+- index: 30
+  name: Grain Test
+  grains:
+    file: oh-thats-okay.wav
+    grain_size: 34.0
+    birth_rate: 125.0
+    repeat: true
+    density: 5
+    spread: 30.0
+    speed: -1.0
+
 - index: 35
   name: Acoustic Bass Drum
-  filter:
-    delay:
-      time: 0.0001
-      factor: 0.5
-    filter:
-      overdrive:
-        factor: 3.5
-      combined:
-      - constant_pitch:
-          pitch: 40.0
-          square:
-            attack: 0.001
-            decay: 0.01
-            sustain: 0.0
-            release: 0.01
-      - constant_pitch:
-          pitch: 80.0
-          sine:
-            attack: 0.001
-            decay: 0.01
-            sustain: 0.0
-            release: 0.01
-      - constant_pitch:
-          pitch: 60.0
-          sine:
-            attack: 0.001
-            decay: 0.01
-            sustain: 0.0
-            release: 0.01
+  wav:
+    file: kick.wav
+    gain: 2.0
 
 
 - index: 36
@@ -54,6 +40,37 @@ bank:
           decay: 0.005
           sustain: 0.4
           release: 0.01
+
+- index: 37
+  name: Side Stick / RimShot
+  wav:
+    file: clap.wav
+    gain: 2.0
+    attack: 0.0
+    decay: 10.0
+    sustain: 1.0
+    release: 10.0
+
+
+- index: 38
+  name: Acoustic Snare
+  combined:
+  - filter:
+      overdrive: 
+        factor: 4.5
+      white_noise:
+        attack: 0.001
+        decay: 0.1
+        sustain: 0.2
+        release: 0.01
+  - filter:
+      lpf:
+        alpha: 0.1
+      white_noise:
+        attack: 0.00001
+        decay: 0.01
+        sustain: 0.2
+        release: 0.01
 
 - index: 39
   name: Hand Clap
@@ -79,26 +96,6 @@ bank:
         sustain: 0.4
         release: 0.01
 
-- index: 38
-  name: Acoustic Snare
-  combined:
-  - filter:
-      overdrive: 
-        factor: 4.5
-      white_noise:
-        attack: 0.001
-        decay: 0.1
-        sustain: 0.2
-        release: 0.01
-  - filter:
-      lpf:
-        alpha: 0.1
-      white_noise:
-        attack: 0.00001
-        decay: 0.01
-        sustain: 0.2
-        release: 0.01
-
 - index: 40
   name: Electric Snare
   filter:
@@ -122,25 +119,13 @@ bank:
 
 - index: 41
   name: Low Floor Tom
-  filter:
-    delay:
-      time: 0.0001
-      factor: 0.8
-    combined:
-    - constant_pitch:
-        pitch: 80.0
-        sine:
-          attack: 0.001
-          decay: 0.005
-          sustain: 0.4
-          release: 0.01
-    - constant_pitch:
-        pitch: 98.0
-        square:
-          attack: 0.001
-          decay: 0.005
-          sustain: 0.4
-          release: 0.001
+  wav:
+    file: kick.wav
+    gain: 2.0
+    attack: 0.0
+    decay: 10.0
+    sustain: 1.0
+    release: 10.0
 
 - index: 42
   name: Closed Hi-hat
