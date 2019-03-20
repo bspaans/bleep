@@ -9,6 +9,12 @@ func IntIdAutomation(id int) IntAutomation {
 	}
 }
 
+func IntArrayIdAutomation(id []int) IntArrayAutomation {
+	return func(counter, t uint) []int {
+		return id
+	}
+}
+
 func IntRangeAutomation(min, max int) IntAutomation {
 	return func(counter, t uint) int {
 		intRange := uint(max - min)

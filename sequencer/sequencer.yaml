@@ -1,32 +1,112 @@
 
 sequences:
-- every: Quarter
-  play_note: 48
-  channel: 1
-  velocity: 60
-  duration: Eight
+- play_note: 
+    every: Quarter
+    channel: 1
+    note: 48
+    velocity: 60
+    duration: Eight
 
-- every: Sixteenth
-  play_note: 
-    cycle:
-    - 60
-    - 64
-    - 67
-    - 69
-  channel: 2
-  velocity: 
-    from: 10
-    to: 127
-  duration: Thirtysecond
+- play_note: 
+    every: Sixteenth
+    auto_note:
+      cycle:
+      - 60
+      - 64
+      - 67
+      - 69
+    channel: 2
+    auto_velocity: 
+      range: 
+        from: 10
+        to: 127
+    duration: Thirtysecond
 
-- every: Sixteenth
-  panning:
-    back_and_forth:
-    - 0
-    - 30
-    - 60
-    - 80
-    - 127
-  channel: 1
+- repeat: 
+    every: Sixteenth
+    sequence:
+      panning:
+        channel: 1
+        back_and_forth:
+        - 0
+        - 30
+        - 60
+        - 80
+        - 127
 
-- after: 32 * Quarter
+- repeat: 
+    every: Eight
+    sequence:
+      panning:
+        channel: 2
+        back_and_forth:
+        - 0
+        - 30
+        - 60
+        - 80
+        - 127
+
+- repeat: 
+    every: Eight
+    sequence:
+      panning:
+        channel: 3
+        back_and_forth:
+        - 50
+        - 30
+        - 67
+        - 97
+        - 80
+
+- play_note: 
+    every: Quarter
+    channel: 9
+    note: 35
+    velocity: 60
+    duration: Eight
+
+- after: 
+    after: 16
+    sequence:
+      offset: 
+        offset: Eight
+        sequence:
+          play_note:
+            every: Quarter
+            duration: Sixteenth
+            channel: 9
+            note: 43
+            velocity: 30
+
+- after: 
+    after: 32
+    sequence:
+      offset: 
+        offset: Quarter
+        sequence:
+          play_note:
+            every: Half
+            duration: Eight
+            channel: 9
+            note: 40
+            velocity: 30
+
+- after:
+    after: 40
+    sequence:
+      play_notes:
+        every: 8
+        duration: Quarter
+        channel: 3
+        auto_notes:
+          cycle_chords:
+            every: 2
+            chords:
+            - [60, 64, 67]
+            - [60, 64, 67]
+            - [64, 64, 70]
+            - [60, 64, 67]
+        auto_velocity:
+          range:
+            from: 30
+            to: 50
