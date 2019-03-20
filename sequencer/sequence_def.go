@@ -151,17 +151,17 @@ func (e *PlayNotesEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	return PlayNotesEveryAutomation(every, duration, e.Channel, notesF, velocityF), nil
 }
 
-type PanningDef struct {
+type ChannelAutomationDef struct {
 	Channel           int
 	PanningAutomation AutomationDef `yaml:",inline"`
 }
 
-func (p *PanningDef) GetSequence(seq *Sequencer) (Sequence, error) {
+func (p *ChannelAutomationDef) GetSequence(seq *Sequencer, automation func(int, IntAutomation) Sequence) (Sequence, error) {
 	panningF, err := p.PanningAutomation.GetAutomation()
 	if err != nil {
 		return nil, WrapError("panning", err)
 	}
-	return PanningAutomation(p.Channel, panningF), nil
+	return automation(p.Channel, panningF), nil
 }
 
 type AfterDef struct {
@@ -179,6 +179,23 @@ func (e *AfterDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		return nil, WrapError("after", err)
 	}
 	return After(duration, s), nil
+}
+
+type BeforeDef struct {
+	Before   interface{} `yaml:"before"`
+	Sequence SequenceDef `yaml:"sequence"`
+}
+
+func (e *BeforeDef) GetSequence(seq *Sequencer) (Sequence, error) {
+	duration, err := parseDuration(e.Before, seq)
+	if err != nil {
+		return nil, WrapError("before", err)
+	}
+	s, err := e.Sequence.GetSequence(seq)
+	if err != nil {
+		return nil, WrapError("before", err)
+	}
+	return Before(duration, s), nil
 }
 
 type OffsetDef struct {
@@ -199,12 +216,15 @@ func (e *OffsetDef) GetSequence(seq *Sequencer) (Sequence, error) {
 }
 
 type SequenceDef struct {
-	Every          *RepeatDef         `yaml:"repeat"`
-	PlayNoteEvery  *PlayNoteEveryDef  `yaml:"play_note"`
-	PlayNotesEvery *PlayNotesEveryDef `yaml:"play_notes"`
-	Panning        *PanningDef        `yaml:"panning"`
-	After          *AfterDef          `yaml:"after"`
-	Offset         *OffsetDef         `yaml:"offset"`
+	Every          *RepeatDef            `yaml:"repeat"`
+	PlayNoteEvery  *PlayNoteEveryDef     `yaml:"play_note"`
+	PlayNotesEvery *PlayNotesEveryDef    `yaml:"play_notes"`
+	Panning        *ChannelAutomationDef `yaml:"panning"`
+	Reverb         *ChannelAutomationDef `yaml:"reverb"`
+	Tremelo        *ChannelAutomationDef `yaml:"tremelo"`
+	After          *AfterDef             `yaml:"after"`
+	Before         *BeforeDef            `yaml:"before"`
+	Offset         *OffsetDef            `yaml:"offset"`
 }
 
 func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
@@ -215,9 +235,15 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	} else if e.PlayNotesEvery != nil {
 		return e.PlayNotesEvery.GetSequence(seq)
 	} else if e.Panning != nil {
-		return e.Panning.GetSequence(seq)
+		return e.Panning.GetSequence(seq, PanningAutomation)
+	} else if e.Reverb != nil {
+		return e.Reverb.GetSequence(seq, ReverbAutomation)
+	} else if e.Tremelo != nil {
+		return e.Tremelo.GetSequence(seq, TremeloAutomation)
 	} else if e.After != nil {
 		return e.After.GetSequence(seq)
+	} else if e.Before != nil {
+		return e.Before.GetSequence(seq)
 	} else if e.Offset != nil {
 		return e.Offset.GetSequence(seq)
 	}

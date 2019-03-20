@@ -1,4 +1,4 @@
-bpm: 120.0
+bpm: 90.0
 granularity: 16.0
 
 channels:
@@ -21,7 +21,7 @@ channels:
 
 - channel: 4
   instrument: 39
-  reverb: 10
+  reverb: 30
   tremelo: 90
   panning: 80
   volume: 15
@@ -69,6 +69,18 @@ sequences:
     every: Eight
     sequence:
       panning:
+        channel: 2
+        back_and_forth:
+        - 0
+        - 30
+        - 60
+        - 80
+        - 127
+
+- repeat: 
+    every: Eight
+    sequence:
+      reverb:
         channel: 2
         back_and_forth:
         - 0
@@ -145,22 +157,25 @@ sequences:
 - after:
     after: 64
     sequence:
-      play_note: 
-        every: Sixteenth
-        auto_note:
-          back_and_forth:
-          - 72
-          - 79
-          - 81
-          - 82
-          - 79
-          - 81
-        channel: 4
-        auto_velocity: 
-          range: 
-            from: 30
-            to: 120
-        duration: Thirtysecond
+      before: 
+        before: 128
+        sequence:
+          play_note: 
+            every: Sixteenth
+            auto_note:
+              back_and_forth:
+              - 72
+              - 79
+              - 81
+              - 82
+              - 79
+              - 81
+            channel: 4
+            auto_velocity: 
+              range: 
+                from: 30
+                to: 120
+            duration: Thirtysecond
 
 - repeat: 
     every: Eight
@@ -170,3 +185,15 @@ sequences:
         range:
          from: 60
          to: 77
+
+- repeat: 
+    every: Eight
+    sequence:
+      tremelo:
+        channel: 4
+        back_and_forth:
+        - 0
+        - 30
+        - 60
+        - 80
+        - 127
