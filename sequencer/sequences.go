@@ -14,8 +14,11 @@ func Every(n uint, seq Sequence) Sequence {
 
 func EveryWithOffset(n, offset uint, seq Sequence) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
-		if (t+offset)%n == 0 {
-			seq((t+offset)/n, t, s)
+		if t < offset {
+			return
+		}
+		if (t-offset)%n == 0 {
+			seq((t-offset)/n, t, s)
 		}
 	}
 }
@@ -37,7 +40,7 @@ func Offset(offset uint, seq Sequence) Sequence {
 func After(a uint, seq Sequence) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
 		if t > a {
-			seq(counter-t, t, s)
+			seq(t-a, t-a, s)
 		}
 	}
 }

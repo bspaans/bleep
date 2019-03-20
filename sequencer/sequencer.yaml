@@ -1,4 +1,4 @@
-bpm: 90.0
+bpm: 120.0
 granularity: 16.0
 
 channels:
@@ -31,169 +31,285 @@ channels:
   panning: 67
 
 sequences:
-- play_note: 
-    every: Quarter
-    channel: 1
-    note: 48
-    velocity: 60
-    duration: Eight
-
-- play_note: 
-    every: Sixteenth
-    auto_note:
-      cycle:
-      - 60
-      - 64
-      - 67
-      - 69
-    channel: 2
-    auto_velocity: 
-      range: 
-        from: 10
-        to: 127
-    duration: Thirtysecond
-
-- repeat: 
-    every: Sixteenth
+- before:
+    before: 160
     sequence:
-      panning:
-        channel: 1
-        back_and_forth:
-        - 0
-        - 30
-        - 60
-        - 80
-        - 127
+      combine:
+      - play_note: 
+          every: Quarter
+          channel: 1
+          note: 48
+          velocity: 60
+          duration: Eight
 
-- repeat: 
-    every: Eight
-    sequence:
-      panning:
-        channel: 2
-        back_and_forth:
-        - 0
-        - 30
-        - 60
-        - 80
-        - 127
+      - play_note: 
+          every: Sixteenth
+          auto_note:
+            cycle:
+            - 60
+            - 64
+            - 67
+            - 69
+          channel: 2
+          auto_velocity: 
+            range: 
+              from: 10
+              to: 127
+          duration: Thirtysecond
 
-- repeat: 
-    every: Eight
-    sequence:
-      reverb:
-        channel: 2
-        back_and_forth:
-        - 0
-        - 30
-        - 60
-        - 80
-        - 127
-
-- repeat: 
-    every: Eight
-    sequence:
-      panning:
-        channel: 3
-        back_and_forth:
-        - 50
-        - 30
-        - 67
-        - 97
-        - 80
-
-- play_note: 
-    every: Quarter
-    channel: 9
-    note: 35
-    velocity: 60
-    duration: Eight
-
-- after: 
-    after: 16
-    sequence:
-      offset: 
-        offset: Eight
-        sequence:
-          play_note:
-            every: Quarter
-            duration: Sixteenth
-            channel: 9
-            note: 43
-            velocity: 30
-
-- after: 
-    after: 32
-    sequence:
-      offset: 
-        offset: Quarter
-        sequence:
-          play_note:
-            every: Half
-            duration: Eight
-            channel: 9
-            note: 40
-            velocity: 30
-
-- after:
-    after: 40
-    sequence:
-      play_notes:
-        every: 8
-        duration: Quarter
-        channel: 3
-        auto_notes:
-          cycle_chords:
-            every: 2
-            chords:
-            - [60, 64, 67]
-            - [60, 64, 67]
-            - [64, 64, 70]
-            - [60, 64, 67]
-        auto_velocity:
-          range:
-            from: 30
-            to: 50
-
-- after:
-    after: 64
-    sequence:
-      before: 
-        before: 128
-        sequence:
-          play_note: 
-            every: Sixteenth
-            auto_note:
+      - repeat: 
+          every: Sixteenth
+          sequence:
+            panning:
+              channel: 1
               back_and_forth:
-              - 72
-              - 79
-              - 81
-              - 82
-              - 79
-              - 81
-            channel: 4
-            auto_velocity: 
-              range: 
-                from: 30
-                to: 120
-            duration: Thirtysecond
+              - 0
+              - 30
+              - 60
+              - 80
+              - 127
 
-- repeat: 
-    every: Eight
-    sequence:
-      panning:
-        channel: 4
-        range:
-         from: 60
-         to: 77
+      - repeat: 
+          every: Eight
+          sequence:
+            panning:
+              channel: 2
+              back_and_forth:
+              - 0
+              - 30
+              - 60
+              - 80
+              - 127
 
-- repeat: 
-    every: Eight
+      - repeat: 
+          every: Eight
+          sequence:
+            reverb:
+              channel: 2
+              back_and_forth:
+              - 0
+              - 30
+              - 60
+              - 80
+              - 127
+
+      - repeat: 
+          every: Eight
+          sequence:
+            panning:
+              channel: 3
+              back_and_forth:
+              - 50
+              - 30
+              - 67
+              - 97
+              - 80
+
+      - play_note: 
+          every: Quarter
+          channel: 9
+          note: 35
+          velocity: 60
+          duration: Eight
+
+      - after: 
+          after: 16
+          sequence:
+            offset: 
+              offset: Eight
+              sequence:
+                play_note:
+                  every: Quarter
+                  duration: Sixteenth
+                  channel: 9
+                  note: 43
+                  velocity: 30
+
+      - after: 
+          after: 32
+          sequence:
+            offset: 
+              offset: Quarter
+              sequence:
+                play_note:
+                  every: Half
+                  duration: Eight
+                  channel: 9
+                  note: 40
+                  velocity: 30
+
+      - after:
+          after: 40
+          sequence:
+            play_notes:
+              every: 8
+              duration: Quarter
+              channel: 3
+              auto_notes:
+                cycle_chords:
+                  count: 2
+                  chords:
+                  - [60, 64, 67]
+                  - [60, 64, 67]
+                  - [64, 64, 70]
+                  - [60, 64, 67]
+              auto_velocity:
+                range:
+                  from: 30
+                  to: 50
+
+      - after:
+          after: 64
+          sequence:
+            before: 
+              before: 128
+              sequence:
+                play_note: 
+                  every: Sixteenth
+                  auto_note:
+                    back_and_forth:
+                    - 72
+                    - 79
+                    - 81
+                    - 82
+                    - 79
+                    - 81
+                  channel: 4
+                  auto_velocity: 
+                    range: 
+                      from: 30
+                      to: 120
+                  duration: Thirtysecond
+
+      - repeat: 
+          every: Eight
+          sequence:
+            panning:
+              channel: 4
+              range:
+               from: 60
+               to: 77
+
+      - repeat: 
+          every: Eight
+          sequence:
+            tremelo:
+              channel: 4
+              back_and_forth:
+              - 0
+              - 30
+              - 60
+              - 80
+              - 127
+- after:
+    after: 160
     sequence:
-      tremelo:
-        channel: 4
-        back_and_forth:
-        - 0
-        - 30
-        - 60
-        - 80
-        - 127
+      combine:
+      - play_note: 
+          every: Quarter
+          channel: 1
+          note: 90
+          velocity: 90
+          duration: Eight
+      - repeat: 
+          every: Eight
+          sequence:
+            reverb:
+              channel: 1
+              back_and_forth:
+              - 0
+              - 30
+              - 60
+              - 80
+              - 127
+      - repeat: 
+          every: Eight
+          sequence:
+            panning:
+              channel: 2
+              back_and_forth:
+              - 0
+              - 30
+              - 60
+              - 80
+              - 127
+      - play_note: 
+          every: Sixteenth
+          auto_note:
+            cycle:
+            - 62
+            - 74
+            - 64
+            - 67
+            - 69
+          channel: 2
+          auto_velocity: 
+            range: 
+              from: 10
+              to: 127
+          duration: Thirtysecond
+      - play_note: 
+          every: Quarter
+          channel: 9
+          note: 35
+          auto_velocity: 
+            cycle:
+            - 90
+            - 60
+            - 70
+            - 60
+          duration: Eight
+      - offset:
+          offset: Eight
+          sequence:
+            play_note: 
+              every: Quarter
+              channel: 9
+              note: 42
+              velocity: 60
+              duration: Eight
+      - offset:
+          offset: Half
+          sequence:
+            play_note: 
+              every: Whole
+              channel: 9
+              note: 39
+              velocity: 60
+              duration: Eight
+      - offset:
+          offset: Quarter
+          sequence:
+            play_note: 
+              every: Half
+              channel: 9
+              note: 40
+              velocity: 60
+              duration: Eight
+      - play_notes:
+          every: 8
+          duration: Quarter
+          channel: 3
+          auto_notes:
+            cycle_chords:
+              count: 1
+              chords:
+              - [60, 64, 67]
+              - [62, 64, 67]
+              - [64, 67, 69]
+              - [62, 67, 69, 74]
+          auto_velocity:
+            range:
+              from: 20
+              to: 30
+      - repeat: 
+          every: Eight
+          sequence:
+            tremelo:
+              channel: 4
+              back_and_forth:
+              - 30
+              - 60
+              - 80
+              - 127
+    

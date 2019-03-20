@@ -10,6 +10,9 @@ import (
 
 type Sequence func(counter, t uint, s chan *synth.Event)
 
+func Whole(seq *Sequencer) uint {
+	return uint(seq.Granularity) * 4
+}
 func Half(seq *Sequencer) uint {
 	return uint(seq.Granularity) * 2
 }

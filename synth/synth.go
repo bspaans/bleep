@@ -10,23 +10,26 @@ import (
 	"github.com/bspaans/bs8bs/channels"
 	"github.com/bspaans/bs8bs/instruments"
 	"github.com/bspaans/bs8bs/sinks"
+	"github.com/bspaans/bs8bs/ui"
 )
 
 type Synth struct {
-	Config *audio.AudioConfig
-	Mixer  *Mixer
-	Sinks  []sinks.Sink
-	Inputs chan *Event
-	Debug  bool
+	Config  *audio.AudioConfig
+	Mixer   *Mixer
+	Sinks   []sinks.Sink
+	Inputs  chan *Event
+	Outputs chan *ui.UIEvent
+	Debug   bool
 }
 
 func NewSynth(cfg *audio.AudioConfig) *Synth {
 	return &Synth{
-		Config: cfg,
-		Mixer:  NewMixer(),
-		Sinks:  []sinks.Sink{},
-		Inputs: make(chan *Event, cfg.MidiEventInputBufferSize),
-		Debug:  cfg.Debug,
+		Config:  cfg,
+		Mixer:   NewMixer(),
+		Sinks:   []sinks.Sink{},
+		Inputs:  make(chan *Event, cfg.MidiEventInputBufferSize),
+		Outputs: make(chan *ui.UIEvent, 128),
+		Debug:   cfg.Debug,
 	}
 }
 
@@ -54,12 +57,12 @@ func (s *Synth) Start() {
 
 	nextStep := time.Now().Add(stepDuration)
 	for {
-		s.WriteSamples(s.Config.StepSize)
+		s.writeSamples(s.Config.StepSize)
 		canRead := true
 		for canRead {
 			select {
 			case ev := <-s.Inputs:
-				s.DispatchEvents(ev)
+				s.dispatchEvent(ev)
 			default:
 				canRead = false
 			}
@@ -71,7 +74,7 @@ func (s *Synth) Start() {
 	}
 }
 
-func (s *Synth) DispatchEvents(ev *Event) {
+func (s *Synth) dispatchEvent(ev *Event) {
 	et := ev.Type
 	ch := ev.Channel
 	values := ev.Values
@@ -112,8 +115,8 @@ func (s *Synth) DispatchEvents(ev *Event) {
 
 }
 
-func (s *Synth) WriteSamples(n int) {
-	samples := s.Mixer.GetSamples(s.Config, n)
+func (s *Synth) writeSamples(n int) {
+	samples := s.Mixer.GetSamples(s.Config, n, s.Outputs)
 	for _, sink := range s.Sinks {
 		if err := sink.Write(s.Config, samples); err != nil {
 			log.Println(err.Error())

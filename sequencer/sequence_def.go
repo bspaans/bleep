@@ -35,16 +35,12 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 }
 
 type CycleChordsDef struct {
-	Every  interface{} `yaml:"every"`
-	Chords [][]int     `yaml:"chords"`
+	Count  int     `yaml:"count"`
+	Chords [][]int `yaml:"chords"`
 }
 
 func (c *CycleChordsDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, error) {
-	duration, err := parseDuration(c.Every, seq)
-	if err != nil {
-		return nil, WrapError("cycle_chords", err)
-	}
-	return ChordCycleArrayAutomation(int(duration), c.Chords), nil
+	return ChordCycleArrayAutomation(c.Count, c.Chords), nil
 }
 
 type ArrayAutomationDef struct {
@@ -152,16 +148,16 @@ func (e *PlayNotesEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
 }
 
 type ChannelAutomationDef struct {
-	Channel           int
-	PanningAutomation AutomationDef `yaml:",inline"`
+	Channel    int
+	Automation AutomationDef `yaml:",inline"`
 }
 
 func (p *ChannelAutomationDef) GetSequence(seq *Sequencer, automation func(int, IntAutomation) Sequence) (Sequence, error) {
-	panningF, err := p.PanningAutomation.GetAutomation()
+	automationF, err := p.Automation.GetAutomation()
 	if err != nil {
-		return nil, WrapError("panning", err)
+		return nil, err
 	}
-	return automation(p.Channel, panningF), nil
+	return automation(p.Channel, automationF), nil
 }
 
 type AfterDef struct {
@@ -225,6 +221,7 @@ type SequenceDef struct {
 	After          *AfterDef             `yaml:"after"`
 	Before         *BeforeDef            `yaml:"before"`
 	Offset         *OffsetDef            `yaml:"offset"`
+	Combine        []*SequenceDef        `yaml:"combine"`
 }
 
 func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
@@ -235,17 +232,39 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	} else if e.PlayNotesEvery != nil {
 		return e.PlayNotesEvery.GetSequence(seq)
 	} else if e.Panning != nil {
-		return e.Panning.GetSequence(seq, PanningAutomation)
+		s, err := e.Panning.GetSequence(seq, PanningAutomation)
+		if err != nil {
+			return nil, WrapError("panning", err)
+		}
+		return s, nil
 	} else if e.Reverb != nil {
-		return e.Reverb.GetSequence(seq, ReverbAutomation)
+		s, err := e.Reverb.GetSequence(seq, ReverbAutomation)
+		if err != nil {
+			return nil, WrapError("reverb", err)
+		}
+		return s, nil
 	} else if e.Tremelo != nil {
-		return e.Tremelo.GetSequence(seq, TremeloAutomation)
+		s, err := e.Tremelo.GetSequence(seq, TremeloAutomation)
+		if err != nil {
+			return nil, WrapError("tremelo", err)
+		}
+		return s, nil
 	} else if e.After != nil {
 		return e.After.GetSequence(seq)
 	} else if e.Before != nil {
 		return e.Before.GetSequence(seq)
 	} else if e.Offset != nil {
 		return e.Offset.GetSequence(seq)
+	} else if e.Combine != nil {
+		sequences := []Sequence{}
+		for _, s := range e.Combine {
+			s_, err := s.GetSequence(seq)
+			if err != nil {
+				return nil, WrapError("combine", err)
+			}
+			sequences = append(sequences, s_)
+		}
+		return Combine(sequences...), nil
 	}
 	return nil, WrapError("sequence", fmt.Errorf("Missing sequence"))
 }
@@ -254,7 +273,9 @@ func parseDuration(d interface{}, seq *Sequencer) (uint, error) {
 	switch d.(type) {
 	case string:
 		v := d.(string)
-		if v == "Half" {
+		if v == "Whole" {
+			return Whole(seq), nil
+		} else if v == "Half" {
 			return Half(seq), nil
 		} else if v == "Quarter" {
 			return Quarter(seq), nil

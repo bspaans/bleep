@@ -5,6 +5,7 @@ import (
 	"github.com/bspaans/bs8bs/midi"
 	"github.com/bspaans/bs8bs/sequencer"
 	"github.com/bspaans/bs8bs/synth"
+	"github.com/bspaans/bs8bs/ui"
 )
 
 // The Controller is a high level object that can be used to setup
@@ -15,6 +16,7 @@ type Controller struct {
 	Sequencer          *sequencer.Sequencer
 	InstrumentBankFile string
 	PercussionBankFile string
+	UI                 ui.UI
 }
 
 func NewController(cfg *audio.AudioConfig) *Controller {
@@ -85,6 +87,16 @@ func (c *Controller) ReloadSequencer() {
 // Start Synthesizer. Note that this synthesizer isn't run in a go-routine by
 // default.
 func (c *Controller) StartSynth() {
+	go func() {
+		for {
+			select {
+			case ev := <-c.Synth.Outputs:
+				if c.UI != nil {
+					c.UI.HandleEvent(ev)
+				}
+			}
+		}
+	}()
 	c.Synth.Start()
 }
 

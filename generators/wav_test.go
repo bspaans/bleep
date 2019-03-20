@@ -9,7 +9,7 @@ import (
 )
 
 func Test_WavGenerator(t *testing.T) {
-	g, err := NewWavGenerator("testdata/kick.wav")
+	g, err := NewWavGenerator("testdata/kick.wav", 1.0)
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -42,7 +42,7 @@ func Test_WavGenerator(t *testing.T) {
 }
 
 func Test_WavGenerator_stereo(t *testing.T) {
-	g, err := NewWavGenerator("testdata/nice-work.wav")
+	g, err := NewWavGenerator("testdata/nice-work.wav", 1.0)
 	if err != nil {
 		t.Errorf(err.Error())
 		return

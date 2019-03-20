@@ -7,6 +7,7 @@ import (
 	"github.com/bspaans/bs8bs/channels"
 	"github.com/bspaans/bs8bs/generators"
 	"github.com/bspaans/bs8bs/instruments"
+	"github.com/bspaans/bs8bs/ui"
 )
 
 type Mixer struct {
@@ -79,9 +80,10 @@ func (m *Mixer) ChangeInstrument(cfg *audio.AudioConfig, channel, instr int) {
 	}
 }
 
-func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
+func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int, outputEvents chan *ui.UIEvent) []int {
 	samples := generators.GetEmptySampleArray(cfg, n)
 
+	latestValues := make([]float64, len(m.Channels))
 	for channelNr, ch := range m.Channels {
 		chSamples := ch.GetSamples(cfg, n)
 		for i := 0; i < n; i++ {
@@ -91,11 +93,18 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 				left, right = SinusoidalPanning(left, right, m.Panning[channelNr])
 				samples[i*2] += left
 				samples[i*2+1] += right
+				latestValues[channelNr] = (left + right) / 2
 			} else {
-				samples[i] += chSamples[i] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+				v := chSamples[i] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+				samples[i] += v
+				latestValues[channelNr] = v
 			}
 		}
 	}
+
+	ev := ui.NewUIEvent(ui.ChannelsOutputEvent)
+	ev.Values = latestValues
+	outputEvents <- ev
 
 	result := make([]int, len(samples))
 	maxValue := math.Pow(2, float64(cfg.BitDepth))

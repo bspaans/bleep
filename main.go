@@ -9,13 +9,14 @@ import (
 
 	"github.com/bspaans/bs8bs/audio"
 	"github.com/bspaans/bs8bs/controller"
-	"github.com/nsf/termbox-go"
+	"github.com/bspaans/bs8bs/termbox"
 )
 
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
-var enableSequencer = flag.Bool("sequencer", false, "Enable sequencer (work in progress - demo mode)")
+var sequencer = flag.String("sequencer", "", "Load sequencer from file")
 var record = flag.String("record", "", "Record .wav output")
 var percussion = flag.String("percussion", "instruments/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
+var enableUI = flag.Bool("ui", false, "Enable terminal UI")
 
 func QuitWithError(err error) {
 	fmt.Println("Oh no:", err.Error())
@@ -56,44 +57,14 @@ func main() {
 	if *virtualMidi {
 		ctrl.StartVirtualMIDIDevice()
 	}
-	if *enableSequencer {
-		err := ctrl.LoadSequencerFromFile("sequencer/sequencer.yaml")
+	if *sequencer != "" {
+		err := ctrl.LoadSequencerFromFile(*sequencer)
 		if err != nil {
 			QuitWithError(err)
 		}
 	}
-	go WaitForUserInput(ctrl)
+	if *enableUI {
+		ctrl.UI = termbox.NewTermBox().Start(ctrl)
+	}
 	ctrl.StartSynth()
-}
-
-func WaitForUserInput(ctrl *controller.Controller) {
-
-	err := termbox.Init()
-	if err != nil {
-		panic(err)
-	}
-	termbox.SetInputMode(termbox.InputCurrent)
-	fmt.Println("Started bs8bs; press [Ctrl-R] to reload instrument banks; press [Ctrl-C] to quit")
-	defer termbox.Close()
-	for {
-		switch ev := termbox.PollEvent(); ev.Type {
-		case termbox.EventKey:
-			if ev.Key == termbox.KeyCtrlC {
-				fmt.Println("Goodbye!")
-				termbox.Close()
-				ctrl.Quit()
-				os.Exit(0)
-			} else if ev.Key == termbox.KeyCtrlR {
-				if err := ctrl.ReloadInstrumentBank(); err != nil {
-					fmt.Println("Error:", err.Error())
-				}
-				if err := ctrl.ReloadPercussionBank(); err != nil {
-					fmt.Println("Error:", err.Error())
-				}
-				ctrl.ReloadSequencer()
-			}
-		case termbox.EventError:
-			panic(ev.Err)
-		}
-	}
 }
