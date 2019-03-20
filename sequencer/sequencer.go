@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/bspaans/bs8bs/channels"
 	"github.com/bspaans/bs8bs/synth"
 )
 
@@ -28,13 +29,14 @@ func Thirtysecond(seq *Sequencer) uint {
 }
 
 type Sequencer struct {
-	BPM         float64
-	Granularity int
-	Sequences   []Sequence
-	Inputs      chan *SequencerEvent
-	Time        uint
-	FromFile    string
-	Started     bool
+	BPM                 float64
+	Granularity         int
+	Sequences           []Sequence
+	Inputs              chan *SequencerEvent
+	Time                uint
+	FromFile            string
+	Started             bool
+	InitialChannelSetup []*channels.ChannelDef
 }
 
 func NewSequencer(bpm float64, granularity int) *Sequencer {
@@ -58,6 +60,7 @@ func NewSequencerFromFile(file string) (*Sequencer, error) {
 		return nil, WrapError("sequencer", err)
 	}
 	seq.Sequences = seqs
+	seq.InitialChannelSetup = s.Channels.Channels
 	seq.FromFile = file
 	return seq, nil
 }
@@ -76,10 +79,11 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 
 	seq.Time = uint(0)
 
-	s <- synth.NewEvent(synth.ProgramChange, 3, []int{89})
-	s <- synth.NewEvent(synth.SetTremelo, 3, []int{60})
-	s <- synth.NewEvent(synth.SetReverb, 3, []int{60})
 	for {
+
+		if seq.Time == 0 {
+			seq.loadInstruments(s)
+		}
 
 		for _, sequence := range seq.Sequences {
 			sequence(seq.Time, seq.Time, s)
@@ -104,6 +108,19 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 	}
 }
 
+func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
+	for _, channelDef := range seq.InitialChannelSetup {
+		ch := channelDef.Channel
+		if ch != 9 {
+			s <- synth.NewEvent(synth.ProgramChange, ch, []int{channelDef.Instrument})
+		}
+		s <- synth.NewEvent(synth.SetTremelo, ch, []int{channelDef.Tremelo})
+		s <- synth.NewEvent(synth.SetReverb, ch, []int{channelDef.Reverb})
+		s <- synth.NewEvent(synth.SetChannelVolume, ch, []int{channelDef.Volume})
+		s <- synth.NewEvent(synth.SetChannelPanning, ch, []int{channelDef.Panning})
+	}
+}
+
 func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 	if ev.Type == RestartSequencer {
 		seq.Time = 0
@@ -118,6 +135,7 @@ func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 			}
 			seq.BPM = s.BPM
 			seq.Granularity = s.Granularity
+			seq.InitialChannelSetup = s.Channels.Channels
 			seqs, err := s.GetSequences(seq)
 			if err != nil {
 				fmt.Println("Failed to reload sequencer:", err.Error())

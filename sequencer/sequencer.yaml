@@ -3,14 +3,32 @@ granularity: 16.0
 
 channels:
 - channel: 1
-  instrument: 30
-  reverb: 50
+  instrument: 34
+  reverb: 20
+  volume: 10
+
 - channel: 2
-  instrument: 32
+  instrument: 0
+  reverb: 20
+  volume: 12
+
 - channel: 3
   instrument: 89
   reverb: 60
-  tremelo: 0
+  tremelo: 50
+  volume: 20
+  panning: 67
+
+- channel: 4
+  instrument: 39
+  reverb: 10
+  tremelo: 90
+  panning: 80
+  volume: 15
+
+- channel: 9
+  volume: 35
+  panning: 67
 
 sequences:
 - play_note: 
@@ -123,3 +141,32 @@ sequences:
           range:
             from: 30
             to: 50
+
+- after:
+    after: 64
+    sequence:
+      play_note: 
+        every: Sixteenth
+        auto_note:
+          back_and_forth:
+          - 72
+          - 79
+          - 81
+          - 82
+          - 79
+          - 81
+        channel: 4
+        auto_velocity: 
+          range: 
+            from: 30
+            to: 120
+        duration: Thirtysecond
+
+- repeat: 
+    every: Eight
+    sequence:
+      panning:
+        channel: 4
+        range:
+         from: 60
+         to: 77

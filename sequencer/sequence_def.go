@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/bspaans/bs8bs/channels"
 	"gopkg.in/yaml.v2"
 )
 
@@ -245,9 +246,10 @@ func parseDuration(d interface{}, seq *Sequencer) (uint, error) {
 }
 
 type SequencerDef struct {
-	BPM         float64       `yaml:"bpm"`
-	Granularity int           `yaml:"granularity"`
-	Sequences   []SequenceDef `yaml:"sequences"`
+	BPM         float64              `yaml:"bpm"`
+	Granularity int                  `yaml:"granularity"`
+	Channels    channels.ChannelsDef `yaml:",inline"`
+	Sequences   []SequenceDef        `yaml:"sequences"`
 }
 
 func (s *SequencerDef) GetSequences(seq *Sequencer) ([]Sequence, error) {
