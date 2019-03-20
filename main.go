@@ -7,65 +7,66 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/bspaans/bs8bs/arpeggiator"
 	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/midi"
-	"github.com/bspaans/bs8bs/sequencer"
-	"github.com/bspaans/bs8bs/synth"
+	"github.com/bspaans/bs8bs/controller"
 	"github.com/nsf/termbox-go"
 )
 
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
-var enableArpeggiator = flag.Bool("arpeggiator", false, "Enable arpeggiator (plays demo song)")
 var enableSequencer = flag.Bool("sequencer", false, "Enable sequencer (work in progress - demo mode)")
-var record = flag.Bool("record", false, "Record .wav output")
+var record = flag.String("record", "", "Record .wav output")
 var percussion = flag.String("percussion", "instruments/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
+
+func QuitWithError(err error) {
+	fmt.Println("Oh no:", err.Error())
+	os.Exit(1)
+}
 
 func main() {
 
 	flag.Parse()
 
 	cfg := audio.NewAudioConfig()
-	s := synth.NewSynth(cfg)
-	if *record {
-		if err := s.EnableWavSink("test.wav"); err != nil {
-			panic(err)
+	ctrl := controller.NewController(cfg)
+
+	if *record != "" {
+		if err := ctrl.EnableWavSink(*record); err != nil {
+			QuitWithError(err)
 		}
 	}
-	if err := s.EnablePortAudioSink(); err != nil {
-		panic(err)
+	if err := ctrl.EnablePortAudioSink(); err != nil {
+		QuitWithError(err)
 	}
-	if err := s.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
-		panic(err)
+	if err := ctrl.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
+		QuitWithError(err)
 	}
-	if err := s.LoadPercussionBank(*percussion); err != nil {
-		panic(err)
+	if err := ctrl.LoadPercussionBank(*percussion); err != nil {
+		QuitWithError(err)
 	}
-
-	defer s.Close()
+	defer ctrl.Quit()
 
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		s.Close()
+		ctrl.Quit()
 		os.Exit(1)
 	}()
 
 	if *virtualMidi {
-		go midi.StartVirtualMIDIDevice(s.Inputs)
-	}
-	if *enableArpeggiator {
-		go arpeggiator.StartArpeggiator(60, 2, 2, arpeggiator.Chords["m67"], s.Inputs)
+		ctrl.StartVirtualMIDIDevice()
 	}
 	if *enableSequencer {
-		go sequencer.NewSequencer(120.0).Start(s.Inputs)
+		err := ctrl.LoadSequencerFromFile("sequencer/sequencer.yaml")
+		if err != nil {
+			QuitWithError(err)
+		}
 	}
-	//go WaitForUserInput(s)
-	s.Start()
+	go WaitForUserInput(ctrl)
+	ctrl.StartSynth()
 }
 
-func WaitForUserInput(s *synth.Synth) {
+func WaitForUserInput(ctrl *controller.Controller) {
 
 	err := termbox.Init()
 	if err != nil {
@@ -80,16 +81,16 @@ func WaitForUserInput(s *synth.Synth) {
 			if ev.Key == termbox.KeyCtrlC {
 				fmt.Println("Goodbye!")
 				termbox.Close()
-				s.Close()
+				ctrl.Quit()
 				os.Exit(0)
 			} else if ev.Key == termbox.KeyCtrlR {
-				fmt.Println("Reloading MIDI banks")
-				if err := s.LoadInstrumentBank("instruments/bank.yaml"); err != nil {
+				if err := ctrl.ReloadInstrumentBank(); err != nil {
 					fmt.Println("Error:", err.Error())
 				}
-				if err := s.LoadPercussionBank(*percussion); err != nil {
+				if err := ctrl.ReloadPercussionBank(); err != nil {
 					fmt.Println("Error:", err.Error())
 				}
+				ctrl.ReloadSequencer()
 			}
 		case termbox.EventError:
 			panic(ev.Err)

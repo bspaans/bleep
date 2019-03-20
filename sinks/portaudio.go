@@ -25,7 +25,7 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 	if err != nil {
 		return nil, err
 	}
-	defaultValue := 0
+	defaultValue := int(math.Pow(2, 15))
 	if cfg.BitDepth == 8 {
 		defaultValue = int(math.Pow(float64(cfg.BitDepth), 2.0)/2 - 1)
 	}

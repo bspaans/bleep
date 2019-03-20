@@ -1,3 +1,16 @@
+bpm: 120.0
+granularity: 16.0
+
+channels:
+- channel: 1
+  instrument: 30
+  reverb: 50
+- channel: 2
+  instrument: 32
+- channel: 3
+  instrument: 89
+  reverb: 60
+  tremelo: 0
 
 sequences:
 - play_note: 

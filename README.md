@@ -82,8 +82,7 @@ cd bs8bs
 go run main.go
 ```
 
-And then you'll be able to connect to it from other programs that can output
-MIDI.
+Use `--help` to see the various options and modes.
 
 ## Known issues
 

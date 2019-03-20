@@ -245,7 +245,9 @@ func parseDuration(d interface{}, seq *Sequencer) (uint, error) {
 }
 
 type SequencerDef struct {
-	Sequences []SequenceDef `yaml:"sequences"`
+	BPM         float64       `yaml:"bpm"`
+	Granularity int           `yaml:"granularity"`
+	Sequences   []SequenceDef `yaml:"sequences"`
 }
 
 func (s *SequencerDef) GetSequences(seq *Sequencer) ([]Sequence, error) {

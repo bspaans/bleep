@@ -19,7 +19,18 @@ func Dispatch(s chan *synth.Event, ev *midievent.Event, et synth.EventType, valu
 	s <- synth.NewEvent(et, ch, value)
 }
 
+var started = false
+
 func StartVirtualMIDIDevice(s chan *synth.Event) {
+	if started {
+		fmt.Println("MIDI device already started")
+		return
+	}
+	started = true
+	go startVirtualMIDIDevice(s)
+}
+
+func startVirtualMIDIDevice(s chan *synth.Event) {
 
 	time.Sleep(time.Second)
 	var api rtmidi.API
