@@ -129,3 +129,15 @@ func PanningAutomation(channel int, panningF IntAutomation) Sequence {
 		s <- synth.NewEvent(synth.SetChannelPanning, channel, []int{panningF(counter, t)})
 	}
 }
+
+func ReverbAutomation(channel int, reverbF IntAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewEvent(synth.SetReverb, channel, []int{reverbF(counter, t)})
+	}
+}
+
+func TremeloAutomation(channel int, tremeloF IntAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewEvent(synth.SetTremelo, channel, []int{tremeloF(counter, t)})
+	}
+}
