@@ -4,14 +4,170 @@ granularity: 16.0
 channels:
 - channel: 1
   instrument: 34
+  reverb: 50
+  reverb_time: Eight
+  volume: 15
+  panning: 67
+- channel: 2
+  instrument: 15
   reverb: 20
   volume: 10
+  panning: 47
+- channel: 9
+  volume: 40
+  reverb: 20
+  reverb_time: Thirtysecond
   panning: 67
 
 sequences:
 - play_note:
+    every: Quarter
     duration: Quarter
     channel: 1
-    note: 40
-    velocity: 40
+    auto_note: 
+      cycle:
+      - 40
+      - 40
+      - 40
+      - 41
+    auto_velocity: 
+      range:
+        from: 20
+        to: 60
+
+- after:
+    after: 0
+    sequence:
+      play_note:
+        every: Quarter
+        duration: Quarter
+        channel: 2
+        auto_note: 
+          cycle:
+          - 45
+          - 45
+          - 45
+          - 46
+        auto_velocity: 
+          range:
+            from: 20
+            to: 60
+
+- after:
+    after: 0
+    sequence:
+      play_note:
+        every: Whole
+        duration: Quarter
+        channel: 3
+        note: 28
+        auto_velocity: 
+          range:
+            from: 50
+            to: 60
+
+- repeat: 
+    every: Sixteenth
+    sequence:
+      panning:
+        channel: 1
+        back_and_forth:
+        - 60
+        - 64
+        - 67
+        - 70
+        - 74
+
+- play_note:
     every: Quarter
+    duration: Quarter
+    channel: 9
+    note: 36
+    auto_velocity: 
+      range:
+        from: 30
+        to: 60
+
+- play_note:
+    every: 4
+    duration: 4
+    channel: 9
+    note: 30
+    auto_velocity: 
+      range:
+        from: 126
+        to: 127
+
+- play_note:
+    every: Sixteenth
+    duration: Thirtysecond
+    channel: 9
+    note: 42
+    auto_velocity: 
+      range:
+        from: 20
+        to: 45
+
+- offset:
+    offset: Eight
+    sequence:
+      play_note:
+        every: Whole
+        duration: Quarter
+        channel: 9
+        auto_note:
+          cycle:
+          - 43
+          - 45
+          - 47
+        auto_velocity: 
+          range:
+            from: 20
+            to: 35
+
+- offset:
+    offset: Half
+    sequence:
+      play_notes:
+        every: Whole
+        duration: Quarter
+        channel: 9
+        notes: [40, 38]
+        auto_velocity: 
+          range:
+            from: 40
+            to: 45
+
+- offset:
+    offset: 1.25
+    sequence:
+      play_note:
+        every: Whole
+        duration: Quarter
+        channel: 9
+        auto_note:
+          cycle:
+          - 45
+          - 47
+          - 43
+        auto_velocity: 
+          range:
+            from: 20
+            to: 35
+
+- offset:
+    offset: 1.5
+    sequence:
+      play_note:
+        every: Whole
+        duration: Quarter
+        channel: 9
+        auto_note:
+          cycle:
+          - 47
+          - 43
+          - 45
+        auto_velocity: 
+          range:
+            from: 20
+            to: 35

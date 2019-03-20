@@ -98,6 +98,9 @@ func (e *PlayNoteEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		}
 		noteF = noteF_
 	}
+	if e.NoteAutomation == nil && e.Note == 0.0 {
+		return nil, WrapError("play_note", fmt.Errorf("missing note or auto_note"))
+	}
 	velocityF := IntIdAutomation(e.Velocity)
 	if e.VelocityAutomation != nil {
 		velocityF_, err := e.VelocityAutomation.GetAutomation()
@@ -105,6 +108,9 @@ func (e *PlayNoteEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
 			return nil, WrapError("play_note > auto_velocity", err)
 		}
 		velocityF = velocityF_
+	}
+	if e.VelocityAutomation == nil && e.Velocity == 0.0 {
+		return nil, WrapError("play_note", fmt.Errorf("missing velocity or auto_velocity"))
 	}
 	return PlayNoteEveryAutomation(every, duration, e.Channel, noteF, velocityF), nil
 }
@@ -217,6 +223,7 @@ type SequenceDef struct {
 	PlayNotesEvery *PlayNotesEveryDef    `yaml:"play_notes"`
 	Panning        *ChannelAutomationDef `yaml:"panning"`
 	Reverb         *ChannelAutomationDef `yaml:"reverb"`
+	ReverbTime     *ChannelAutomationDef `yaml:"reverb_time"`
 	Tremelo        *ChannelAutomationDef `yaml:"tremelo"`
 	After          *AfterDef             `yaml:"after"`
 	Before         *BeforeDef            `yaml:"before"`
@@ -241,6 +248,12 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		s, err := e.Reverb.GetSequence(seq, ReverbAutomation)
 		if err != nil {
 			return nil, WrapError("reverb", err)
+		}
+		return s, nil
+	} else if e.ReverbTime != nil {
+		s, err := e.Reverb.GetSequence(seq, ReverbTimeAutomation)
+		if err != nil {
+			return nil, WrapError("reverb_time", err)
 		}
 		return s, nil
 	} else if e.Tremelo != nil {
@@ -288,6 +301,8 @@ func parseDuration(d interface{}, seq *Sequencer) (uint, error) {
 		}
 	case int:
 		return uint(d.(int) * seq.Granularity), nil
+	case float64:
+		return uint(d.(float64) * float64(seq.Granularity)), nil
 	}
 	return 0, fmt.Errorf("Unknown duration type '%v'", d)
 }

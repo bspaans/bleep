@@ -16,43 +16,24 @@ const (
 	ProgramChange              EventType = iota
 	SilenceChannel             EventType = iota
 	PitchBend                  EventType = iota
+
+	// Non-midi; require float value(s)
+	SetReverbTime     EventType = iota
+	SetGrain          EventType = iota
+	SetGrainGain      EventType = iota
+	SetGrainSize      EventType = iota
+	SetGrainBirthRate EventType = iota
+	SetGrainDensity   EventType = iota
+	SetGrainSpread    EventType = iota
+	SetGrainSpeed     EventType = iota
 )
 
-func (s EventType) String() string {
-	if s == NoteOn {
-		return "Note on"
-	} else if s == NoteOff {
-		return "Note off"
-	} else if s == SetReverb {
-		return "Set reverb"
-	} else if s == SetTremelo {
-		return "Set tremelo"
-	} else if s == SetChorus {
-		return "Set chorus"
-	} else if s == SetDetuneEffect {
-		return "Set detune effect"
-	} else if s == SetPhaser {
-		return "Set phaser"
-	} else if s == ProgramChange {
-		return "Program change"
-	} else if s == SilenceChannel {
-		return "Silence channel"
-	} else if s == PitchBend {
-		return "Pitch bend"
-	} else if s == SetChannelVolume {
-		return "Set channel volume"
-	} else if s == SetChannelExpressionVolume {
-		return "Set channel expression volume"
-	} else if s == SetChannelPanning {
-		return "Set channel panning"
-	}
-	return "Unknown event"
-}
-
 type Event struct {
-	Type    EventType
-	Channel int
-	Values  []int
+	Type        EventType
+	Channel     int
+	Value       string
+	Values      []int
+	FloatValues []float64
 }
 
 func NewEvent(ty EventType, channel int, values []int) *Event {
@@ -60,5 +41,13 @@ func NewEvent(ty EventType, channel int, values []int) *Event {
 		Type:    ty,
 		Channel: channel,
 		Values:  values,
+	}
+}
+
+func NewFloatEvent(ty EventType, channel int, values []float64) *Event {
+	return &Event{
+		Type:        ty,
+		Channel:     channel,
+		FloatValues: values,
 	}
 }

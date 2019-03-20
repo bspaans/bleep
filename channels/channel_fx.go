@@ -7,17 +7,19 @@ import (
 type FX int
 
 const (
-	Reverb  FX = iota
-	Chorus  FX = iota
-	Phaser  FX = iota
-	Tremelo FX = iota
+	Reverb     FX = iota
+	ReverbTime FX = iota
+	Chorus     FX = iota
+	Phaser     FX = iota
+	Tremelo    FX = iota
 )
 
 type ChannelFX struct {
-	Tremelo float64 // supported
-	Reverb  float64 // fake supported (through delayfilter)
-	Chorus  float64 // not supported
-	Phaser  float64 // not supported
+	Tremelo    float64 // supported
+	Reverb     float64 // fake supported (through delayfilter)
+	ReverbTime float64
+	Chorus     float64 // not supported
+	Phaser     float64 // not supported
 
 	CachedFilter filters.Filter
 
@@ -48,7 +50,24 @@ func (f *ChannelFX) Set(fx FX, value float64) {
 	if fx == Reverb {
 		f.Reverb = value
 		if f.reverb == nil {
-			f.reverb = filters.NewDelayFilter(0.2, value)
+			time := f.ReverbTime
+			if time == 0.0 {
+				time = 0.2
+			}
+			f.reverb = filters.NewDelayFilter(time, value)
+		} else {
+			f.reverb.(*filters.DelayFilter).LeftFactor = value
+			f.reverb.(*filters.DelayFilter).RightFactor = value
+		}
+		f.CachedFilter = nil
+	} else if fx == ReverbTime {
+		f.ReverbTime = value
+		if f.reverb == nil {
+			time := f.ReverbTime
+			if time == 0.0 {
+				time = 0.2
+			}
+			f.reverb = filters.NewDelayFilter(time, value)
 		} else {
 			f.reverb.(*filters.DelayFilter).LeftFactor = value
 			f.reverb.(*filters.DelayFilter).RightFactor = value

@@ -7,12 +7,12 @@ import (
 	"github.com/bspaans/bs8bs/audio"
 )
 
-func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, density int, spread, speed, randomPosition float64, repeat bool) (Generator, error) {
+func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, density int, spread, speed, randomPosition, gain float64, repeat bool) (Generator, error) {
 	data, err := LoadWavData(file)
 	if err != nil {
 		return nil, err
 	}
-	return NewGrainsGenerator(cfg, data, grainSize, birthrate, density, spread, speed, randomPosition, repeat), nil
+	return NewGrainsGenerator(cfg, data, grainSize, birthrate, density, spread, speed, randomPosition, gain, repeat), nil
 }
 
 // grainsize: in milliseconds
@@ -23,7 +23,7 @@ func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize
 // repeat: whether or not to loop through the sample
 // randomPosition: in milliseconds
 //
-func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64, density int, spread, speed, randomPosition float64, repeat bool) Generator {
+func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64, density int, spread, speed, randomPosition, gain float64, repeat bool) Generator {
 
 	g := NewBaseGenerator()
 
@@ -85,10 +85,10 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 					if phase >= offset && phase < offset+grainWaveLength {
 						ix := (grainIx*grainWaveLength + (phase - offset)) % sampleLength
 						if cfg.Stereo {
-							result[i*2] += sample[ix*2]
-							result[i*2+1] += sample[ix*2+1]
+							result[i*2] += sample[ix*2] * gain
+							result[i*2+1] += sample[ix*2+1] * gain
 						} else {
-							result[i] += sample[ix*2]
+							result[i] += sample[ix*2] * gain
 						}
 					}
 

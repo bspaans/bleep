@@ -39,7 +39,7 @@ func Offset(offset uint, seq Sequence) Sequence {
 
 func After(a uint, seq Sequence) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
-		if t > a {
+		if t >= a {
 			seq(t-a, t-a, s)
 		}
 	}
@@ -98,7 +98,7 @@ func PlayNoteEvery(n uint, duration uint, channel, note, velocity int) Sequence 
 func PlayNoteEveryAutomation(n uint, duration uint, channel int, noteF IntAutomation, velocityF IntAutomation) Sequence {
 	return Combine(
 		Every(n, NoteOnAutomation(channel, noteF, velocityF)),
-		EveryWithOffset(n, duration+1, NoteOffAutomation(
+		EveryWithOffset(n, duration-1, NoteOffAutomation(
 			channel,
 			IntNegativeOffsetAutomation(duration+1, noteF)),
 		),
@@ -136,6 +136,12 @@ func PanningAutomation(channel int, panningF IntAutomation) Sequence {
 func ReverbAutomation(channel int, reverbF IntAutomation) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
 		s <- synth.NewEvent(synth.SetReverb, channel, []int{reverbF(counter, t)})
+	}
+}
+
+func ReverbTimeAutomation(channel int, reverbF IntAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewEvent(synth.SetReverbTime, channel, []int{reverbF(counter, t)})
 	}
 }
 

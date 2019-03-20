@@ -1,18 +1,6 @@
 
 bank:
 
-
-- index: 30
-  name: Grain Test
-  grains:
-    file: oh-thats-okay.wav
-    grain_size: 34.0
-    birth_rate: 125.0
-    repeat: true
-    density: 5
-    spread: 30.0
-    speed: -1.0
-
 - index: 35
   name: Acoustic Bass Drum
   wav:

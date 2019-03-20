@@ -121,6 +121,13 @@ func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
 		s <- synth.NewEvent(synth.SetReverb, ch, []int{channelDef.Reverb})
 		s <- synth.NewEvent(synth.SetChannelVolume, ch, []int{channelDef.Volume})
 		s <- synth.NewEvent(synth.SetChannelPanning, ch, []int{channelDef.Panning})
+
+		d, err := channels.ParseDuration(channelDef.ReverbTime, seq.BPM)
+		if err == nil {
+			s <- synth.NewFloatEvent(synth.SetReverbTime, ch, []float64{d})
+		} else {
+			fmt.Println("Invalid duration:", err.Error())
+		}
 	}
 }
 

@@ -16,7 +16,7 @@ channels:
   instrument: 89
   reverb: 60
   tremelo: 50
-  volume: 20
+  volume: 25
   panning: 67
 
 - channel: 4
@@ -75,11 +75,11 @@ sequences:
             panning:
               channel: 2
               back_and_forth:
-              - 0
+              - 15
               - 30
               - 60
               - 80
-              - 127
+              - 113
 
       - repeat: 
           every: Eight
@@ -87,11 +87,11 @@ sequences:
             reverb:
               channel: 2
               back_and_forth:
-              - 0
-              - 30
-              - 60
+              - 103
               - 80
-              - 127
+              - 60
+              - 30
+              - 15
 
       - repeat: 
           every: Eight
@@ -143,7 +143,7 @@ sequences:
           sequence:
             play_notes:
               every: 8
-              duration: Quarter
+              duration: 4
               channel: 3
               auto_notes:
                 cycle_chords:
@@ -288,7 +288,7 @@ sequences:
               duration: Eight
       - play_notes:
           every: 8
-          duration: Quarter
+          duration: 4
           channel: 3
           auto_notes:
             cycle_chords:
