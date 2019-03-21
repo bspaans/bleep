@@ -70,20 +70,41 @@ func (f *ChannelGrain) Generator(cfg *audio.AudioConfig) (generators.Generator, 
 func (f *ChannelGrain) Set(opt GrainOption, value interface{}) {
 	if opt == GrainFile {
 		f.File = value.(string)
+		f.CachedGenerator = nil
 	} else if opt == GrainGain {
 		f.Gain = value.(float64)
+		if f.CachedGenerator != nil {
+			f.CachedGenerator.(*generators.GrainsGenerator).GrainGain = f.Gain
+		}
 	} else if opt == GrainSize {
 		f.GrainSize = value.(float64)
+		if f.CachedGenerator != nil {
+			f.CachedGenerator.(*generators.GrainsGenerator).GrainSize = f.GrainSize
+		}
 	} else if opt == GrainBirthRate {
 		f.BirthRate = value.(float64)
+		if f.CachedGenerator != nil {
+			f.CachedGenerator.(*generators.GrainsGenerator).BirthRate = f.BirthRate
+		}
 	} else if opt == GrainDensity {
 		f.Density = value.(int)
+		if f.CachedGenerator != nil {
+			f.CachedGenerator.(*generators.GrainsGenerator).Density = f.Density
+		}
 	} else if opt == GrainSpread {
 		f.Spread = value.(float64)
+		if f.CachedGenerator != nil {
+			f.CachedGenerator.(*generators.GrainsGenerator).Spread = f.Spread
+		}
 	} else if opt == GrainSpeed {
 		f.Speed = value.(float64)
+		if f.CachedGenerator != nil {
+			f.CachedGenerator.(*generators.GrainsGenerator).Speed = f.Speed
+		}
 	} else if opt == GrainRepeat {
 		f.Repeat = value.(bool)
+		if f.CachedGenerator != nil {
+			f.CachedGenerator.(*generators.GrainsGenerator).Repeat = f.Repeat
+		}
 	}
-	f.CachedGenerator = nil
 }

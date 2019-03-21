@@ -84,7 +84,3 @@ go run main.go
 
 Use `--help` to see the various options and modes.
 
-## Known issues
-
-* Minor clicks on note transitions
-* The drums sound like hot garbage

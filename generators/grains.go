@@ -7,6 +7,33 @@ import (
 	"github.com/bspaans/bs8bs/audio"
 )
 
+type GrainsGenerator struct {
+	*BaseGenerator
+	GrainGain float64
+	// grainsize: in milliseconds
+	GrainSize float64
+	// birthrate: in milliseconds
+	BirthRate float64
+	// density: number of grain generators
+	Density int
+	// spread: milliseconds between generators
+	Spread float64
+	// speed: default 1.0; negative for reverse
+	Speed float64
+	// repeat: whether or not to loop through the sample
+	Repeat bool
+	// randomPosition: in milliseconds
+	RandomPosition float64
+}
+
+// grainsize: in milliseconds
+// birthrate: in milliseconds
+// density: number of grain generators
+// spread: milliseconds between generators
+// speed: default 1.0; negative for reverse
+// repeat: whether or not to loop through the sample
+// randomPosition: in milliseconds
+//
 func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, density int, spread, speed, randomPosition, gain float64, repeat bool) (Generator, error) {
 	data, err := LoadWavData(file)
 	if err != nil {
@@ -26,6 +53,17 @@ func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize
 func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, birthrate float64, density int, spread, speed, randomPosition, gain float64, repeat bool) Generator {
 
 	g := NewBaseGenerator()
+	gen := GrainsGenerator{
+		BaseGenerator:  g,
+		GrainGain:      gain,
+		GrainSize:      grainSize,
+		BirthRate:      birthrate,
+		Density:        density,
+		Spread:         spread,
+		Speed:          speed,
+		RandomPosition: randomPosition,
+		Repeat:         repeat,
+	}
 
 	sampleLength := len(sample) / 2
 
@@ -37,12 +75,10 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 
 		for i := 0; i < n; i++ {
 
-			// TODO we can modulate the grain size, birth rate, generator spread, speed, etc.
+			grainWaveLength := int(math.Ceil(float64(cfg.SampleRate) * (gen.GrainSize / 1000))) // eg. 441 samples
+			nrOfGrains := int(math.Ceil(float64(sampleLength) / float64(grainWaveLength)))      // eg. 44100 / 441 => 100 stereo grain
 
-			grainWaveLength := int(math.Ceil(float64(cfg.SampleRate) * (grainSize / 1000))) // eg. 441 samples
-			nrOfGrains := int(math.Ceil(float64(sampleLength) / float64(grainWaveLength)))  // eg. 44100 / 441 => 100 stereo grain
-
-			birthRateLength := int(float64(cfg.SampleRate) * (birthrate / 1000)) // eg one grain every 441
+			birthRateLength := int(float64(cfg.SampleRate) * (gen.BirthRate / 1000)) // eg one grain every 441
 
 			loopLength := 0
 			if birthRateLength >= grainWaveLength {
@@ -50,21 +86,21 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 			} else {
 				loopLength = sampleLength
 			}
-			generatorSpread := int(math.Ceil(float64(cfg.SampleRate)) * spread / 1000)
+			generatorSpread := int(math.Ceil(float64(cfg.SampleRate)) * gen.Spread / 1000)
 
 			// FOR EACH GENERATOR {
 
-			for generatorNr := 0; generatorNr < density; generatorNr++ {
+			for generatorNr := 0; generatorNr < gen.Density; generatorNr++ {
 
 				// phase modulo (len(sample)/2) == where in `sample` are we?
-				phase := int(speed*float64(g.Phase)) + (generatorNr * generatorSpread)
+				phase := int(gen.Speed*float64(g.Phase)) + (generatorNr * generatorSpread)
 
-				if randomPosition != 0.0 {
-					randomPosLength := float64(sampleLength) * (randomPosition / 1000)
+				if gen.RandomPosition != 0.0 {
+					randomPosLength := float64(sampleLength) * (gen.RandomPosition / 1000)
 					pos := (randomPosLength * rand.Float64()) - (randomPosLength / 2.0)
 					phase = phase + int(pos)
 				}
-				if repeat {
+				if gen.Repeat {
 					phase = (phase % loopLength)
 				} else if phase >= loopLength {
 					continue
@@ -85,10 +121,10 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 					if phase >= offset && phase < offset+grainWaveLength {
 						ix := (grainIx*grainWaveLength + (phase - offset)) % sampleLength
 						if cfg.Stereo {
-							result[i*2] += sample[ix*2] * gain
-							result[i*2+1] += sample[ix*2+1] * gain
+							result[i*2] += sample[ix*2] * g.Gain
+							result[i*2+1] += sample[ix*2+1] * g.Gain
 						} else {
-							result[i] += sample[ix*2] * gain
+							result[i] += sample[ix*2] * g.Gain
 						}
 					}
 
@@ -103,5 +139,5 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 	g.SetPitchFunc = func(f float64) {
 		g.Phase = 0
 	}
-	return g
+	return &gen
 }

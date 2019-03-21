@@ -84,6 +84,7 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 
 	for {
 
+		start := time.Now()
 		if seq.Time == 0 {
 			seq.loadInstruments(s)
 		}
@@ -105,9 +106,15 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 		}
 
 		millisecondsPerBeat := 60000.0 / seq.BPM
-		sleep := time.Duration(millisecondsPerBeat / float64(seq.Granularity))
-		time.Sleep(sleep * time.Millisecond)
+		millisecondsPerTick := time.Duration(millisecondsPerBeat/float64(seq.Granularity)) * time.Millisecond
 
+		elapsed := time.Now().Sub(start)
+		if elapsed > millisecondsPerTick {
+			fmt.Println("Warning: sequencer underrun", millisecondsPerTick, elapsed)
+		} else {
+			sleep := millisecondsPerTick - elapsed
+			time.Sleep(sleep)
+		}
 	}
 }
 
