@@ -51,3 +51,11 @@ func NewFloatEvent(ty EventType, channel int, values []float64) *Event {
 		FloatValues: values,
 	}
 }
+
+func NewStringEvent(ty EventType, channel int, value string) *Event {
+	return &Event{
+		Type:    ty,
+		Channel: channel,
+		Value:   value,
+	}
+}

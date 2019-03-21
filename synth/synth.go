@@ -80,30 +80,44 @@ func (s *Synth) dispatchEvent(ev *Event) {
 	values := ev.Values
 	if et == NoteOn {
 		velocity := float64(int(values[1])) / 127
-		s.NoteOn(ch, values[0], velocity)
+		s.Mixer.NoteOn(ch, values[0], velocity)
 	} else if et == NoteOff {
-		s.NoteOff(ch, values[0])
+		s.Mixer.NoteOff(ch, values[0])
 	} else if et == SetReverb {
-		s.SetReverb(ch, values[0])
+		s.Mixer.SetReverb(ch, values[0])
 	} else if et == SetReverbTime {
-		s.SetReverbTime(ch, ev.FloatValues[0])
+		s.Mixer.SetReverbTime(ch, ev.FloatValues[0])
 	} else if et == SetTremelo {
-		s.SetTremelo(ch, values[0])
+		s.Mixer.SetTremelo(ch, values[0])
 	} else if et == ProgramChange {
-		s.ChangeInstrument(ch, values[0])
+		s.Mixer.ChangeInstrument(s.Config, ch, values[0])
 	} else if et == SilenceChannel {
-		s.SilenceChannel(ch)
+		s.Mixer.SilenceChannel(ch)
 	} else if et == SetChannelVolume {
-		s.SetChannelVolume(ch, values[0])
+		s.Mixer.SetChannelVolume(ch, values[0])
 	} else if et == SetChannelPanning {
-		s.SetChannelPanning(ch, values[0])
+		s.Mixer.SetChannelPanning(ch, values[0])
 	} else if et == SetChannelExpressionVolume {
-		s.SetChannelExpressionVolume(ch, values[0])
+		s.Mixer.SetChannelExpressionVolume(ch, values[0])
+	} else if et == SetGrain {
+		s.Mixer.SetGrainOption(ch, channels.GrainFile, ev.Value)
+	} else if et == SetGrainGain {
+		s.Mixer.SetGrainOption(ch, channels.GrainGain, ev.FloatValues[0])
+	} else if et == SetGrainSize {
+		s.Mixer.SetGrainOption(ch, channels.GrainSize, ev.FloatValues[0])
+	} else if et == SetGrainBirthRate {
+		s.Mixer.SetGrainOption(ch, channels.GrainBirthRate, ev.FloatValues[0])
+	} else if et == SetGrainDensity {
+		s.Mixer.SetGrainOption(ch, channels.GrainDensity, values[0])
+	} else if et == SetGrainSpread {
+		s.Mixer.SetGrainOption(ch, channels.GrainSpread, ev.FloatValues[0])
+	} else if et == SetGrainSpeed {
+		s.Mixer.SetGrainOption(ch, channels.GrainSpeed, ev.FloatValues[0])
 	} else if et == PitchBend {
 		semitones := float64(values[0]-64) / 64.0 // -1.0 <-> 1.0
 		semitones *= (64 / 5)
 		pitchbendFactor := math.Pow(2, semitones/12)
-		s.SetPitchbend(ch, pitchbendFactor)
+		s.Mixer.SetPitchbend(ch, pitchbendFactor)
 	} else {
 	}
 
@@ -126,14 +140,6 @@ func (s *Synth) writeSamples(n int) {
 	}
 }
 
-func (s *Synth) NoteOn(channel, note int, velocity float64) {
-	s.Mixer.NoteOn(channel, note, velocity)
-}
-
-func (s *Synth) NoteOff(channel, note int) {
-	s.Mixer.NoteOff(channel, note)
-}
-
 func (s *Synth) ChangeInstrument(channel, instrument int) {
 	s.Mixer.ChangeInstrument(s.Config, channel, instrument)
 }
@@ -144,37 +150,8 @@ func (s *Synth) Close() {
 	}
 }
 
-func (s *Synth) SilenceChannel(ch int) {
-	s.Mixer.SilenceChannel(ch)
-}
-
 func (s *Synth) SilenceAllChannels() {
 	s.Mixer.SilenceAllChannels()
-}
-
-func (s *Synth) SetPitchbend(channel int, pitchbendFactor float64) {
-	s.Mixer.SetPitchbend(channel, pitchbendFactor)
-}
-
-func (s *Synth) SetReverb(channel int, reverb int) {
-	s.Mixer.SetReverb(channel, reverb)
-}
-func (s *Synth) SetReverbTime(channel int, time float64) {
-	s.Mixer.SetReverbTime(channel, time)
-}
-func (s *Synth) SetTremelo(channel int, tremelo int) {
-	s.Mixer.SetTremelo(channel, tremelo)
-}
-
-func (s *Synth) SetChannelVolume(channel int, volume int) {
-	s.Mixer.SetChannelVolume(channel, volume)
-}
-func (s *Synth) SetChannelPanning(channel int, panning int) {
-	s.Mixer.SetChannelPanning(channel, panning)
-}
-
-func (s *Synth) SetChannelExpressionVolume(channel int, volume int) {
-	s.Mixer.SetChannelExpressionVolume(channel, volume)
 }
 
 func (s *Synth) LoadInstrumentBank(file string) error {

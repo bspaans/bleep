@@ -43,4 +43,5 @@ func (c *MonophonicChannel) SetPitchbend(pitchbendFactor float64) {
 	}
 }
 
-func (c *MonophonicChannel) SetFX(fx FX, value float64) {}
+func (c *MonophonicChannel) SetFX(fx FX, value float64)                        {}
+func (c *MonophonicChannel) SetGrainOption(opt GrainOption, value interface{}) {}

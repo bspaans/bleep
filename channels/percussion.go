@@ -77,3 +77,4 @@ func (c *PercussionChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 func (c *PercussionChannel) SetFX(fx FX, value float64) {
 	c.FX.Set(fx, value)
 }
+func (c *PercussionChannel) SetGrainOption(opt GrainOption, value interface{}) {}

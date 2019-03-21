@@ -2,22 +2,42 @@ bpm: 120.0
 granularity: 16.0
 
 channels:
+
 - channel: 1
   instrument: 34
   reverb: 50
   reverb_time: Eight
   volume: 15
   panning: 67
+
 - channel: 2
   instrument: 15
   reverb: 20
   volume: 10
   panning: 47
+
+- channel: 3
+  instrument: 15
+  reverb: 20
+  volume: 10
+  panning: 47
+  grain:
+    name: Grain Test
+    file: oh-thats-okay.wav
+    gain: 3.0
+    grain_size: 34.0
+    birth_rate: 125.0
+    repeat: true
+    density: 5
+    spread: 30.0
+    speed: -1.0
+
 - channel: 9
   volume: 40
   reverb: 20
   reverb_time: Thirtysecond
   panning: 67
+
 
 sequences:
 - play_note:
@@ -91,8 +111,8 @@ sequences:
 - play_note:
     every: 4
     duration: 4
-    channel: 9
-    note: 30
+    channel: 3
+    note: 128
     auto_velocity: 
       range:
         from: 126

@@ -128,6 +128,17 @@ func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
 		} else {
 			fmt.Println("Invalid duration:", err.Error())
 		}
+
+		if channelDef.Grain != nil {
+			g := channelDef.Grain
+			s <- synth.NewStringEvent(synth.SetGrain, ch, g.File)
+			s <- synth.NewFloatEvent(synth.SetGrainGain, ch, []float64{channelDef.Grain.Gain})
+			s <- synth.NewFloatEvent(synth.SetGrainSize, ch, []float64{channelDef.Grain.GrainSize})
+			s <- synth.NewFloatEvent(synth.SetGrainBirthRate, ch, []float64{channelDef.Grain.BirthRate})
+			s <- synth.NewFloatEvent(synth.SetGrainSpread, ch, []float64{channelDef.Grain.Spread})
+			s <- synth.NewFloatEvent(synth.SetGrainSpeed, ch, []float64{channelDef.Grain.Speed})
+			s <- synth.NewEvent(synth.SetGrainDensity, ch, []int{channelDef.Grain.Density})
+		}
 	}
 }
 

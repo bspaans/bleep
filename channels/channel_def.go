@@ -1,6 +1,10 @@
 package channels
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/bspaans/bs8bs/instruments"
+)
 
 type ChannelsDef struct {
 	Channels []*ChannelDef
@@ -15,6 +19,7 @@ type ChannelDef struct {
 	Tremelo    int
 	Volume     int
 	Panning    int
+	Grain      *instruments.GrainsOptionsDef
 }
 
 func ParseDuration(d interface{}, bpm float64) (float64, error) {

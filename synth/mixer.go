@@ -80,6 +80,12 @@ func (m *Mixer) SetTremelo(channel, reverb int) {
 	}
 }
 
+func (m *Mixer) SetGrainOption(channel int, opt channels.GrainOption, value interface{}) {
+	if channel < len(m.Channels) {
+		m.Channels[channel].SetGrainOption(opt, value)
+	}
+}
+
 func (m *Mixer) ChangeInstrument(cfg *audio.AudioConfig, channel, instr int) {
 	if channel < len(m.Channels) {
 		m.Channels[channel].SetInstrument(func() generators.Generator { return instruments.Bank[instr](cfg) })
