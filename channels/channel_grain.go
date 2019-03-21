@@ -35,15 +35,16 @@ type ChannelGrain struct {
 
 func NewChannelGrain() *ChannelGrain {
 	return &ChannelGrain{
-		File:           "",
-		GrainSize:      0.2,
-		BirthRate:      0.2,
-		Density:        1,
-		Spread:         30,
-		Speed:          1.0,
-		RandomPosition: 0.0,
-		Gain:           1.0,
-		Repeat:         true,
+		File:            "",
+		GrainSize:       0.2,
+		BirthRate:       0.2,
+		Density:         1,
+		Spread:          30,
+		Speed:           1.0,
+		RandomPosition:  0.0,
+		Gain:            1.0,
+		Repeat:          true,
+		CachedGenerator: nil,
 	}
 }
 
@@ -69,28 +70,20 @@ func (f *ChannelGrain) Generator(cfg *audio.AudioConfig) (generators.Generator, 
 func (f *ChannelGrain) Set(opt GrainOption, value interface{}) {
 	if opt == GrainFile {
 		f.File = value.(string)
-		f.CachedGenerator = nil
 	} else if opt == GrainGain {
 		f.Gain = value.(float64)
-		f.CachedGenerator = nil
 	} else if opt == GrainSize {
 		f.GrainSize = value.(float64)
-		f.CachedGenerator = nil
 	} else if opt == GrainBirthRate {
 		f.BirthRate = value.(float64)
-		f.CachedGenerator = nil
 	} else if opt == GrainDensity {
 		f.Density = value.(int)
-		f.CachedGenerator = nil
 	} else if opt == GrainSpread {
 		f.Spread = value.(float64)
-		f.CachedGenerator = nil
 	} else if opt == GrainSpeed {
 		f.Speed = value.(float64)
-		f.CachedGenerator = nil
 	} else if opt == GrainRepeat {
 		f.Repeat = value.(bool)
-		f.CachedGenerator = nil
 	}
-
+	f.CachedGenerator = nil
 }

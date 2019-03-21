@@ -2,6 +2,7 @@ package sequencer
 
 type IntAutomation func(counter, t uint) int
 type IntArrayAutomation func(counter, t uint) []int
+type FloatAutomation func(counter, t uint) float64
 
 func IntIdAutomation(id int) IntAutomation {
 	return func(counter, t uint) int {
@@ -47,6 +48,18 @@ func IntBackAndForthAutomation(ints []int) IntAutomation {
 			return ints[ix]
 		} else {
 			return ints[l-((ix+2)-l)]
+		}
+	}
+}
+
+func FloatBackAndForthAutomation(floats []float64) FloatAutomation {
+	l := uint(len(floats))
+	return func(counter, t uint) float64 {
+		ix := counter % (l*2 - 2)
+		if ix < l {
+			return floats[ix]
+		} else {
+			return floats[l-((ix+2)-l)]
 		}
 	}
 }

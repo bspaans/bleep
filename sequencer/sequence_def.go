@@ -34,6 +34,17 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 	return nil, fmt.Errorf("Missing automation")
 }
 
+type FloatAutomationDef struct {
+	BackAndForth *[]float64 `yaml:"back_and_forth"`
+}
+
+func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
+	if a.BackAndForth != nil {
+		return FloatBackAndForthAutomation(*a.BackAndForth), nil
+	}
+	return nil, fmt.Errorf("Missing automation")
+}
+
 type CycleChordsDef struct {
 	Count  int     `yaml:"count"`
 	Chords [][]int `yaml:"chords"`
@@ -166,6 +177,19 @@ func (p *ChannelAutomationDef) GetSequence(seq *Sequencer, automation func(int, 
 	return automation(p.Channel, automationF), nil
 }
 
+type FloatChannelAutomationDef struct {
+	Channel    int
+	Automation FloatAutomationDef `yaml:",inline"`
+}
+
+func (p *FloatChannelAutomationDef) GetSequence(seq *Sequencer, automation func(int, FloatAutomation) Sequence) (Sequence, error) {
+	automationF, err := p.Automation.GetAutomation()
+	if err != nil {
+		return nil, err
+	}
+	return automation(p.Channel, automationF), nil
+}
+
 type AfterDef struct {
 	After    interface{} `yaml:"after"`
 	Sequence SequenceDef `yaml:"sequence"`
@@ -218,17 +242,21 @@ func (e *OffsetDef) GetSequence(seq *Sequencer) (Sequence, error) {
 }
 
 type SequenceDef struct {
-	Every          *RepeatDef            `yaml:"repeat"`
-	PlayNoteEvery  *PlayNoteEveryDef     `yaml:"play_note"`
-	PlayNotesEvery *PlayNotesEveryDef    `yaml:"play_notes"`
-	Panning        *ChannelAutomationDef `yaml:"panning"`
-	Reverb         *ChannelAutomationDef `yaml:"reverb"`
-	ReverbTime     *ChannelAutomationDef `yaml:"reverb_time"`
-	Tremelo        *ChannelAutomationDef `yaml:"tremelo"`
-	After          *AfterDef             `yaml:"after"`
-	Before         *BeforeDef            `yaml:"before"`
-	Offset         *OffsetDef            `yaml:"offset"`
-	Combine        []*SequenceDef        `yaml:"combine"`
+	Every          *RepeatDef                 `yaml:"repeat"`
+	PlayNoteEvery  *PlayNoteEveryDef          `yaml:"play_note"`
+	PlayNotesEvery *PlayNotesEveryDef         `yaml:"play_notes"`
+	Panning        *ChannelAutomationDef      `yaml:"panning"`
+	Reverb         *ChannelAutomationDef      `yaml:"reverb"`
+	ReverbTime     *ChannelAutomationDef      `yaml:"reverb_time"`
+	Tremelo        *ChannelAutomationDef      `yaml:"tremelo"`
+	GrainSize      *FloatChannelAutomationDef `yaml:"grain_size"`
+	GrainBirthRate *FloatChannelAutomationDef `yaml:"grain_birth_rate"`
+	GrainSpread    *FloatChannelAutomationDef `yaml:"grain_spread"`
+	GrainSpeed     *FloatChannelAutomationDef `yaml:"grain_speed"`
+	After          *AfterDef                  `yaml:"after"`
+	Before         *BeforeDef                 `yaml:"before"`
+	Offset         *OffsetDef                 `yaml:"offset"`
+	Combine        []*SequenceDef             `yaml:"combine"`
 }
 
 func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
@@ -260,6 +288,30 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		s, err := e.Tremelo.GetSequence(seq, TremeloAutomation)
 		if err != nil {
 			return nil, WrapError("tremelo", err)
+		}
+		return s, nil
+	} else if e.GrainSize != nil {
+		s, err := e.GrainSize.GetSequence(seq, GrainSizeAutomation)
+		if err != nil {
+			return nil, WrapError("grain_size", err)
+		}
+		return s, nil
+	} else if e.GrainBirthRate != nil {
+		s, err := e.GrainBirthRate.GetSequence(seq, GrainBirthRateAutomation)
+		if err != nil {
+			return nil, WrapError("grain_birth_rate", err)
+		}
+		return s, nil
+	} else if e.GrainSpread != nil {
+		s, err := e.GrainSpread.GetSequence(seq, GrainSpreadAutomation)
+		if err != nil {
+			return nil, WrapError("grain_spread", err)
+		}
+		return s, nil
+	} else if e.GrainSpeed != nil {
+		s, err := e.GrainSpeed.GetSequence(seq, GrainSpeedAutomation)
+		if err != nil {
+			return nil, WrapError("grain_speed", err)
 		}
 		return s, nil
 	} else if e.After != nil {

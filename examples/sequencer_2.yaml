@@ -13,24 +13,43 @@ channels:
 - channel: 2
   instrument: 15
   reverb: 20
+  reverb_time: Eight
   volume: 10
   panning: 47
 
 - channel: 3
   instrument: 15
   reverb: 20
+  reverb_time: Eight
   volume: 10
   panning: 47
   grain:
     name: Grain Test
     file: oh-thats-okay.wav
-    gain: 3.0
-    grain_size: 34.0
+    gain: 2.0
+    grain_size: 12.0
     birth_rate: 125.0
     repeat: true
-    density: 5
+    density: 3
     spread: 30.0
-    speed: -1.0
+    speed: 0.9
+
+- channel: 4
+  instrument: 15
+  reverb: 20
+  reverb_time: Eight
+  volume: 5
+  panning: 47
+  grain:
+    name: Grain Test
+    file: nice-work.wav
+    gain: 3.0
+    grain_size: 12.0
+    birth_rate: 125.0
+    repeat: true
+    density: 3
+    spread: 30.0
+    speed: 0.9
 
 - channel: 9
   volume: 40
@@ -40,64 +59,6 @@ channels:
 
 
 sequences:
-- play_note:
-    every: Quarter
-    duration: Quarter
-    channel: 1
-    auto_note: 
-      cycle:
-      - 40
-      - 40
-      - 40
-      - 41
-    auto_velocity: 
-      range:
-        from: 20
-        to: 60
-
-- after:
-    after: 0
-    sequence:
-      play_note:
-        every: Quarter
-        duration: Quarter
-        channel: 2
-        auto_note: 
-          cycle:
-          - 45
-          - 45
-          - 45
-          - 46
-        auto_velocity: 
-          range:
-            from: 20
-            to: 60
-
-- after:
-    after: 0
-    sequence:
-      play_note:
-        every: Whole
-        duration: Quarter
-        channel: 3
-        note: 28
-        auto_velocity: 
-          range:
-            from: 50
-            to: 60
-
-- repeat: 
-    every: Sixteenth
-    sequence:
-      panning:
-        channel: 1
-        back_and_forth:
-        - 60
-        - 64
-        - 67
-        - 70
-        - 74
-
 - play_note:
     every: Quarter
     duration: Quarter
@@ -113,10 +74,72 @@ sequences:
     duration: 4
     channel: 3
     note: 128
-    auto_velocity: 
-      range:
-        from: 126
-        to: 127
+    velocity: 127
+    
+- play_note:
+    every: 4
+    duration: 4
+    channel: 4
+    note: 128
+    velocity: 127
+
+- repeat: 
+    every: Half
+    sequence:
+      grain_size:
+        channel: 3
+        back_and_forth:
+        - 250.0
+        - 350.0
+
+- repeat: 
+    every: Half
+    sequence:
+      grain_size:
+        channel: 4
+        back_and_forth:
+        - 350.0
+        - 250.0
+
+- repeat: 
+    every: Half
+    sequence:
+      grain_birth_rate:
+        channel: 4
+        back_and_forth:
+        - 150.0
+        - 75.0
+
+- repeat: 
+    every: Sixteenth
+    sequence:
+      grain_speed:
+        channel: 4
+        back_and_forth:
+        - -0.9
+        - 0.9
+
+- repeat: 
+    every: Half
+    sequence:
+      grain_spread:
+        channel: 4
+        back_and_forth:
+        - 150.0
+        - 250.0
+
+- repeat: 
+    every: Quarter
+    sequence:
+      panning:
+        channel: 3
+        back_and_forth:
+        - 30
+        - 64
+        - 67
+        - 70
+        - 94
+
 
 - play_note:
     every: Sixteenth

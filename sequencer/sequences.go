@@ -150,3 +150,27 @@ func TremeloAutomation(channel int, tremeloF IntAutomation) Sequence {
 		s <- synth.NewEvent(synth.SetTremelo, channel, []int{tremeloF(counter, t)})
 	}
 }
+
+func GrainSizeAutomation(channel int, sizeF FloatAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewFloatEvent(synth.SetGrainSize, channel, []float64{sizeF(counter, t)})
+	}
+}
+
+func GrainBirthRateAutomation(channel int, sizeF FloatAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewFloatEvent(synth.SetGrainBirthRate, channel, []float64{sizeF(counter, t)})
+	}
+}
+
+func GrainSpreadAutomation(channel int, sizeF FloatAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewFloatEvent(synth.SetGrainSpread, channel, []float64{sizeF(counter, t)})
+	}
+}
+
+func GrainSpeedAutomation(channel int, sizeF FloatAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewFloatEvent(synth.SetGrainSpeed, channel, []float64{sizeF(counter, t)})
+	}
+}
