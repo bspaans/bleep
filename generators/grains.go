@@ -10,7 +10,7 @@ import (
 type GrainsGenerator struct {
 	*BaseGenerator
 	GrainGain float64
-	// grainsize: in milliseconds
+	// grainsize: in milliseconds. Recommended value between 10-50.
 	GrainSize float64
 	// birthrate: in milliseconds
 	BirthRate float64
@@ -24,6 +24,8 @@ type GrainsGenerator struct {
 	Repeat bool
 	// randomPosition: in milliseconds
 	RandomPosition float64
+	// The window function
+	WindowFunction WindowFunction
 }
 
 // grainsize: in milliseconds
@@ -63,6 +65,7 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 		Speed:          speed,
 		RandomPosition: randomPosition,
 		Repeat:         repeat,
+		WindowFunction: TrapezoidalWindowFunction,
 	}
 
 	sampleLength := len(sample) / 2
@@ -73,20 +76,20 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 			return result
 		}
 
+		grainWaveLength := int(math.Ceil(float64(cfg.SampleRate) * (gen.GrainSize / 1000))) // eg. 441 samples
+		nrOfGrains := int(math.Ceil(float64(sampleLength) / float64(grainWaveLength)))      // eg. 44100 / 441 => 100 stereo grain
+		birthRateLength := int(float64(cfg.SampleRate) * (gen.BirthRate / 1000))            // eg one grain every 441
+		loopLength := 0
+		if birthRateLength >= grainWaveLength {
+			loopLength = nrOfGrains*birthRateLength + (grainWaveLength - birthRateLength) // eg 100*441 + 0
+		} else {
+			loopLength = sampleLength
+		}
+		generatorSpread := int(math.Ceil(float64(cfg.SampleRate)) * gen.Spread / 1000)
+
+		windowValues := gen.WindowFunction(grainWaveLength)
+
 		for i := 0; i < n; i++ {
-
-			grainWaveLength := int(math.Ceil(float64(cfg.SampleRate) * (gen.GrainSize / 1000))) // eg. 441 samples
-			nrOfGrains := int(math.Ceil(float64(sampleLength) / float64(grainWaveLength)))      // eg. 44100 / 441 => 100 stereo grain
-
-			birthRateLength := int(float64(cfg.SampleRate) * (gen.BirthRate / 1000)) // eg one grain every 441
-
-			loopLength := 0
-			if birthRateLength >= grainWaveLength {
-				loopLength = nrOfGrains*birthRateLength + (grainWaveLength - birthRateLength) // eg 100*441 + 0
-			} else {
-				loopLength = sampleLength
-			}
-			generatorSpread := int(math.Ceil(float64(cfg.SampleRate)) * gen.Spread / 1000)
 
 			// FOR EACH GENERATOR {
 
@@ -120,11 +123,12 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 					// are we currently within the grains boundaries?
 					if phase >= offset && phase < offset+grainWaveLength {
 						ix := (grainIx*grainWaveLength + (phase - offset)) % sampleLength
+						window := windowValues[(phase - offset)]
 						if cfg.Stereo {
-							result[i*2] += sample[ix*2] * g.Gain
-							result[i*2+1] += sample[ix*2+1] * g.Gain
+							result[i*2] += sample[ix*2] * g.Gain * window
+							result[i*2+1] += sample[ix*2+1] * g.Gain * window
 						} else {
-							result[i] += sample[ix*2] * g.Gain
+							result[i] += sample[ix*2] * g.Gain * window
 						}
 					}
 

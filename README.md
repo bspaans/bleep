@@ -28,8 +28,9 @@ Things that generates waveforms (`generators/`):
   * Configurable density/nr of generators
   * Configurable speed (=position in sample)
   * Position randomization
-  * TODO: windowing
+  * Windowing functions
   * TODO: pitch control (= grain playback speed)
+
 
 Things that wrap things that generate waveforms (`generators/derived/`):
 
@@ -55,9 +56,8 @@ Things that mix:
 
 Things that control things that mix:
 
-* Sequencer (work in progress)
+* Sequencer (`sequencer/`)
     * Automations
-* Arpeggiator (work in progress) 
 
 Things that MIDI (`midi/`):
 
