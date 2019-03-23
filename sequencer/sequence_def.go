@@ -13,14 +13,17 @@ func WrapError(in string, err error) error {
 }
 
 type RangeDef struct {
-	From int
-	To   int
+	From        int
+	To          int
+	ChangeEvery int `yaml:"change_every"`
 }
 
 type AutomationDef struct {
 	BackAndForth *[]int    `yaml:"back_and_forth"`
 	Cycle        *[]int    `yaml:"cycle"`
 	Range        *RangeDef `yaml:"range"`
+	Sweep        *RangeDef `yaml:"sweep"`
+	FadeIn       *RangeDef `yaml:"fade_in"`
 }
 
 func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
@@ -30,6 +33,10 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 		return IntCycleAutomation(*a.Cycle), nil
 	} else if a.Range != nil {
 		return IntRangeAutomation(a.Range.From, a.Range.To), nil
+	} else if a.Sweep != nil {
+		return IntSweepAutomation(a.Sweep.From, a.Sweep.To, a.Sweep.ChangeEvery), nil
+	} else if a.FadeIn != nil {
+		return IntFadeInAutomation(a.FadeIn.From, a.FadeIn.To, a.FadeIn.ChangeEvery), nil
 	}
 	return nil, fmt.Errorf("Missing automation")
 }
@@ -80,6 +87,25 @@ func (e *RepeatDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		return nil, WrapError("repeat", err)
 	}
 	return Every(duration, s), nil
+}
+
+type EuclidianDef struct {
+	Pulses   int
+	Over     int
+	Duration interface{}
+	Sequence *SequenceDef
+}
+
+func (e *EuclidianDef) GetSequence(seq *Sequencer) (Sequence, error) {
+	s, err := e.Sequence.GetSequence(seq)
+	if err != nil {
+		return nil, WrapError("euclidian", err)
+	}
+	duration, err := parseDuration(e.Duration, seq)
+	if err != nil {
+		return nil, WrapError("euclidian", err)
+	}
+	return EuclidianRhythm(e.Pulses, e.Over, duration, s), nil
 }
 
 type PlayNoteEveryDef struct {
@@ -243,12 +269,15 @@ func (e *OffsetDef) GetSequence(seq *Sequencer) (Sequence, error) {
 
 type SequenceDef struct {
 	Every          *RepeatDef                 `yaml:"repeat"`
+	Euclidian      *EuclidianDef              `yaml:"euclidian"`
 	PlayNoteEvery  *PlayNoteEveryDef          `yaml:"play_note"`
 	PlayNotesEvery *PlayNotesEveryDef         `yaml:"play_notes"`
 	Panning        *ChannelAutomationDef      `yaml:"panning"`
 	Reverb         *ChannelAutomationDef      `yaml:"reverb"`
-	ReverbTime     *ChannelAutomationDef      `yaml:"reverb_time"`
+	ReverbTime     *FloatChannelAutomationDef `yaml:"reverb_time"`
 	Tremelo        *ChannelAutomationDef      `yaml:"tremelo"`
+	LPF_Cutoff     *ChannelAutomationDef      `yaml:"lpf_cutoff"`
+	Volume         *ChannelAutomationDef      `yaml:"volume"`
 	GrainSize      *FloatChannelAutomationDef `yaml:"grain_size"`
 	GrainBirthRate *FloatChannelAutomationDef `yaml:"grain_birth_rate"`
 	GrainSpread    *FloatChannelAutomationDef `yaml:"grain_spread"`
@@ -260,8 +289,13 @@ type SequenceDef struct {
 }
 
 func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
+	if e == nil {
+		return nil, fmt.Errorf("Missing sequence")
+	}
 	if e.Every != nil {
 		return e.Every.GetSequence(seq)
+	} else if e.Euclidian != nil {
+		return e.Euclidian.GetSequence(seq)
 	} else if e.PlayNoteEvery != nil {
 		return e.PlayNoteEvery.GetSequence(seq)
 	} else if e.PlayNotesEvery != nil {
@@ -279,15 +313,27 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		}
 		return s, nil
 	} else if e.ReverbTime != nil {
-		s, err := e.Reverb.GetSequence(seq, ReverbTimeAutomation)
+		s, err := e.ReverbTime.GetSequence(seq, ReverbTimeAutomation)
 		if err != nil {
 			return nil, WrapError("reverb_time", err)
+		}
+		return s, nil
+	} else if e.LPF_Cutoff != nil {
+		s, err := e.LPF_Cutoff.GetSequence(seq, LPF_CutoffAutomation)
+		if err != nil {
+			return nil, WrapError("lpf_cutoff", err)
 		}
 		return s, nil
 	} else if e.Tremelo != nil {
 		s, err := e.Tremelo.GetSequence(seq, TremeloAutomation)
 		if err != nil {
 			return nil, WrapError("tremelo", err)
+		}
+		return s, nil
+	} else if e.Volume != nil {
+		s, err := e.Volume.GetSequence(seq, ChannelVolumeAutomation)
+		if err != nil {
+			return nil, WrapError("volume", err)
 		}
 		return s, nil
 	} else if e.GrainSize != nil {

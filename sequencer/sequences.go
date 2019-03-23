@@ -2,12 +2,24 @@ package sequencer
 
 import (
 	"github.com/bspaans/bs8bs/synth"
+	"github.com/bspaans/bs8bs/theory"
 )
 
 func Every(n uint, seq Sequence) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
 		if t%n == 0 {
 			seq(t/n, t, s)
+		}
+	}
+}
+
+func EuclidianRhythm(n, over int, tickDuration uint, seq Sequence) Sequence {
+	rhythm := theory.EuclidianRhythm(n, over)
+	length := uint(over) * tickDuration
+	return func(counter, t uint, s chan *synth.Event) {
+		ix := (t % length) / tickDuration
+		if rhythm[ix] {
+			seq(t/uint(n), t, s)
 		}
 	}
 }
@@ -139,9 +151,21 @@ func ReverbAutomation(channel int, reverbF IntAutomation) Sequence {
 	}
 }
 
-func ReverbTimeAutomation(channel int, reverbF IntAutomation) Sequence {
+func ReverbTimeAutomation(channel int, reverbF FloatAutomation) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
-		s <- synth.NewEvent(synth.SetReverbTime, channel, []int{reverbF(counter, t)})
+		s <- synth.NewFloatEvent(synth.SetReverbTime, channel, []float64{reverbF(counter, t)})
+	}
+}
+
+func LPF_CutoffAutomation(channel int, cutoffF IntAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewEvent(synth.SetLPFCutoff, channel, []int{cutoffF(counter, t)})
+	}
+}
+
+func ChannelVolumeAutomation(channel int, volumeF IntAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewEvent(synth.SetChannelVolume, channel, []int{volumeF(counter, t)})
 	}
 }
 

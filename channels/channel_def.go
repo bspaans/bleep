@@ -19,6 +19,7 @@ type ChannelDef struct {
 	Tremelo    int
 	Volume     int
 	Panning    int
+	LPF_Cutoff int `yaml:"lpf_cuttoff"`
 	Grain      *instruments.GrainsOptionsDef
 }
 

@@ -24,6 +24,36 @@ func IntRangeAutomation(min, max int) IntAutomation {
 	}
 }
 
+func IntFadeInAutomation(from, to, changeEvery int) IntAutomation {
+	l := to - from
+	diff := 1.0 / float64(changeEvery)
+	r := make([]int, l*changeEvery)
+	for i := 0; i < l; i++ {
+		r[i] = from + int(float64(i)*diff)
+	}
+	return func(counter, t uint) int {
+		if counter >= uint(l) {
+			return to
+		}
+		return r[counter]
+	}
+}
+
+func IntSweepAutomation(min, max, changeEvery int) IntAutomation {
+	l := max - min
+	diff := 1.0
+	if min > max {
+		l = min - max
+		diff = -1.0
+	}
+	diff *= 1.0 / float64(changeEvery)
+	r := make([]int, l*changeEvery)
+	for i := 0; i < l; i++ {
+		r[i] = min + int(float64(i)*diff)
+	}
+	return IntBackAndForthAutomation(r)
+}
+
 func IntCycleAutomation(ints []int) IntAutomation {
 	l := uint(len(ints))
 	return func(counter, t uint) int {

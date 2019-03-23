@@ -74,6 +74,12 @@ func (m *Mixer) SetReverbTime(channel int, time float64) {
 	}
 }
 
+func (m *Mixer) SetLPFCutoff(channel int, freq int) {
+	if channel < len(m.Channels) {
+		m.Channels[channel].SetFX(channels.LPF_Cutoff, float64(freq))
+	}
+}
+
 func (m *Mixer) SetTremelo(channel, reverb int) {
 	if channel < len(m.Channels) {
 		m.Channels[channel].SetFX(channels.Tremelo, float64(reverb)/127.0)

@@ -44,6 +44,8 @@ func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize
 	return NewGrainsGenerator(cfg, data, grainSize, birthrate, density, spread, speed, randomPosition, gain, repeat), nil
 }
 
+// Synchronous Granular Synthesis.
+//
 // grainsize: in milliseconds
 // birthrate: in milliseconds
 // density: number of grain generators
