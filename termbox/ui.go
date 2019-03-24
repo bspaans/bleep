@@ -73,6 +73,9 @@ func (t *TermBox) start(ctrl *controller.Controller) {
 						fmt.Println("Error:", err.Error())
 					}
 					ctrl.ReloadSequencer()
+				} else if ev.ID >= "0" && ev.ID <= "9" {
+					i, _ := strconv.Atoi(ev.ID)
+					ctrl.ToggleSoloChannel(i)
 				}
 			default:
 				fmt.Println("Unknown event", ev)

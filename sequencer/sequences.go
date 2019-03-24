@@ -45,7 +45,9 @@ func Combine(seqs ...Sequence) Sequence {
 
 func Offset(offset uint, seq Sequence) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
-		seq(counter, t+offset, s)
+		if t >= offset {
+			seq(t-offset, t-offset, s)
+		}
 	}
 }
 
@@ -112,7 +114,8 @@ func PlayNoteEveryAutomation(n uint, duration uint, channel int, noteF IntAutoma
 		Every(n, NoteOnAutomation(channel, noteF, velocityF)),
 		EveryWithOffset(n, duration-1, NoteOffAutomation(
 			channel,
-			IntNegativeOffsetAutomation(duration+1, noteF)),
+			noteF,
+		),
 		),
 	)
 }
@@ -120,9 +123,10 @@ func PlayNoteEveryAutomation(n uint, duration uint, channel int, noteF IntAutoma
 func PlayNotesEveryAutomation(n uint, duration uint, channel int, noteF IntArrayAutomation, velocityF IntAutomation) Sequence {
 	return Combine(
 		Every(n, NotesOnAutomation(channel, noteF, velocityF)),
-		EveryWithOffset(n, duration+1, NotesOffAutomation(
+		EveryWithOffset(n, duration-1, NotesOffAutomation(
 			channel,
-			IntArrayNegativeOffsetAutomation(duration+1, noteF)),
+			noteF,
+		),
 		),
 	)
 }

@@ -27,6 +27,9 @@ const (
 	SetGrainDensity   EventType = iota
 	SetGrainSpread    EventType = iota
 	SetGrainSpeed     EventType = iota
+
+	ToggleSoloChannel  EventType = iota
+	SilenceAllChannels EventType = iota
 )
 
 type Event struct {

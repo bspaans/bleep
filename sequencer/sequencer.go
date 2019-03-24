@@ -86,6 +86,7 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 
 		start := time.Now()
 		if seq.Time == 0 {
+			s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)
 			seq.loadInstruments(s)
 		}
 

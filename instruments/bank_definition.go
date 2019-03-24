@@ -86,13 +86,12 @@ func (f *TremeloOptionsDef) Validate() error {
 }
 
 type LPFOptionsDef struct {
-	Alpha  float64 `json:"alpha" yaml:"alpha"`
 	Cutoff float64 `json:"cutoff" yaml:"cutoff"`
 }
 
 func (f *LPFOptionsDef) Validate() error {
-	if f.Alpha == 0.0 && f.Cutoff == 0.0 {
-		return fmt.Errorf("Missing 'alpha' or 'cutoff' in lpf options")
+	if f.Cutoff == 0.0 {
+		return fmt.Errorf("Missing 'cutoff' in lpf options")
 	}
 	return nil
 }
@@ -112,7 +111,7 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 	} else if f.Overdrive != nil {
 		return filters.NewOverdriveFilter(f.Overdrive.Factor)
 	} else if f.LPF != nil {
-		return filters.NewLowPassFilter(f.LPF.Alpha)
+		return filters.NewLowPassFilter(f.LPF.Cutoff)
 	} else if f.Distortion != nil {
 		return filters.NewDistortionFilter(f.Distortion.Level)
 	} else if f.Flanger != nil {

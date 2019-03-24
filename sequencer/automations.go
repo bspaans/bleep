@@ -1,5 +1,7 @@
 package sequencer
 
+import "fmt"
+
 type IntAutomation func(counter, t uint) int
 type IntArrayAutomation func(counter, t uint) []int
 type FloatAutomation func(counter, t uint) float64
@@ -19,7 +21,7 @@ func IntArrayIdAutomation(id []int) IntArrayAutomation {
 func IntRangeAutomation(min, max int) IntAutomation {
 	return func(counter, t uint) int {
 		intRange := uint(max - min)
-		v := min + int(t%intRange)
+		v := min + int(counter%intRange)
 		return v
 	}
 }
@@ -40,6 +42,9 @@ func IntFadeInAutomation(from, to, changeEvery int) IntAutomation {
 }
 
 func IntSweepAutomation(min, max, changeEvery int) IntAutomation {
+	if changeEvery == 0 {
+		changeEvery = 1
+	}
 	l := max - min
 	diff := 1.0
 	if min > max {
@@ -102,6 +107,7 @@ func OffsetAutomation(offset uint, a IntAutomation) IntAutomation {
 
 func IntNegativeOffsetAutomation(offset uint, a IntAutomation) IntAutomation {
 	return func(counter, t uint) int {
+		fmt.Println(counter, t)
 		return a(counter-1, t-offset)
 	}
 }
@@ -114,7 +120,7 @@ func IntArrayNegativeOffsetAutomation(offset uint, a IntArrayAutomation) IntArra
 
 func ChordCycleArrayAutomation(changeEvery int, chords [][]int) IntArrayAutomation {
 	return func(counter, t uint) []int {
-		ix := counter % uint(changeEvery*len(chords))
+		ix := counter % (uint(changeEvery * len(chords)))
 		return chords[ix/uint(changeEvery)]
 	}
 }

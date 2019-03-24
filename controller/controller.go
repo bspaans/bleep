@@ -119,3 +119,7 @@ func (c *Controller) StartVirtualMIDIDevice() {
 func (c *Controller) Quit() {
 	c.Synth.Close()
 }
+
+func (c *Controller) ToggleSoloChannel(ch int) {
+	c.Synth.Inputs <- synth.NewEvent(synth.ToggleSoloChannel, ch, nil)
+}

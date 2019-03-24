@@ -15,6 +15,7 @@ type Mixer struct {
 	Gain             []float64
 	ExpressionVolume []float64
 	Panning          []float64
+	Solo             []bool
 }
 
 func NewMixer() *Mixer {
@@ -39,6 +40,7 @@ func NewMixer() *Mixer {
 
 func (m *Mixer) AddChannel(ch channels.Channel) {
 	m.Channels = append(m.Channels, ch)
+	m.Solo = append(m.Solo, false)
 	m.Gain = append(m.Gain, 0.15)
 	m.ExpressionVolume = append(m.ExpressionVolume, 1.0)
 	m.Panning = append(m.Panning, 0.5)
@@ -100,10 +102,14 @@ func (m *Mixer) ChangeInstrument(cfg *audio.AudioConfig, channel, instr int) {
 
 func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int, outputEvents chan *ui.UIEvent) []int {
 	samples := generators.GetEmptySampleArray(cfg, n)
+	solo := m.HasSolo()
 
 	latestValues := make([]float64, len(m.Channels))
 	for channelNr, ch := range m.Channels {
 		chSamples := ch.GetSamples(cfg, n)
+		if solo && !m.Solo[channelNr] {
+			continue
+		}
 		for i := 0; i < n; i++ {
 			if cfg.Stereo {
 				left := chSamples[i*2] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
@@ -132,6 +138,15 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int, outputEvents chan *ui.
 		result[i] = int(math.Min(maxClipped, maxValue-1))
 	}
 	return result
+}
+
+func (m *Mixer) HasSolo() bool {
+	for _, s := range m.Solo {
+		if s {
+			return true
+		}
+	}
+	return false
 }
 
 func (m *Mixer) SilenceChannel(ch int) {
@@ -165,5 +180,11 @@ func (m *Mixer) SetChannelExpressionVolume(ch int, volume int) {
 func (m *Mixer) SetChannelPanning(ch int, panning int) {
 	if ch < len(m.Channels) {
 		m.Panning[ch] = float64(panning) / 127.0
+	}
+}
+
+func (m *Mixer) ToggleSoloChannel(ch int) {
+	if ch < len(m.Channels) {
+		m.Solo[ch] = !m.Solo[ch]
 	}
 }

@@ -115,6 +115,10 @@ func (s *Synth) dispatchEvent(ev *Event) {
 		s.Mixer.SetGrainOption(ch, channels.GrainSpread, ev.FloatValues[0])
 	} else if et == SetGrainSpeed {
 		s.Mixer.SetGrainOption(ch, channels.GrainSpeed, ev.FloatValues[0])
+	} else if et == SilenceAllChannels {
+		s.Mixer.SilenceAllChannels()
+	} else if et == ToggleSoloChannel {
+		s.Mixer.ToggleSoloChannel(ch)
 	} else if et == PitchBend {
 		semitones := float64(values[0]-64) / 64.0 // -1.0 <-> 1.0
 		semitones *= (64 / 5)
@@ -150,10 +154,6 @@ func (s *Synth) Close() {
 	for _, sink := range s.Sinks {
 		sink.Close(s.Config)
 	}
-}
-
-func (s *Synth) SilenceAllChannels() {
-	s.Mixer.SilenceAllChannels()
 }
 
 func (s *Synth) LoadInstrumentBank(file string) error {
