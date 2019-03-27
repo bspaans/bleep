@@ -1,5 +1,8 @@
 # bleep
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/bspaans/bleep)](https://goreportcard.com/report/github.com/bspaans/bleep)
+[![Documentation](https://godoc.org/github.com/bspaans/bleep)](http://godoc.org/github.com/bspaans/bleep)
+
 Hobby 8bit/16bit synthesizer/sequencer that can also be used as a virtual MIDI device.
 
 ![Sine wave](/demo/plots/sine.png)
