@@ -9,13 +9,24 @@ var Chords = map[string][]int{
 	"7":   []int{4, 3, 3, 2},
 }
 
-func ChordOn(note int, chord string) []int {
+func ChordOnNoteInt(note int, chord string) []int {
 	result := []int{note}
 	notes := Chords[chord]
 	current := note
 	for _, n := range notes {
 		current += n
 		result = append(result, current)
+	}
+	return result
+}
+
+func ChordOnNote(note *Note, chord string) Notes {
+	result := []*Note{note}
+	notes := Chords[chord]
+	current := note.Int()
+	for _, n := range notes {
+		current += n
+		result = append(result, NoteFromInt(current))
 	}
 	return result
 }
