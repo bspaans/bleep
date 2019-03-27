@@ -25,11 +25,11 @@ func DoPlots(cfg *audio.AudioConfig) {
 		generators.NewWhiteNoiseGenerator(),
 	}
 	files := []string{
-		"examples/plots/sine.png",
-		"examples/plots/square.png",
-		"examples/plots/saw.png",
-		"examples/plots/triangle.png",
-		"examples/plots/white_noise.png",
+		"demo/plots/sine.png",
+		"demo/plots/square.png",
+		"demo/plots/saw.png",
+		"demo/plots/triangle.png",
+		"demo/plots/white_noise.png",
 	}
 	for i, g := range generators {
 		values := g.GetSamples(cfg, 1000)

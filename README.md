@@ -2,7 +2,7 @@
 
 Hobby 8bit/16bit synthesizer/sequencer that can also be used as a virtual MIDI device.
 
-![Sine wave](/examples/plots/sine.png)
+![Sine wave](/demo/plots/sine.png)
 
 I don't really have any goals for this project, but it's #instructive.
 
