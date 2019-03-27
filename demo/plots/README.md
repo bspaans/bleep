@@ -19,3 +19,7 @@
 ## White noise 
 
 ![White noise](./white_noise.png)
+
+## .wav sample (clap.wav)
+
+![.wav sample](./wav.png)

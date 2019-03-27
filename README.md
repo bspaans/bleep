@@ -80,7 +80,7 @@ Things that output:
 
 ## Usage
 
-This thing uses Go modules and requires Go 1.11+
+Bleep uses Go modules and requires Go 1.11+
 
 ```
 git clone github.com/bspaans/bleep
@@ -90,3 +90,22 @@ go run main.go
 
 Use `--help` to see the various options and modes.
 
+### Run sequencer patterns
+
+`go run main.go --sequencer examples/sequencer_1.yaml`
+
+### Change instruments banks on sequencer patterns
+
+`go run main.go --instruments examples/bank.yaml --percussion examples/percussion_bank.yaml --sequencer examples/sequencer_1.yaml`
+
+### Record sequencer patterns
+
+`go run main.go --sequencer examples/sequencer_1.yaml --record output.wav`
+
+### Register virtual midi device
+
+`go run main.go --midi`
+
+### Change instruments banks for virtual midi device 
+
+`go run main.go --instruments examples/bank.yaml --percussion examples/percussion_bank.yaml --midi`
