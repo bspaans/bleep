@@ -6,11 +6,11 @@ import (
 	"math"
 	"time"
 
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/channels"
-	"github.com/bspaans/bs8bs/instruments"
-	"github.com/bspaans/bs8bs/sinks"
-	"github.com/bspaans/bs8bs/ui"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/channels"
+	"github.com/bspaans/bleep/instruments"
+	"github.com/bspaans/bleep/sinks"
+	"github.com/bspaans/bleep/ui"
 )
 
 type Synth struct {

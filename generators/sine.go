@@ -3,7 +3,7 @@ package generators
 import (
 	"math"
 
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 )
 
 func NewSineWaveOscillator() Generator {

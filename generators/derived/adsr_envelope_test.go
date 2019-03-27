@@ -4,8 +4,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/generators"
 )
 
 func testADSRSection(samples []float64, offset, n int, expect func(int) float64, t *testing.T) {

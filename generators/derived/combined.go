@@ -1,8 +1,8 @@
 package derived
 
 import (
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/generators"
 )
 
 func NewCombinedGenerators(g ...generators.Generator) generators.Generator {

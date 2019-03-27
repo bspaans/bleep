@@ -3,7 +3,7 @@ package derived
 import (
 	"math"
 
-	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bleep/generators"
 )
 
 func NewHarmonicsGenerator(g func() generators.Generator, harmonics int) generators.Generator {

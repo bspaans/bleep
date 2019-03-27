@@ -4,7 +4,7 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 )
 
 type GrainsGenerator struct {

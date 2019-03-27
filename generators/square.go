@@ -4,7 +4,7 @@ import (
 	"math"
 	"math/bits"
 
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 )
 
 const MaxInt int = (1<<bits.UintSize)/2 - 1

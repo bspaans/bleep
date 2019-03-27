@@ -3,8 +3,8 @@ package filters
 import (
 	"testing"
 
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/generators"
 )
 
 func Test_Flanger_with_zero_rate_and_factor_one_leaves_input_unaffected(t *testing.T) {

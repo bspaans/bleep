@@ -1,7 +1,7 @@
 package generators
 
 import (
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 )
 
 type Generator interface {

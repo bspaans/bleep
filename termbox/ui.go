@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/bspaans/bs8bs/controller"
-	"github.com/bspaans/bs8bs/ui"
+	"github.com/bspaans/bleep/controller"
+	"github.com/bspaans/bleep/ui"
 	termui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 )

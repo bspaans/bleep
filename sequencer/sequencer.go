@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/bspaans/bs8bs/channels"
-	"github.com/bspaans/bs8bs/synth"
+	"github.com/bspaans/bleep/channels"
+	"github.com/bspaans/bleep/synth"
 )
 
 type Sequence func(counter, t uint, s chan *synth.Event)

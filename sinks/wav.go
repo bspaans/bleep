@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 	goaudio "github.com/go-audio/audio"
 	"github.com/go-audio/wav"
 )

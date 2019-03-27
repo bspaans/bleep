@@ -3,10 +3,10 @@ package channels
 import (
 	"sync"
 
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/generators"
-	"github.com/bspaans/bs8bs/instruments"
-	"github.com/bspaans/bs8bs/midi/notes"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/generators"
+	"github.com/bspaans/bleep/instruments"
+	"github.com/bspaans/bleep/midi/notes"
 )
 
 type PercussionChannel struct {

@@ -1,9 +1,9 @@
 package derived
 
 import (
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/filters"
-	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/filters"
+	"github.com/bspaans/bleep/generators"
 )
 
 func NewFilteredGenerator(g generators.Generator, f filters.Filter) generators.Generator {

@@ -3,7 +3,7 @@ package channels
 import (
 	"fmt"
 
-	"github.com/bspaans/bs8bs/instruments"
+	"github.com/bspaans/bleep/instruments"
 )
 
 type ChannelsDef struct {

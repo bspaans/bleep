@@ -1,4 +1,4 @@
-module github.com/bspaans/bs8bs
+module github.com/bspaans/bleep
 
 require (
 	github.com/barnex/fftw v0.0.0-20181125072904-b800f77a10de

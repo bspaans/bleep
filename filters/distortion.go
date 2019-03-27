@@ -1,6 +1,6 @@
 package filters
 
-import "github.com/bspaans/bs8bs/audio"
+import "github.com/bspaans/bleep/audio"
 
 type DistortionFilter struct {
 	Level float64

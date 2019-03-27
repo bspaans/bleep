@@ -7,10 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/filters"
-	"github.com/bspaans/bs8bs/generators"
-	"github.com/bspaans/bs8bs/generators/derived"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/filters"
+	"github.com/bspaans/bleep/generators"
+	"github.com/bspaans/bleep/generators/derived"
 	"gopkg.in/yaml.v2"
 )
 

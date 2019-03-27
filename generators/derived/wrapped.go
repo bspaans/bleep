@@ -1,8 +1,8 @@
 package derived
 
 import (
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/generators"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/generators"
 )
 
 type WrappedGenerator struct {

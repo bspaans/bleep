@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/bspaans/bs8bs/synth"
+	"github.com/bspaans/bleep/synth"
 	"github.com/gomidi/rtmididrv/imported/rtmidi"
 	"github.com/xlab/midievent"
 )
@@ -37,12 +37,12 @@ func startVirtualMIDIDevice(s chan *synth.Event) {
 	for _, a := range rtmidi.CompiledAPI() {
 		api = a
 	}
-	in, err := rtmidi.NewMIDIIn(api, "bs8bs", 1024)
+	in, err := rtmidi.NewMIDIIn(api, "bleep", 1024)
 	if err != nil {
 		panic(err)
 	}
 	defer in.Destroy()
-	if err := in.OpenVirtualPort("bs8bs"); err != nil {
+	if err := in.OpenVirtualPort("bleep"); err != nil {
 		panic(err)
 	}
 	defer in.Close()

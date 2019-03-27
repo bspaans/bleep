@@ -3,7 +3,7 @@ package filters
 import (
 	"container/ring"
 
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 )
 
 type DelayFilter struct {

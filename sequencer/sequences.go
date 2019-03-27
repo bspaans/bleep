@@ -1,8 +1,8 @@
 package sequencer
 
 import (
-	"github.com/bspaans/bs8bs/synth"
-	"github.com/bspaans/bs8bs/theory"
+	"github.com/bspaans/bleep/synth"
+	"github.com/bspaans/bleep/theory"
 )
 
 func Every(n uint, seq Sequence) Sequence {

@@ -1,4 +1,4 @@
-# bs8bs
+# bleep
 
 Hobby 8bit synthesizer that can be used as a virtual MIDI device.
 
@@ -8,9 +8,9 @@ I don't really have any goals for this project, but it's #instructive.
 
 ## Demo songs / Progress
 
-1. [basic wave forms and delay](https://github.com/bspaans/bs8bs/raw/master/demo/demo.mp3)
-2. [the shabbiest percussion channel](https://github.com/bspaans/bs8bs/raw/master/demo/demo2.mp3) 
-3. [stereo, 16bit, tremelo](https://github.com/bspaans/bs8bs/raw/master/demo/demo3.mp3) 
+1. [basic wave forms and delay](https://github.com/bspaans/bleep/raw/master/demo/demo.mp3)
+2. [the shabbiest percussion channel](https://github.com/bspaans/bleep/raw/master/demo/demo2.mp3) 
+3. [stereo, 16bit, tremelo](https://github.com/bspaans/bleep/raw/master/demo/demo3.mp3) 
 
 ## Features
 
@@ -77,8 +77,8 @@ Things that output:
 This thing uses Go modules and requires Go 1.11+
 
 ```
-git clone github.com/bspaans/bs8bs
-cd bs8bs
+git clone github.com/bspaans/bleep
+cd bleep
 go run main.go
 ```
 

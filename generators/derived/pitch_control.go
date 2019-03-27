@@ -1,6 +1,6 @@
 package derived
 
-import "github.com/bspaans/bs8bs/generators"
+import "github.com/bspaans/bleep/generators"
 
 func NewGeneratorWithPitchControl(g generators.Generator, control func(float64) float64) generators.Generator {
 	result := NewWrappedGenerator(g)

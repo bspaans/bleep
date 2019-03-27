@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 	"github.com/gordonklaus/portaudio"
 )
 

@@ -3,7 +3,7 @@ package filters
 import (
 	"math"
 
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 )
 
 // Cutoff frequency = Alpha / ((1 - Alpha) * 2 * Pi * dt

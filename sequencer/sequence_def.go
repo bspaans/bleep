@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/bspaans/bs8bs/channels"
+	"github.com/bspaans/bleep/channels"
 	"gopkg.in/yaml.v2"
 )
 

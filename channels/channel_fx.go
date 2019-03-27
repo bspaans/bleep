@@ -1,7 +1,7 @@
 package channels
 
 import (
-	"github.com/bspaans/bs8bs/filters"
+	"github.com/bspaans/bleep/filters"
 )
 
 type FX int

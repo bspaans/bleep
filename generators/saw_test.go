@@ -3,7 +3,7 @@ package generators
 import (
 	"testing"
 
-	"github.com/bspaans/bs8bs/audio"
+	"github.com/bspaans/bleep/audio"
 )
 
 func Test_Sawtooth_GetSamples_sanity_check(t *testing.T) {

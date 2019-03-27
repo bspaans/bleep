@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/controller"
-	"github.com/bspaans/bs8bs/termbox"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/controller"
+	"github.com/bspaans/bleep/termbox"
 )
 
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")

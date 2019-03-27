@@ -3,11 +3,11 @@ package controller
 import (
 	"fmt"
 
-	"github.com/bspaans/bs8bs/audio"
-	"github.com/bspaans/bs8bs/midi"
-	"github.com/bspaans/bs8bs/sequencer"
-	"github.com/bspaans/bs8bs/synth"
-	"github.com/bspaans/bs8bs/ui"
+	"github.com/bspaans/bleep/audio"
+	"github.com/bspaans/bleep/midi"
+	"github.com/bspaans/bleep/sequencer"
+	"github.com/bspaans/bleep/synth"
+	"github.com/bspaans/bleep/ui"
 )
 
 // The Controller is a high level object that can be used to setup

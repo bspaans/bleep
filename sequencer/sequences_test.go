@@ -3,7 +3,7 @@ package sequencer
 import (
 	"testing"
 
-	"github.com/bspaans/bs8bs/synth"
+	"github.com/bspaans/bleep/synth"
 )
 
 func Test_Every(t *testing.T) {
