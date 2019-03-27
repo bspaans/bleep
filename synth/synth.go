@@ -55,8 +55,8 @@ func (s *Synth) Start() {
 	stepsPerSecond := float64(s.Config.SampleRate) / float64(s.Config.StepSize)
 	stepDuration := time.Duration(1000.0/stepsPerSecond) * time.Millisecond
 
-	nextStep := time.Now().Add(stepDuration)
 	for {
+		start := time.Now()
 		s.writeSamples(s.Config.StepSize)
 		canRead := true
 		for canRead {
@@ -67,10 +67,13 @@ func (s *Synth) Start() {
 				canRead = false
 			}
 		}
-		now := time.Now()
-		sub := nextStep.Sub(now)
-		time.Sleep(sub + (-1 * time.Millisecond))
-		nextStep = nextStep.Add(stepDuration)
+		elapsed := time.Now().Sub(start)
+		if elapsed > stepDuration {
+			fmt.Println("Warning: synthesizer underrun")
+		} else {
+			sleep := stepDuration - elapsed
+			time.Sleep(sleep)
+		}
 	}
 }
 

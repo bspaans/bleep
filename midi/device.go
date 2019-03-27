@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/bspaans/bleep/midi/rtmidi"
 	"github.com/bspaans/bleep/synth"
-	"github.com/gomidi/rtmididrv/imported/rtmidi"
 	"github.com/xlab/midievent"
 )
 
