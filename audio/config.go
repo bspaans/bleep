@@ -1,3 +1,4 @@
+// Global audio related configuration options.
 package audio
 
 type AudioConfig struct {

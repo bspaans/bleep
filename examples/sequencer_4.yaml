@@ -1,0 +1,271 @@
+bpm: 150.0
+granularity: 16.0
+
+channels:
+- channel: 0
+  instrument: 0
+  reverb: 50
+  reverb_time: Sixteenth
+  lpf_cuttoff: 1
+  volume: 10
+  panning: 57
+
+- channel: 1
+  instrument: 0
+  reverb: 50
+  reverb_time: Sixteenth
+  lpf_cuttoff: 2
+  volume: 10
+  panning: 30
+
+- channel: 2
+  instrument: 22
+  reverb: 50
+  reverb_time: Sixteenth
+  lpf_cuttoff: 1
+  volume: 20
+  panning: 97
+
+- channel: 4
+  instrument: 22
+  reverb: 50
+  reverb_time: Sixteenth
+  lpf_cuttoff: 1
+  volume: 20
+  panning: 97
+
+sequences:
+
+- repeat:
+    every: Eight
+    sequence:
+      lpf_cutoff:
+        channel: 0
+        range:
+          from: 1.0
+          to: 9.0
+          
+- repeat:
+    every: Eight
+    sequence:
+      lpf_cutoff:
+        channel: 1
+        range:
+          from: 1.0
+          to: 9.0
+
+- offset:
+    offset: Half
+    sequence:
+      play_notes:
+        every: Whole
+        duration: Quarter
+        channel: 0
+        auto_notes:
+          cycle_chords:
+            count: 1
+            chords:
+            - [60, 72, 76]
+            - [59, 71, 76]
+            - [57, 67, 72, 76]
+            - [55, 67, 72]
+
+            - [65, 77, 81]
+            - [64, 76, 81]
+            - [62, 74, 78]
+            - [62, 74, 78]
+
+            - [62, 74, 77]
+            - [60, 74, 77]
+            - [62, 74, 77]
+            - [75, 77, 81, 86]
+
+            - [60, 72, 76]
+            - [59, 71, 76]
+            - [60, 72, 76]
+            - [60, 72, 76]
+        auto_velocity:
+          range:
+            from: 30
+            to: 50
+
+- play_notes:
+    every: Whole
+    duration: Eight
+    channel: 1
+    auto_notes:
+      cycle_chords:
+        count: 1
+        chords:
+        - [60]
+        - [59]
+        - [57]
+        - [55]
+
+        - [65]
+        - [64]
+        - [62]
+        - [62]
+
+        - [62]
+        - [60]
+        - [62]
+        - [63]
+
+        - [60]
+        - [59]
+        - [60]
+        - []
+    auto_velocity:
+      range:
+        from: 30
+        to: 50
+
+- play_notes:
+    every: Whole
+    duration: Eight
+    channel: 2
+    auto_notes:
+      cycle_chords:
+        count: 1
+        chords:
+        - [48]
+        - [47]
+        - [45]
+        - [43]
+
+        - [53]
+        - [52]
+        - [50]
+        - [50]
+
+        - [50]
+        - [48]
+        - [50]
+        - [51]
+
+        - [48]
+        - [47]
+        - [48]
+        - []
+    auto_velocity:
+      range:
+        from: 30
+        to: 50
+
+- offset: 
+    offset: 3
+    sequence:
+      play_notes:
+        every: Whole
+        duration: Eight
+        channel: 2
+        auto_notes:
+          cycle_chords:
+            count: 1
+            chords:
+            - [48]
+            - [47]
+            - [45]
+            - [43]
+
+            - [53]
+            - [52]
+            - [50]
+            - [50]
+
+            - [50]
+            - [48]
+            - [50]
+            - [51]
+
+            - [48]
+            - [47]
+            - [48]
+            - []
+        auto_velocity:
+          range:
+            from: 30
+            to: 50
+
+- euclidian:
+    pulses: 8
+    over: 12
+    duration: 0.666666666667
+    sequence:
+      play_note:
+        every: Eight
+        duration: Eight
+        channel: 9
+        note: 42
+        auto_velocity: 
+          cycle:
+          - 127
+          - 100
+          - 80
+
+- play_note:
+    every: Whole
+    duration: Eight
+    channel: 9
+    note: 35
+    velocity: 127
+
+- offset:
+    offset: Half
+    sequence:
+      play_note:
+        every: Whole
+        duration: Eight
+        channel: 9
+        note: 40
+        velocity: 127
+
+- play_note:
+    every: Half
+    duration: Half
+    channel: 9
+    note: 51
+    auto_velocity:
+      sweep:
+        from: 50
+        to: 70
+        change_every: 1
+
+- euclidian:
+    pulses: 3
+    over: 8
+    duration: Quarter
+    sequence:
+      play_notes:
+        every: Whole
+        duration: Eight
+        channel: 4
+        auto_notes:
+          cycle_chords:
+            count: 1
+            chords:
+            - [60]
+            - [59]
+            - [57]
+            - [55]
+
+            - [65]
+            - [64]
+            - [62]
+            - [62]
+
+            - [62]
+            - [60]
+            - [62]
+            - [63]
+
+            - [60]
+            - [59]
+            - [60]
+            - []
+        auto_velocity:
+          range:
+            from: 30
+            to: 50
+

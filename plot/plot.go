@@ -1,6 +1,7 @@
 package plot
 
 import (
+	"fmt"
 	"image/color"
 	"log"
 	"os"
@@ -17,12 +18,14 @@ import (
 // This is a debugging tool
 //
 func DoPlots(cfg *audio.AudioConfig) {
+	wav, _ := generators.NewWavGenerator("examples/clap.wav", 1.0)
 	generators := []generators.Generator{
 		generators.NewSineWaveOscillator(),
 		generators.NewSquareWaveOscillator(),
 		generators.NewSawtoothWaveOscillator(),
 		generators.NewTriangleWaveOscillator(),
 		generators.NewWhiteNoiseGenerator(),
+		wav,
 	}
 	files := []string{
 		"demo/plots/sine.png",
@@ -30,9 +33,11 @@ func DoPlots(cfg *audio.AudioConfig) {
 		"demo/plots/saw.png",
 		"demo/plots/triangle.png",
 		"demo/plots/white_noise.png",
+		"demo/plots/wav.png",
 	}
 	for i, g := range generators {
-		values := g.GetSamples(cfg, 1000)
+		g.SetPitch(110.0)
+		values := g.GetSamples(cfg, 4000)
 		PlotValues(values, files[i])
 	}
 
@@ -86,6 +91,7 @@ func PlotValues(v []float64, file string) error {
 	if _, err := png.WriteTo(w); err != nil {
 		panic(err)
 	}
+	fmt.Println("Written", file)
 	return nil
 
 }
@@ -114,6 +120,7 @@ func TimeSeries(data *plotter.XYs) *plot.Plot {
 	p.X.Padding = 0
 	p.X.Width = 0
 	points.Shape = draw.CircleGlyph{}
+	points.GlyphStyle.Radius = 1
 	points.Color = color.RGBA{R: 0x16, G: 0x2c, B: 0x9a, A: 255}
 
 	p.Add(points)

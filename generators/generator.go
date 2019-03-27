@@ -1,3 +1,4 @@
+// Generate audio samples
 package generators
 
 import (

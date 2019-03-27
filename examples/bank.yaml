@@ -60,7 +60,7 @@ bank:
   name: Electric Grand
   filter:
     lpf:
-      alpha: 0.8
+      cutoff: 0.8
     combined:
     - triangle: 
         attack: 0.01
@@ -333,7 +333,7 @@ bank:
   name: Acoustic Bass
   filter:
     lpf: 
-      alpha: 0.1
+      cutoff: 1.0
     triangle: 
       attack: 0.001
       decay: 2.0
@@ -366,7 +366,7 @@ bank:
   name: Fretless Bass
   filter:
     lpf: 
-      alpha: 0.2
+      cutoff: 2.0
     triangle: 
       attack: 0.001
       decay: 4.0
@@ -378,7 +378,7 @@ bank:
   name: Synth Bass 1
   filter:
     lpf: 
-      alpha: 0.2
+      cutoff: 2.0
     sawtooth: 
       attack: 0.001
       decay: 2.0
@@ -390,7 +390,7 @@ bank:
   combined:
   - filter:
       lpf: 
-        alpha: 0.1
+        cutoff: 1.0
       sawtooth: 
         attack: 0.001
         decay: 2.0

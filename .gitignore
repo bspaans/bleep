@@ -1,3 +1,7 @@
 *.swp
 bs8bs
 bleep
+examples/808.yaml
+examples/sequencer_son.yaml
+.escape
+deps/

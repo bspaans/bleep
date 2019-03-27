@@ -4,6 +4,18 @@
 
 ![Sine wave](./sine.png)
 
+```
+import (
+    "github.com/bspaans/bleep/generators"
+)
+
+func Main() {
+    g := generators.NewSineWaveGenerator()
+    g.GetSamples(cfg, 300)
+}
+
+```
+
 ## Square 
 
 ![Square wave](./square.png)

@@ -1,3 +1,4 @@
+// Register as virtual MIDI device
 package midi
 
 import (
