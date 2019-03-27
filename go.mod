@@ -10,5 +10,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d
 	github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7
+	gonum.org/v1/plot v0.0.0-20190312081609-cd8a2043e414
 	gopkg.in/yaml.v2 v2.2.2
 )
