@@ -1,7 +1,7 @@
 # bleep
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/bspaans/bleep)](https://goreportcard.com/report/github.com/bspaans/bleep)
-[![Documentation](https://godoc.org/github.com/bspaans/bleep)](http://godoc.org/github.com/bspaans/bleep)
+[![Documentation](http://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](http://godoc.org/github.com/bspaans/bleep)
 
 Hobby 8bit/16bit synthesizer/sequencer that can also be used as a virtual MIDI device.
 
