@@ -1,8 +1,8 @@
 # bleep
 
-Hobby 8bit/16bit synthesizer that can be used as a virtual MIDI device.
+Hobby 8bit/16bit synthesizer/sequencer that can also be used as a virtual MIDI device.
 
-This is just in: it also does 16 bit now.
+![Sine wave](/examples/plots/sine.png)
 
 I don't really have any goals for this project, but it's #instructive.
 

@@ -9,11 +9,13 @@ import (
 
 	"github.com/bspaans/bleep/audio"
 	"github.com/bspaans/bleep/controller"
+	"github.com/bspaans/bleep/plot"
 	"github.com/bspaans/bleep/termbox"
 )
 
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
 var sequencer = flag.String("sequencer", "", "Load sequencer from file")
+var debugPlots = flag.Bool("plot", false, "Plot outputs (debugging tool)")
 var record = flag.String("record", "", "Record .wav output")
 var instruments = flag.String("instruments", "examples/bank.yaml", "The instruments bank to load")
 var percussion = flag.String("percussion", "examples/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
@@ -31,6 +33,10 @@ func main() {
 	cfg := audio.NewAudioConfig()
 	ctrl := controller.NewController(cfg)
 
+	if *debugPlots {
+		plot.DoPlots(cfg)
+		os.Exit(0)
+	}
 	if *record != "" {
 		if err := ctrl.EnableWavSink(*record); err != nil {
 			QuitWithError(err)
