@@ -1,6 +1,6 @@
 # bleep
 
-Hobby 8bit synthesizer that can be used as a virtual MIDI device.
+Hobby 8bit/16bit synthesizer that can be used as a virtual MIDI device.
 
 This is just in: it also does 16 bit now.
 
@@ -8,9 +8,12 @@ I don't really have any goals for this project, but it's #instructive.
 
 ## Demo songs / Progress
 
+Old examples first:
+
 1. [basic wave forms and delay](https://github.com/bspaans/bleep/raw/master/demo/demo.mp3)
 2. [the shabbiest percussion channel](https://github.com/bspaans/bleep/raw/master/demo/demo2.mp3) 
 3. [stereo, 16bit, tremelo](https://github.com/bspaans/bleep/raw/master/demo/demo3.mp3) 
+4. [granular synthesis, sequencer, automations, euclidian rhythms](https://github.com/bspaans/bleep/raw/master/demo/demo4.mp3) 
 
 ## Features
 
