@@ -6,7 +6,9 @@ import (
 	"github.com/bspaans/bleep/audio"
 )
 
+// A FIR high pass filter.
 type HighPassConvolutionFilter struct {
+	// The cutoff frequency, in Hz.
 	Cutoff float64
 
 	// The order of the filter. Should be odd.

@@ -40,3 +40,43 @@ func ComposedFilter(f1 Filter, f2 Filter) Filter {
 		},
 	)
 }
+
+func SumFilter(filters ...Filter) Filter {
+	return NewBaseFilter(
+		func(cfg *audio.AudioConfig, samples []float64) []float64 {
+			if filters == nil || len(filters) == 0 {
+				return samples
+			}
+			s := make([]float64, len(samples))
+			for _, f := range filters {
+				filteredSamples := f.Filter(cfg, samples)
+				for i, sample := range filteredSamples {
+					s[i] += sample
+				}
+
+			}
+			return s
+		},
+	)
+}
+
+func AverageFilter(filters ...Filter) Filter {
+	return NewBaseFilter(
+		func(cfg *audio.AudioConfig, samples []float64) []float64 {
+			if filters == nil || len(filters) == 0 {
+				return samples
+			}
+			s := make([]float64, len(samples))
+			for _, f := range filters {
+				filteredSamples := f.Filter(cfg, samples)
+				for i, sample := range filteredSamples {
+					s[i] += sample
+				}
+			}
+			for i, sample := range s {
+				s[i] = sample / float64(len(filters))
+			}
+			return s
+		},
+	)
+}

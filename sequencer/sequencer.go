@@ -126,8 +126,12 @@ func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
 			if channelDef.Generator == nil {
 				s <- synth.NewEvent(synth.ProgramChange, ch, []int{channelDef.Instrument})
 			} else {
-				instr := channelDef.Generator.Generator
-				s <- synth.NewInstrumentEvent(synth.SetInstrument, ch, instr)
+				if err := channelDef.Generator.Validate(); err != nil {
+					fmt.Printf("Failed to load generator for channel %d; %s\n", ch, err.Error())
+				} else {
+					instr := channelDef.Generator.Generator
+					s <- synth.NewInstrumentEvent(synth.SetInstrument, ch, instr)
+				}
 			}
 		}
 		s <- synth.NewEvent(synth.SetTremelo, ch, []int{channelDef.Tremelo})

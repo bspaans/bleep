@@ -25,3 +25,20 @@ func Test_EuclidianRhythm_example(t *testing.T) {
 		}
 	}
 }
+
+func Test_EuclidianRhythm_right_amount_of_ons(t *testing.T) {
+	for i := 0; i <= 16; i++ {
+		for j := 0; j <= i; j++ {
+			unit := EuclidianRhythm(j, i)
+			on := 0
+			for _, b := range unit {
+				if b {
+					on++
+				}
+			}
+			if on != j {
+				t.Errorf("Expecting %d notes to be on in E(%d, %d): got %d:\n%v", j, j, i, on, unit)
+			}
+		}
+	}
+}

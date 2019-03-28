@@ -19,7 +19,7 @@ func EuclidianRhythm(n, over int, tickDuration uint, seq Sequence) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
 		ix := (t % length) / tickDuration
 		if rhythm[ix] {
-			seq(t/uint(n), t, s)
+			seq(counter, t, s)
 		}
 	}
 }

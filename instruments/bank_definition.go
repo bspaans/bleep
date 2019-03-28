@@ -14,6 +14,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+func WrapError(in string, err error) error {
+	return fmt.Errorf("%s > %s", in, err.Error())
+}
+
 type DelayOptionsDef struct {
 	Time   float64 `json:"time" yaml:"time"`
 	Factor float64 `json:"factor" yaml:"factor"`
@@ -103,7 +107,22 @@ type LPFOptionsDef struct {
 
 func (f *LPFOptionsDef) Validate() error {
 	if f.Cutoff == 0.0 {
-		return fmt.Errorf("Missing 'cutoff' in lpf options")
+		return fmt.Errorf("Missing 'cutoff' option")
+	}
+	return nil
+}
+
+type BandOptionsDef struct {
+	Lowest  float64
+	Highest float64
+}
+
+func (f *BandOptionsDef) Validate() error {
+	if f.Lowest == 0.0 {
+		return fmt.Errorf("Missing 'lowest' in lpf options")
+	}
+	if f.Highest == 0.0 {
+		return fmt.Errorf("Missing 'highest' option")
 	}
 	return nil
 }
@@ -116,6 +135,10 @@ type FilterOptionsDef struct {
 	Tremelo     *TremeloOptionsDef     `json:"tremelo" yaml:"tremelo"`
 	Convolution *ConvolutionOptionsDef `json:"convolution" yaml:"convolution"`
 	LPF         *LPFOptionsDef         `json:"lpf" yaml:"lpf"`
+	HPF         *LPFOptionsDef         `json:"hpf" yaml:"hpf"`
+	BPF         *BandOptionsDef        `json:"bpf" yaml:"bpf"`
+	Sum         []*FilterOptionsDef    `json:"sum" yaml:"sum"`
+	Average     []*FilterOptionsDef    `json:"average" yaml:"average"`
 }
 
 func (f *FilterOptionsDef) Filter() filters.Filter {
@@ -124,7 +147,11 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 	} else if f.Overdrive != nil {
 		return filters.NewOverdriveFilter(f.Overdrive.Factor)
 	} else if f.LPF != nil {
-		return filters.NewLowPassFilter(f.LPF.Cutoff)
+		return filters.NewLowPassConvolutionFilter(f.LPF.Cutoff, 11)
+	} else if f.HPF != nil {
+		return filters.NewHighPassConvolutionFilter(f.HPF.Cutoff, 11)
+	} else if f.BPF != nil {
+		return filters.NewBandPassConvolutionFilter(f.BPF.Lowest, f.BPF.Highest, 9)
 	} else if f.Distortion != nil {
 		return filters.NewDistortionFilter(f.Distortion.Level)
 	} else if f.Flanger != nil {
@@ -133,6 +160,18 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 		return filters.NewTremeloFilter(f.Tremelo.Rate, f.Tremelo.Factor)
 	} else if f.Convolution != nil {
 		return filters.MustNewSimpleConvolutionFilterFromWav(f.Convolution.File)
+	} else if f.Sum != nil {
+		gs := []filters.Filter{}
+		for _, filter := range f.Sum {
+			gs = append(gs, filter.Filter())
+		}
+		return filters.SumFilter(gs...)
+	} else if f.Average != nil {
+		gs := []filters.Filter{}
+		for _, filter := range f.Average {
+			gs = append(gs, filter.Filter())
+		}
+		return filters.AverageFilter(gs...)
 	}
 	panic("unknown filter")
 	return nil
@@ -145,6 +184,10 @@ func (f *FilterOptionsDef) Validate() error {
 		return f.Overdrive.Validate()
 	} else if f.LPF != nil {
 		return f.LPF.Validate()
+	} else if f.HPF != nil {
+		return f.HPF.Validate()
+	} else if f.BPF != nil {
+		return f.BPF.Validate()
 	} else if f.Distortion != nil {
 		return f.Distortion.Validate()
 	} else if f.Flanger != nil {
@@ -153,9 +196,24 @@ func (f *FilterOptionsDef) Validate() error {
 		return f.Tremelo.Validate()
 	} else if f.Convolution != nil {
 		return f.Convolution.Validate()
-	} else {
-		return errors.New("Unknown filter")
+	} else if f.Sum != nil {
+		for _, filter := range f.Sum {
+			err := filter.Validate()
+			if err != nil {
+				return WrapError("sum filter", err)
+			}
+		}
+		return nil
+	} else if f.Average != nil {
+		for _, filter := range f.Average {
+			err := filter.Validate()
+			if err != nil {
+				return WrapError("average filter", err)
+			}
+		}
+		return nil
 	}
+	return errors.New("Unknown filter")
 }
 
 type FilterDef struct {

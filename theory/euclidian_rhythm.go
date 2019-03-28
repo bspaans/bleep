@@ -3,25 +3,27 @@ package theory
 func EuclidianRhythm(n, over int) []bool {
 	result := make([]bool, over)
 
+	if n == 0 {
+		return result
+	}
+
 	// Bjorklunds Algorithm
 	// Generate the first buckets
 	// e.g. [[1], [1], [1], [1], [1], [0], [0], ...., [0]]
 	//
 	nrOfBuckets := over
 	buckets := make([][]bool, nrOfBuckets)
-	zeroes := 0
+	left_to_distribute := 0
 	for i := 0; i < nrOfBuckets; i++ {
 		v := i < n
 		buckets[i] = []bool{v}
 		if !v {
-			zeroes++
+			left_to_distribute++
 		}
 	}
 	ix := 0
-	for zeroes != 0 {
-		if ix >= nrOfBuckets {
-			ix = 0
-		} else if !buckets[ix][0] {
+	for left_to_distribute != 0 {
+		if ix >= nrOfBuckets-1 || !buckets[ix][0] {
 			ix = 0
 		} else {
 			bix := nrOfBuckets - 1
@@ -29,18 +31,17 @@ func EuclidianRhythm(n, over int) []bool {
 			buckets[bix] = []bool{}
 			ix++
 			nrOfBuckets--
-			zeroes--
-			// no more zeroes left, but we may have some more buckets
-			// we can distribute
-			if zeroes == 0 {
+			left_to_distribute--
+			// see if there are more buckets left to distribute
+			if left_to_distribute == 0 {
 				ix = 0
 				l := len(buckets[0])
 				for j := 1; j < nrOfBuckets; j++ {
 					if len(buckets[j]) != l {
-						zeroes++
+						left_to_distribute++
 					}
 				}
-				if zeroes == 1 { // only one remainder
+				if left_to_distribute == 1 { // only one remainder
 					break
 				}
 			}
