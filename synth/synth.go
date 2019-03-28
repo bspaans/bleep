@@ -98,6 +98,8 @@ func (s *Synth) dispatchEvent(ev *Event) {
 		s.Mixer.SetTremelo(ch, values[0])
 	} else if et == ProgramChange {
 		s.Mixer.ChangeInstrument(s.Config, ch, values[0])
+	} else if et == SetInstrument {
+		s.Mixer.SetInstrument(s.Config, ch, ev.Instrument)
 	} else if et == SilenceChannel {
 		s.Mixer.SilenceChannel(ch)
 	} else if et == SetChannelVolume {

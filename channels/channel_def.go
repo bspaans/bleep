@@ -22,6 +22,7 @@ type ChannelDef struct {
 	LPF_Cutoff int `yaml:"lpf_cuttoff"`
 	HPF_Cutoff int `yaml:"hpf_cuttoff"`
 	Grain      *instruments.GrainsOptionsDef
+	Generator  *instruments.GeneratorDef
 }
 
 func ParseDuration(d interface{}, bpm float64) (float64, error) {

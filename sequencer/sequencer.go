@@ -123,7 +123,12 @@ func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
 	for _, channelDef := range seq.InitialChannelSetup {
 		ch := channelDef.Channel
 		if ch != 9 {
-			s <- synth.NewEvent(synth.ProgramChange, ch, []int{channelDef.Instrument})
+			if channelDef.Generator == nil {
+				s <- synth.NewEvent(synth.ProgramChange, ch, []int{channelDef.Instrument})
+			} else {
+				instr := channelDef.Generator.Generator
+				s <- synth.NewInstrumentEvent(synth.SetInstrument, ch, instr)
+			}
 		}
 		s <- synth.NewEvent(synth.SetTremelo, ch, []int{channelDef.Tremelo})
 		s <- synth.NewEvent(synth.SetReverb, ch, []int{channelDef.Reverb})

@@ -55,6 +55,8 @@ Things that filter (`filters/`):
 * Tremelo filter
 * First order low pass filter
 * Convolution filter
+* Low Pass Convolution filter
+* High Pass Convolution filter
 
 Things that mix: 
 

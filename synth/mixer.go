@@ -106,6 +106,14 @@ func (m *Mixer) ChangeInstrument(cfg *audio.AudioConfig, channel, instr int) {
 	}
 }
 
+func (m *Mixer) SetInstrument(cfg *audio.AudioConfig, channel int, instr instruments.Instrument) {
+	if channel < len(m.Channels) {
+		m.Channels[channel].SetInstrument(func() generators.Generator {
+			return instr(cfg)
+		})
+	}
+}
+
 func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int, outputEvents chan *ui.UIEvent) []int {
 	samples := generators.GetEmptySampleArray(cfg, n)
 	solo := m.HasSolo()

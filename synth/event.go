@@ -1,5 +1,7 @@
 package synth
 
+import "github.com/bspaans/bleep/instruments"
+
 type EventType int
 
 const (
@@ -31,6 +33,7 @@ const (
 
 	ToggleSoloChannel  EventType = iota
 	SilenceAllChannels EventType = iota
+	SetInstrument      EventType = iota
 )
 
 type Event struct {
@@ -39,6 +42,7 @@ type Event struct {
 	Value       string
 	Values      []int
 	FloatValues []float64
+	Instrument  instruments.Instrument
 }
 
 func NewEvent(ty EventType, channel int, values []int) *Event {
@@ -62,5 +66,13 @@ func NewStringEvent(ty EventType, channel int, value string) *Event {
 		Type:    ty,
 		Channel: channel,
 		Value:   value,
+	}
+}
+
+func NewInstrumentEvent(ty EventType, channel int, value instruments.Instrument) *Event {
+	return &Event{
+		Type:       ty,
+		Channel:    channel,
+		Instrument: value,
 	}
 }

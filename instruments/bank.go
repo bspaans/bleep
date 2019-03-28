@@ -6,6 +6,7 @@ import (
 )
 
 type BankType func(cfg *audio.AudioConfig) generators.Generator
+type Instrument BankType
 
 var Bank = make([]BankType, 128)
 var PercussionBank = make([]BankType, 128)
