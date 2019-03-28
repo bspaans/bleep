@@ -104,9 +104,9 @@ func (f *ChannelFX) Set(fx FX, value float64) {
 	} else if fx == HPF_Cutoff {
 		f.HPF_Cutoff = value
 		if f.hpf == nil {
-			f.lpf = filters.NewHighPassConvolutionFilter(f.HPF_Cutoff, 25)
+			f.hpf = filters.NewHighPassConvolutionFilter(f.HPF_Cutoff, 51)
 		} else {
-			f.lpf.(*filters.HighPassConvolutionFilter).Cutoff = f.HPF_Cutoff
+			f.hpf.(*filters.HighPassConvolutionFilter).Cutoff = f.HPF_Cutoff
 		}
 		f.CachedFilter = nil
 	}

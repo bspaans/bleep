@@ -1,7 +1,6 @@
 package sequencer
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -40,7 +39,6 @@ func IntRangeAutomation(min, max, step int) IntAutomation {
 			intRange := uint(max - min)
 			steps := uint(math.Ceil(float64(intRange) / float64(step)))
 			v := min + step*int(counter%steps)
-			fmt.Println(v)
 			return v
 		}
 	}
@@ -127,7 +125,6 @@ func OffsetAutomation(offset uint, a IntAutomation) IntAutomation {
 
 func IntNegativeOffsetAutomation(offset uint, a IntAutomation) IntAutomation {
 	return func(counter, t uint) int {
-		fmt.Println(counter, t)
 		return a(counter-1, t-offset)
 	}
 }
