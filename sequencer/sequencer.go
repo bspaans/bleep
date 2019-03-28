@@ -128,6 +128,7 @@ func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
 		s <- synth.NewEvent(synth.SetTremelo, ch, []int{channelDef.Tremelo})
 		s <- synth.NewEvent(synth.SetReverb, ch, []int{channelDef.Reverb})
 		s <- synth.NewEvent(synth.SetLPFCutoff, ch, []int{channelDef.LPF_Cutoff})
+		s <- synth.NewEvent(synth.SetHPFCutoff, ch, []int{channelDef.HPF_Cutoff})
 		s <- synth.NewEvent(synth.SetChannelVolume, ch, []int{channelDef.Volume})
 		s <- synth.NewEvent(synth.SetChannelPanning, ch, []int{channelDef.Panning})
 

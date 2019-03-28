@@ -278,6 +278,7 @@ type SequenceDef struct {
 	ReverbTime     *FloatChannelAutomationDef `yaml:"reverb_time"`
 	Tremelo        *ChannelAutomationDef      `yaml:"tremelo"`
 	LPF_Cutoff     *ChannelAutomationDef      `yaml:"lpf_cutoff"`
+	HPF_Cutoff     *ChannelAutomationDef      `yaml:"hpf_cutoff"`
 	Volume         *ChannelAutomationDef      `yaml:"volume"`
 	GrainSize      *FloatChannelAutomationDef `yaml:"grain_size"`
 	GrainBirthRate *FloatChannelAutomationDef `yaml:"grain_birth_rate"`
@@ -321,6 +322,12 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		return s, nil
 	} else if e.LPF_Cutoff != nil {
 		s, err := e.LPF_Cutoff.GetSequence(seq, LPF_CutoffAutomation)
+		if err != nil {
+			return nil, WrapError("lpf_cutoff", err)
+		}
+		return s, nil
+	} else if e.HPF_Cutoff != nil {
+		s, err := e.HPF_Cutoff.GetSequence(seq, HPF_CutoffAutomation)
 		if err != nil {
 			return nil, WrapError("lpf_cutoff", err)
 		}

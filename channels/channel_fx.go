@@ -13,6 +13,7 @@ const (
 	Phaser     FX = iota
 	Tremelo    FX = iota
 	LPF_Cutoff FX = iota
+	HPF_Cutoff FX = iota
 )
 
 type ChannelFX struct {
@@ -20,6 +21,7 @@ type ChannelFX struct {
 	Reverb     float64 // fake supported (through delayfilter)
 	ReverbTime float64
 	LPF_Cutoff float64
+	HPF_Cutoff float64
 	Chorus     float64 // not supported
 	Phaser     float64 // not supported
 
@@ -28,6 +30,7 @@ type ChannelFX struct {
 	reverb  filters.Filter
 	tremelo filters.Filter
 	lpf     filters.Filter
+	hpf     filters.Filter
 }
 
 func NewChannelFX() *ChannelFX {
@@ -39,6 +42,9 @@ func (f *ChannelFX) Filter() filters.Filter {
 		return f.CachedFilter
 	}
 	var filter filters.Filter
+	if f.HPF_Cutoff != 0.0 {
+		filter = filters.ComposedFilter(f.hpf, filter)
+	}
 	if f.LPF_Cutoff != 0.0 {
 		filter = filters.ComposedFilter(f.lpf, filter)
 	}
@@ -93,6 +99,14 @@ func (f *ChannelFX) Set(fx FX, value float64) {
 			f.lpf = filters.NewLowPassConvolutionFilter(f.LPF_Cutoff, 25)
 		} else {
 			f.lpf.(*filters.LowPassConvolutionFilter).Cutoff = f.LPF_Cutoff
+		}
+		f.CachedFilter = nil
+	} else if fx == HPF_Cutoff {
+		f.HPF_Cutoff = value
+		if f.hpf == nil {
+			f.lpf = filters.NewHighPassConvolutionFilter(f.HPF_Cutoff, 25)
+		} else {
+			f.lpf.(*filters.HighPassConvolutionFilter).Cutoff = f.HPF_Cutoff
 		}
 		f.CachedFilter = nil
 	}

@@ -20,6 +20,7 @@ type ChannelDef struct {
 	Volume     int
 	Panning    int
 	LPF_Cutoff int `yaml:"lpf_cuttoff"`
+	HPF_Cutoff int `yaml:"hpf_cuttoff"`
 	Grain      *instruments.GrainsOptionsDef
 }
 

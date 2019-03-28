@@ -92,6 +92,8 @@ func (s *Synth) dispatchEvent(ev *Event) {
 		s.Mixer.SetReverbTime(ch, ev.FloatValues[0])
 	} else if et == SetLPFCutoff {
 		s.Mixer.SetLPFCutoff(ch, values[0])
+	} else if et == SetHPFCutoff {
+		s.Mixer.SetHPFCutoff(ch, values[0])
 	} else if et == SetTremelo {
 		s.Mixer.SetTremelo(ch, values[0])
 	} else if et == ProgramChange {

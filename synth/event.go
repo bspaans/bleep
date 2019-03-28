@@ -20,6 +20,7 @@ const (
 	// Non-midi; require float value(s)
 	SetReverbTime     EventType = iota
 	SetLPFCutoff      EventType = iota
+	SetHPFCutoff      EventType = iota
 	SetGrain          EventType = iota
 	SetGrainGain      EventType = iota
 	SetGrainSize      EventType = iota

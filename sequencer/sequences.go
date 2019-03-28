@@ -167,6 +167,12 @@ func LPF_CutoffAutomation(channel int, cutoffF IntAutomation) Sequence {
 	}
 }
 
+func HPF_CutoffAutomation(channel int, cutoffF IntAutomation) Sequence {
+	return func(counter, t uint, s chan *synth.Event) {
+		s <- synth.NewEvent(synth.SetHPFCutoff, channel, []int{cutoffF(counter, t)})
+	}
+}
+
 func ChannelVolumeAutomation(channel int, volumeF IntAutomation) Sequence {
 	return func(counter, t uint, s chan *synth.Event) {
 		s <- synth.NewEvent(synth.SetChannelVolume, channel, []int{volumeF(counter, t)})

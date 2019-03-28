@@ -48,10 +48,12 @@ type LowPassConvolutionFilter struct {
 	Cutoff float64
 
 	// The order of the filter. Should be odd.
-	// The order can't be changed once set without reinstatiating.
+	// The order can't be changed once set without resetting the convolution
+	// filter.
 	Order int
 
-	convolutionFilter *SimpleConvolutionFilter
+	// The underlying SimpleConvolutionFilter used.
+	ConvolutionFilter *SimpleConvolutionFilter
 }
 
 func NewLowPassConvolutionFilter(cutoff float64, order int) *LowPassConvolutionFilter {
@@ -63,12 +65,12 @@ func NewLowPassConvolutionFilter(cutoff float64, order int) *LowPassConvolutionF
 
 func (f *LowPassConvolutionFilter) Filter(cfg *audio.AudioConfig, samples []float64) []float64 {
 	coefficients := LowPassConvolution(float64(cfg.SampleRate), f.Cutoff, f.Order)
-	if f.convolutionFilter == nil {
-		f.convolutionFilter = NewSimpleConvolutionFilter(coefficients)
+	if f.ConvolutionFilter == nil {
+		f.ConvolutionFilter = NewSimpleConvolutionFilter(coefficients)
 	} else {
-		f.convolutionFilter.Coefficients = coefficients
+		f.ConvolutionFilter.Coefficients = coefficients
 	}
-	return f.convolutionFilter.Filter(cfg, samples)
+	return f.ConvolutionFilter.Filter(cfg, samples)
 }
 
 // Order should be odd.
