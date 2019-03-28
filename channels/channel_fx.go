@@ -90,9 +90,9 @@ func (f *ChannelFX) Set(fx FX, value float64) {
 	} else if fx == LPF_Cutoff {
 		f.LPF_Cutoff = value
 		if f.lpf == nil {
-			f.lpf = filters.NewLowPassFilter(f.LPF_Cutoff)
+			f.lpf = filters.NewLowPassConvolutionFilter(f.LPF_Cutoff, 25)
 		} else {
-			f.lpf.(*filters.LowPassFilter).Cutoff = f.LPF_Cutoff
+			f.lpf.(*filters.LowPassConvolutionFilter).Cutoff = f.LPF_Cutoff
 		}
 		f.CachedFilter = nil
 	}

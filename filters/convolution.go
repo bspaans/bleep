@@ -21,7 +21,7 @@ type SimpleConvolutionFilter struct {
 	RightDelayLine *ring.Ring
 }
 
-func NewSimpleConvolutionFilter(coefficients []float64) Filter {
+func NewSimpleConvolutionFilter(coefficients []float64) *SimpleConvolutionFilter {
 	return &SimpleConvolutionFilter{
 		Coefficients: coefficients,
 	}

@@ -1,3 +1,4 @@
+// Filters take samples as an input and produce samples as an output.
 package filters
 
 import (
