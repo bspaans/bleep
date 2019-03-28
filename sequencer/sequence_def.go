@@ -15,6 +15,7 @@ func WrapError(in string, err error) error {
 type RangeDef struct {
 	From        int
 	To          int
+	Step        int
 	ChangeEvery int `yaml:"change_every"`
 }
 
@@ -32,7 +33,7 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 	} else if a.Cycle != nil {
 		return IntCycleAutomation(*a.Cycle), nil
 	} else if a.Range != nil {
-		return IntRangeAutomation(a.Range.From, a.Range.To), nil
+		return IntRangeAutomation(a.Range.From, a.Range.To, a.Range.Step), nil
 	} else if a.Sweep != nil {
 		return IntSweepAutomation(a.Sweep.From, a.Sweep.To, a.Sweep.ChangeEvery), nil
 	} else if a.FadeIn != nil {

@@ -1,6 +1,9 @@
 package sequencer
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 type IntAutomation func(counter, t uint) int
 type IntArrayAutomation func(counter, t uint) []int
@@ -18,11 +21,28 @@ func IntArrayIdAutomation(id []int) IntArrayAutomation {
 	}
 }
 
-func IntRangeAutomation(min, max int) IntAutomation {
+func IntRangeAutomation(min, max, step int) IntAutomation {
+	if step == 0 {
+		step = 1
+	}
+	reverse := false
+	if max < min {
+		reverse = true
+	}
+
 	return func(counter, t uint) int {
-		intRange := uint(max - min)
-		v := min + int(counter%intRange)
-		return v
+		if reverse {
+			intRange := uint(min - max)
+			steps := uint(math.Ceil(float64(intRange) / float64(step)))
+			v := min - step*int(counter%steps)
+			return v
+		} else {
+			intRange := uint(max - min)
+			steps := uint(math.Ceil(float64(intRange) / float64(step)))
+			v := min + step*int(counter%steps)
+			fmt.Println(v)
+			return v
+		}
 	}
 }
 
