@@ -20,7 +20,7 @@ Old examples first:
 
 ## Features
 
-Things that generates waveforms (`generators/`):
+Things that generate waveforms (`generators/`):
 
 * Sine wave oscillator
 * Square wave oscillator
@@ -54,6 +54,7 @@ Things that filter (`filters/`):
 * Flanger filter
 * Tremelo filter
 * First order low pass filter
+* Convolution filter
 
 Things that mix: 
 

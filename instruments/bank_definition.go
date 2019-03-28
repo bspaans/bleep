@@ -85,6 +85,18 @@ func (f *TremeloOptionsDef) Validate() error {
 	return nil
 }
 
+type ConvolutionOptionsDef struct {
+	File string `json:"file" yaml:"file"`
+}
+
+func (f *ConvolutionOptionsDef) Validate() error {
+	_, err := os.Stat(f.File)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 type LPFOptionsDef struct {
 	Cutoff float64 `json:"cutoff" yaml:"cutoff"`
 }
@@ -97,12 +109,13 @@ func (f *LPFOptionsDef) Validate() error {
 }
 
 type FilterOptionsDef struct {
-	Delay      *DelayOptionsDef      `json:"delay" yaml:"delay"`
-	Overdrive  *OverdriveOptionsDef  `json:"overdrive" yaml:"overdrive"`
-	Distortion *DistortionOptionsDef `json:"distortion" yaml:"distortion"`
-	Flanger    *FlangerOptionsDef    `json:"flanger" yaml:"flanger"`
-	Tremelo    *TremeloOptionsDef    `json:"tremelo" yaml:"tremelo"`
-	LPF        *LPFOptionsDef        `json:"lpf" yaml:"lpf"`
+	Delay       *DelayOptionsDef       `json:"delay" yaml:"delay"`
+	Overdrive   *OverdriveOptionsDef   `json:"overdrive" yaml:"overdrive"`
+	Distortion  *DistortionOptionsDef  `json:"distortion" yaml:"distortion"`
+	Flanger     *FlangerOptionsDef     `json:"flanger" yaml:"flanger"`
+	Tremelo     *TremeloOptionsDef     `json:"tremelo" yaml:"tremelo"`
+	Convolution *ConvolutionOptionsDef `json:"convolution" yaml:"convolution"`
+	LPF         *LPFOptionsDef         `json:"lpf" yaml:"lpf"`
 }
 
 func (f *FilterOptionsDef) Filter() filters.Filter {
@@ -118,6 +131,8 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 		return filters.NewFlangerFilter(f.Flanger.Time, f.Flanger.Factor, f.Flanger.Rate)
 	} else if f.Tremelo != nil {
 		return filters.NewTremeloFilter(f.Tremelo.Rate, f.Tremelo.Factor)
+	} else if f.Convolution != nil {
+		return filters.MustNewSimpleConvolutionFilterFromWav(f.Convolution.File)
 	}
 	panic("unknown filter")
 	return nil
@@ -136,6 +151,8 @@ func (f *FilterOptionsDef) Validate() error {
 		return f.Flanger.Validate()
 	} else if f.Tremelo != nil {
 		return f.Tremelo.Validate()
+	} else if f.Convolution != nil {
+		return f.Convolution.Validate()
 	} else {
 		return errors.New("Unknown filter")
 	}
