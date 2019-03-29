@@ -57,9 +57,9 @@ func (f *FlangerFilter) Filter(cfg *audio.AudioConfig, samples []float64) []floa
 			f.RightDelayed[f.Phase] = samples[ix+1]
 		}
 
-		result[ix] = f.Factor*samples[ix] + f.Factor*f.LeftDelayed[delayedIx]
+		result[ix] = (1.0-f.Factor)*samples[ix] + f.Factor*f.LeftDelayed[delayedIx]
 		if cfg.Stereo {
-			result[ix+1] = f.Factor*samples[ix+1] + f.Factor*f.RightDelayed[delayedIx]
+			result[ix+1] = (1.0-f.Factor)*samples[ix+1] + f.Factor*f.RightDelayed[delayedIx]
 		}
 
 		f.Phase += 1

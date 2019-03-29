@@ -50,6 +50,27 @@ func IntRangeAutomation(min, max, step int) IntAutomation {
 	}
 }
 
+func IntTransposeAutomation(transpose int, automation IntAutomation) IntAutomation {
+	return func(s *Sequencer, counter, t uint) int {
+		return transpose + automation(s, counter, t)
+	}
+}
+func FloatTransposeAutomation(transpose float64, automation FloatAutomation) FloatAutomation {
+	return func(s *Sequencer, counter, t uint) float64 {
+		return transpose + automation(s, counter, t)
+	}
+}
+func IntArrayTransposeAutomation(transpose int, automation IntArrayAutomation) IntArrayAutomation {
+	return func(s *Sequencer, counter, t uint) []int {
+		values := automation(s, counter, t)
+		result := make([]int, len(values))
+		for i, v := range values {
+			result[i] = v + transpose
+		}
+		return result
+	}
+}
+
 func IntFadeInAutomation(from, to, changeEvery int) IntAutomation {
 	l := to - from
 	diff := 1.0 / float64(changeEvery)

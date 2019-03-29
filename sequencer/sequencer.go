@@ -113,7 +113,7 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 		}
 
 		millisecondsPerBeat := 60000.0 / seq.BPM
-		millisecondsPerTick := time.Duration(millisecondsPerBeat/float64(seq.Granularity)) * time.Millisecond
+		millisecondsPerTick := time.Duration(millisecondsPerBeat / float64(seq.Granularity) * 1000000)
 
 		elapsed := time.Now().Sub(start)
 		if elapsed > millisecondsPerTick {

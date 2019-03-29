@@ -3,12 +3,13 @@ package sequencer
 import "fmt"
 
 type AutomationDef struct {
-	BackAndForth *[]int    `yaml:"back_and_forth"`
-	Cycle        *[]int    `yaml:"cycle"`
-	Range        *RangeDef `yaml:"range"`
-	Sweep        *RangeDef `yaml:"sweep"`
-	FadeIn       *RangeDef `yaml:"fade_in"`
-	Register     *int      `yaml:"register"`
+	BackAndForth *[]int           `yaml:"back_and_forth"`
+	Cycle        *[]int           `yaml:"cycle"`
+	Range        *RangeDef        `yaml:"range"`
+	Sweep        *RangeDef        `yaml:"sweep"`
+	FadeIn       *RangeDef        `yaml:"fade_in"`
+	Register     *int             `yaml:"register"`
+	Transpose    *IntTransposeDef `yaml:"transpose"`
 }
 
 func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
@@ -24,13 +25,20 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 		return IntFadeInAutomation(a.FadeIn.From, a.FadeIn.To, a.FadeIn.ChangeEvery), nil
 	} else if a.Register != nil {
 		return IntRegisterAutomation(*a.Register), nil
+	} else if a.Transpose != nil {
+		automation, err := a.Transpose.Automation.GetAutomation()
+		if err != nil {
+			return nil, err
+		}
+		return IntTransposeAutomation(a.Transpose.Transpose, automation), nil
 	}
 	return nil, fmt.Errorf("Missing automation")
 }
 
 type FloatAutomationDef struct {
-	BackAndForth *[]float64 `yaml:"back_and_forth"`
-	Register     *int       `yaml:"register"`
+	BackAndForth *[]float64         `yaml:"back_and_forth"`
+	Register     *int               `yaml:"register"`
+	Transpose    *FloatTransposeDef `yaml:"transpose"`
 }
 
 func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
@@ -38,6 +46,12 @@ func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
 		return FloatBackAndForthAutomation(*a.BackAndForth), nil
 	} else if a.Register != nil {
 		return FloatRegisterAutomation(*a.Register), nil
+	} else if a.Transpose != nil {
+		automation, err := a.Transpose.Automation.GetAutomation()
+		if err != nil {
+			return nil, err
+		}
+		return FloatTransposeAutomation(a.Transpose.Transpose, automation), nil
 	}
 	return nil, fmt.Errorf("Missing automation")
 }
@@ -59,8 +73,9 @@ func (c *CycleChordsDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, erro
 }
 
 type IntArrayAutomationDef struct {
-	CycleChords *CycleChordsDef `yaml:"cycle_chords"`
-	Register    *int            `yaml:"register"`
+	CycleChords *CycleChordsDef       `yaml:"cycle_chords"`
+	Register    *int                  `yaml:"register"`
+	Transpose   *IntArrayTransposeDef `yaml:"transpose"`
 }
 
 func (a *IntArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, error) {
@@ -68,6 +83,25 @@ func (a *IntArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomatio
 		return IntArrayRegisterAutomation(*a.Register), nil
 	} else if a.CycleChords != nil {
 		return a.CycleChords.GetAutomation(seq)
+	} else if a.Transpose != nil {
+		automation, err := a.Transpose.Automation.GetAutomation(seq)
+		if err != nil {
+			return nil, err
+		}
+		return IntArrayTransposeAutomation(a.Transpose.Transpose, automation), nil
 	}
 	return nil, fmt.Errorf("Missing array automation")
+}
+
+type IntTransposeDef struct {
+	Transpose  int           `yaml:"value"`
+	Automation AutomationDef `yaml:",inline"`
+}
+type FloatTransposeDef struct {
+	Transpose  float64            `yaml:"value"`
+	Automation FloatAutomationDef `yaml:",inline"`
+}
+type IntArrayTransposeDef struct {
+	Transpose  int                   `yaml:"value"`
+	Automation IntArrayAutomationDef `yaml:",inline"`
 }
