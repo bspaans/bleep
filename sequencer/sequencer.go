@@ -8,7 +8,7 @@ import (
 	"github.com/bspaans/bleep/synth"
 )
 
-type Sequence func(counter, t uint, s chan *synth.Event)
+type Sequence func(seq *Sequencer, counter, t uint, s chan *synth.Event)
 
 func Whole(seq *Sequencer) uint {
 	return uint(seq.Granularity) * 4
@@ -40,14 +40,20 @@ type Sequencer struct {
 	FromFile            string
 	Started             bool
 	InitialChannelSetup []*channels.ChannelDef
+	IntRegisters        []int
+	IntArrayRegisters   [][]int
+	FloatRegisters      []float64
 }
 
 func NewSequencer(bpm float64, granularity int) *Sequencer {
 	seq := &Sequencer{
-		BPM:         bpm,
-		Granularity: granularity,
-		Sequences:   []Sequence{},
-		Inputs:      make(chan *SequencerEvent, 10),
+		BPM:               bpm,
+		Granularity:       granularity,
+		Sequences:         []Sequence{},
+		Inputs:            make(chan *SequencerEvent, 10),
+		IntRegisters:      make([]int, 32),
+		IntArrayRegisters: make([][]int, 32),
+		FloatRegisters:    make([]float64, 32),
 	}
 	return seq
 }
@@ -91,7 +97,7 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 		}
 
 		for _, sequence := range seq.Sequences {
-			sequence(seq.Time, seq.Time, s)
+			sequence(seq, seq.Time, seq.Time, s)
 		}
 
 		seq.Time += 1

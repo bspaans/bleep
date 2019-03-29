@@ -4,18 +4,18 @@ import (
 	"math"
 )
 
-type IntAutomation func(counter, t uint) int
-type IntArrayAutomation func(counter, t uint) []int
-type FloatAutomation func(counter, t uint) float64
+type IntAutomation func(s *Sequencer, counter, t uint) int
+type IntArrayAutomation func(s *Sequencer, counter, t uint) []int
+type FloatAutomation func(s *Sequencer, counter, t uint) float64
 
 func IntIdAutomation(id int) IntAutomation {
-	return func(counter, t uint) int {
+	return func(s *Sequencer, counter, t uint) int {
 		return id
 	}
 }
 
 func IntArrayIdAutomation(id []int) IntArrayAutomation {
-	return func(counter, t uint) []int {
+	return func(s *Sequencer, counter, t uint) []int {
 		return id
 	}
 }
@@ -29,7 +29,7 @@ func IntRangeAutomation(min, max, step int) IntAutomation {
 		reverse = true
 	}
 
-	return func(counter, t uint) int {
+	return func(s *Sequencer, counter, t uint) int {
 		if reverse {
 			intRange := uint(min - max)
 			steps := uint(math.Ceil(float64(intRange) / float64(step)))
@@ -51,7 +51,7 @@ func IntFadeInAutomation(from, to, changeEvery int) IntAutomation {
 	for i := 0; i < l; i++ {
 		r[i] = from + int(float64(i)*diff)
 	}
-	return func(counter, t uint) int {
+	return func(s *Sequencer, counter, t uint) int {
 		if counter >= uint(l) {
 			return to
 		}
@@ -79,23 +79,41 @@ func IntSweepAutomation(min, max, changeEvery int) IntAutomation {
 
 func IntCycleAutomation(ints []int) IntAutomation {
 	l := uint(len(ints))
-	return func(counter, t uint) int {
+	return func(s *Sequencer, counter, t uint) int {
 		ix := counter % l
 		v := ints[ix]
 		return v
 	}
 }
 
+func IntRegisterAutomation(register int) IntAutomation {
+	return func(s *Sequencer, counter, t uint) int {
+		return s.IntRegisters[register]
+	}
+}
+
+func IntArrayRegisterAutomation(s *Sequencer, register int) IntArrayAutomation {
+	return func(s *Sequencer, counter, t uint) []int {
+		return s.IntArrayRegisters[register]
+	}
+}
+
+func FloatRegisterAutomation(s *Sequencer, register int) FloatAutomation {
+	return func(s *Sequencer, counter, t uint) float64 {
+		return s.FloatRegisters[register]
+	}
+}
+
 func IntArrayCycleAutomation(f IntArrayAutomation) IntAutomation {
-	return func(counter, t uint) int {
-		ints := f(counter, t)
-		return IntCycleAutomation(ints)(counter, t)
+	return func(s *Sequencer, counter, t uint) int {
+		ints := f(s, counter, t)
+		return IntCycleAutomation(ints)(s, counter, t)
 	}
 }
 
 func IntBackAndForthAutomation(ints []int) IntAutomation {
 	l := uint(len(ints))
-	return func(counter, t uint) int {
+	return func(s *Sequencer, counter, t uint) int {
 		ix := counter % (l*2 - 2)
 		if ix < l {
 			return ints[ix]
@@ -107,7 +125,7 @@ func IntBackAndForthAutomation(ints []int) IntAutomation {
 
 func FloatBackAndForthAutomation(floats []float64) FloatAutomation {
 	l := uint(len(floats))
-	return func(counter, t uint) float64 {
+	return func(s *Sequencer, counter, t uint) float64 {
 		ix := counter % (l*2 - 2)
 		if ix < l {
 			return floats[ix]
@@ -118,25 +136,25 @@ func FloatBackAndForthAutomation(floats []float64) FloatAutomation {
 }
 
 func OffsetAutomation(offset uint, a IntAutomation) IntAutomation {
-	return func(counter, t uint) int {
-		return a(counter, t+offset)
+	return func(s *Sequencer, counter, t uint) int {
+		return a(s, counter, t+offset)
 	}
 }
 
 func IntNegativeOffsetAutomation(offset uint, a IntAutomation) IntAutomation {
-	return func(counter, t uint) int {
-		return a(counter-1, t-offset)
+	return func(s *Sequencer, counter, t uint) int {
+		return a(s, counter-1, t-offset)
 	}
 }
 
 func IntArrayNegativeOffsetAutomation(offset uint, a IntArrayAutomation) IntArrayAutomation {
-	return func(counter, t uint) []int {
-		return a(counter-1, t-offset)
+	return func(s *Sequencer, counter, t uint) []int {
+		return a(s, counter-1, t-offset)
 	}
 }
 
 func ChordCycleArrayAutomation(changeEvery int, chords [][]int) IntArrayAutomation {
-	return func(counter, t uint) []int {
+	return func(s *Sequencer, counter, t uint) []int {
 		ix := counter % (uint(changeEvery * len(chords)))
 		return chords[ix/uint(changeEvery)]
 	}

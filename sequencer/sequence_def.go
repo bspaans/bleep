@@ -207,6 +207,25 @@ func (e *OffsetDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	return Offset(duration, s), nil
 }
 
+type RegisterDef struct {
+	Register   int            `yaml:"register"`
+	Value      int            `yaml:"value"`
+	Automation *AutomationDef `yaml:"auto_value"`
+}
+
+func (e *RegisterDef) GetSequence(seq *Sequencer) (Sequence, error) {
+
+	valueF := IntIdAutomation(e.Value)
+	if e.Automation != nil {
+		valueF_, err := e.Automation.GetAutomation()
+		if err != nil {
+			return nil, WrapError("register", err)
+		}
+		valueF = valueF_
+	}
+	return SetIntRegisterAutomation(e.Register, valueF), nil
+}
+
 type SequenceDef struct {
 	Every          *RepeatDef                 `yaml:"repeat"`
 	Euclidian      *EuclidianDef              `yaml:"euclidian"`
@@ -226,6 +245,7 @@ type SequenceDef struct {
 	After          *AfterDef                  `yaml:"after"`
 	Before         *BeforeDef                 `yaml:"before"`
 	Offset         *OffsetDef                 `yaml:"offset"`
+	Register       *RegisterDef               `yaml:"register"`
 	Combine        []*SequenceDef             `yaml:"combine"`
 }
 
@@ -305,6 +325,12 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		s, err := e.GrainSpeed.GetSequence(seq, GrainSpeedAutomation)
 		if err != nil {
 			return nil, WrapError("grain_speed", err)
+		}
+		return s, nil
+	} else if e.Register != nil {
+		s, err := e.Register.GetSequence(seq)
+		if err != nil {
+			return nil, WrapError("register", err)
 		}
 		return s, nil
 	} else if e.After != nil {

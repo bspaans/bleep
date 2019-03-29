@@ -71,8 +71,10 @@ func (s *SimpleConvolutionFilter) Filter(cfg *audio.AudioConfig, samples []float
 
 		s.LeftDelayLine.Value = samples[ix]
 		sample := 0.0
+		left := s.LeftDelayLine
 		for j := 0; j < order; j++ {
-			v := s.LeftDelayLine.Move(-j).Value
+			v := left.Value
+			left = left.Prev()
 			value := 0.0
 			if v != nil {
 				value = v.(float64)
@@ -86,8 +88,10 @@ func (s *SimpleConvolutionFilter) Filter(cfg *audio.AudioConfig, samples []float
 			ix += 1
 			s.RightDelayLine.Value = samples[ix]
 			sample = 0.0
+			right := s.RightDelayLine
 			for j := 0; j < order; j++ {
-				v := s.RightDelayLine.Move(-j).Value
+				v := right.Value
+				right = right.Prev()
 				value := 0.0
 				if v != nil {
 					value = v.(float64)

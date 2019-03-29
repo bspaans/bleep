@@ -8,6 +8,7 @@ type AutomationDef struct {
 	Range        *RangeDef `yaml:"range"`
 	Sweep        *RangeDef `yaml:"sweep"`
 	FadeIn       *RangeDef `yaml:"fade_in"`
+	Register     *int      `yaml:"register"`
 }
 
 func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
@@ -21,6 +22,8 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 		return IntSweepAutomation(a.Sweep.From, a.Sweep.To, a.Sweep.ChangeEvery), nil
 	} else if a.FadeIn != nil {
 		return IntFadeInAutomation(a.FadeIn.From, a.FadeIn.To, a.FadeIn.ChangeEvery), nil
+	} else if a.Register != nil {
+		return IntRegisterAutomation(*a.Register), nil
 	}
 	return nil, fmt.Errorf("Missing automation")
 }
