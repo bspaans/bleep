@@ -93,13 +93,13 @@ func (e *PlayNoteEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
 }
 
 type PlayNotesEveryDef struct {
-	Notes              []int               `yaml:"notes"`
-	NotesAutomation    *ArrayAutomationDef `yaml:"auto_notes"`
-	Channel            int                 `yaml:"channel"`
-	Velocity           int                 `yaml:"velocity"`
-	VelocityAutomation *AutomationDef      `yaml:"auto_velocity"`
-	Duration           interface{}         `yaml:"duration"`
-	Every              interface{}         `yaml:"every"`
+	Notes              []int                  `yaml:"notes"`
+	NotesAutomation    *IntArrayAutomationDef `yaml:"auto_notes"`
+	Channel            int                    `yaml:"channel"`
+	Velocity           int                    `yaml:"velocity"`
+	VelocityAutomation *AutomationDef         `yaml:"auto_velocity"`
+	Duration           interface{}            `yaml:"duration"`
+	Every              interface{}            `yaml:"every"`
 }
 
 func (e *PlayNotesEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
@@ -226,6 +226,44 @@ func (e *RegisterDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	return SetIntRegisterAutomation(e.Register, valueF), nil
 }
 
+type FloatRegisterDef struct {
+	Register   int                 `yaml:"register"`
+	Value      float64             `yaml:"value"`
+	Automation *FloatAutomationDef `yaml:"auto_value"`
+}
+
+func (e *FloatRegisterDef) GetSequence(seq *Sequencer) (Sequence, error) {
+
+	valueF := FloatIdAutomation(e.Value)
+	if e.Automation != nil {
+		valueF_, err := e.Automation.GetAutomation()
+		if err != nil {
+			return nil, WrapError("float_register", err)
+		}
+		valueF = valueF_
+	}
+	return SetFloatRegisterAutomation(e.Register, valueF), nil
+}
+
+type IntArrayRegisterDef struct {
+	Register   int                    `yaml:"register"`
+	Value      []int                  `yaml:"value"`
+	Automation *IntArrayAutomationDef `yaml:"auto_values"`
+}
+
+func (e *IntArrayRegisterDef) GetSequence(seq *Sequencer) (Sequence, error) {
+
+	valueF := IntArrayIdAutomation(e.Value)
+	if e.Automation != nil {
+		valueF_, err := e.Automation.GetAutomation(seq)
+		if err != nil {
+			return nil, WrapError("int_array_register", err)
+		}
+		valueF = valueF_
+	}
+	return SetIntArrayRegisterAutomation(e.Register, valueF), nil
+}
+
 type SequenceDef struct {
 	Every          *RepeatDef                 `yaml:"repeat"`
 	Euclidian      *EuclidianDef              `yaml:"euclidian"`
@@ -246,6 +284,8 @@ type SequenceDef struct {
 	Before         *BeforeDef                 `yaml:"before"`
 	Offset         *OffsetDef                 `yaml:"offset"`
 	Register       *RegisterDef               `yaml:"register"`
+	FloatRegister  *FloatRegisterDef          `yaml:"float_register"`
+	ArrayRegister  *IntArrayRegisterDef       `yaml:"array_register"`
 	Combine        []*SequenceDef             `yaml:"combine"`
 }
 
@@ -331,6 +371,18 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		s, err := e.Register.GetSequence(seq)
 		if err != nil {
 			return nil, WrapError("register", err)
+		}
+		return s, nil
+	} else if e.FloatRegister != nil {
+		s, err := e.FloatRegister.GetSequence(seq)
+		if err != nil {
+			return nil, WrapError("float_register", err)
+		}
+		return s, nil
+	} else if e.ArrayRegister != nil {
+		s, err := e.ArrayRegister.GetSequence(seq)
+		if err != nil {
+			return nil, WrapError("array_register", err)
 		}
 		return s, nil
 	} else if e.After != nil {

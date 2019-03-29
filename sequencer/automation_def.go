@@ -30,11 +30,14 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 
 type FloatAutomationDef struct {
 	BackAndForth *[]float64 `yaml:"back_and_forth"`
+	Register     *int       `yaml:"register"`
 }
 
 func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
 	if a.BackAndForth != nil {
 		return FloatBackAndForthAutomation(*a.BackAndForth), nil
+	} else if a.Register != nil {
+		return FloatRegisterAutomation(*a.Register), nil
 	}
 	return nil, fmt.Errorf("Missing automation")
 }
@@ -55,12 +58,15 @@ func (c *CycleChordsDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, erro
 	return ChordCycleArrayAutomation(c.Count, c.Chords), nil
 }
 
-type ArrayAutomationDef struct {
+type IntArrayAutomationDef struct {
 	CycleChords *CycleChordsDef `yaml:"cycle_chords"`
+	Register    *int            `yaml:"register"`
 }
 
-func (a *ArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, error) {
-	if a.CycleChords != nil {
+func (a *IntArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, error) {
+	if a.Register != nil {
+		return IntArrayRegisterAutomation(*a.Register), nil
+	} else if a.CycleChords != nil {
 		return a.CycleChords.GetAutomation(seq)
 	}
 	return nil, fmt.Errorf("Missing array automation")

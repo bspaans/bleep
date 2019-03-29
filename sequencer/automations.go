@@ -14,6 +14,12 @@ func IntIdAutomation(id int) IntAutomation {
 	}
 }
 
+func FloatIdAutomation(id float64) FloatAutomation {
+	return func(s *Sequencer, counter, t uint) float64 {
+		return id
+	}
+}
+
 func IntArrayIdAutomation(id []int) IntArrayAutomation {
 	return func(s *Sequencer, counter, t uint) []int {
 		return id
@@ -92,13 +98,13 @@ func IntRegisterAutomation(register int) IntAutomation {
 	}
 }
 
-func IntArrayRegisterAutomation(s *Sequencer, register int) IntArrayAutomation {
+func IntArrayRegisterAutomation(register int) IntArrayAutomation {
 	return func(s *Sequencer, counter, t uint) []int {
 		return s.IntArrayRegisters[register]
 	}
 }
 
-func FloatRegisterAutomation(s *Sequencer, register int) FloatAutomation {
+func FloatRegisterAutomation(register int) FloatAutomation {
 	return func(s *Sequencer, counter, t uint) float64 {
 		return s.FloatRegisters[register]
 	}
@@ -156,6 +162,7 @@ func IntArrayNegativeOffsetAutomation(offset uint, a IntArrayAutomation) IntArra
 func ChordCycleArrayAutomation(changeEvery int, chords [][]int) IntArrayAutomation {
 	return func(s *Sequencer, counter, t uint) []int {
 		ix := counter % (uint(changeEvery * len(chords)))
-		return chords[ix/uint(changeEvery)]
+		v := chords[ix/uint(changeEvery)]
+		return v
 	}
 }

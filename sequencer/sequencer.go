@@ -51,9 +51,9 @@ func NewSequencer(bpm float64, granularity int) *Sequencer {
 		Granularity:       granularity,
 		Sequences:         []Sequence{},
 		Inputs:            make(chan *SequencerEvent, 10),
-		IntRegisters:      make([]int, 32),
-		IntArrayRegisters: make([][]int, 32),
-		FloatRegisters:    make([]float64, 32),
+		IntRegisters:      make([]int, 128),
+		IntArrayRegisters: make([][]int, 128),
+		FloatRegisters:    make([]float64, 128),
 	}
 	return seq
 }

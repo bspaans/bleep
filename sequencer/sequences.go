@@ -1,8 +1,6 @@
 package sequencer
 
 import (
-	"fmt"
-
 	"github.com/bspaans/bleep/synth"
 	"github.com/bspaans/bleep/theory"
 )
@@ -213,7 +211,16 @@ func GrainSpeedAutomation(channel int, sizeF FloatAutomation) Sequence {
 
 func SetIntRegisterAutomation(register int, valueF IntAutomation) Sequence {
 	return func(sequencer *Sequencer, counter, t uint, s chan *synth.Event) {
-		fmt.Println("Setting register", register, valueF(sequencer, counter, t))
 		sequencer.IntRegisters[register] = valueF(sequencer, counter, t)
+	}
+}
+func SetFloatRegisterAutomation(register int, valueF FloatAutomation) Sequence {
+	return func(sequencer *Sequencer, counter, t uint, s chan *synth.Event) {
+		sequencer.FloatRegisters[register] = valueF(sequencer, counter, t)
+	}
+}
+func SetIntArrayRegisterAutomation(register int, valueF IntArrayAutomation) Sequence {
+	return func(sequencer *Sequencer, counter, t uint, s chan *synth.Event) {
+		sequencer.IntArrayRegisters[register] = valueF(sequencer, counter, t)
 	}
 }
