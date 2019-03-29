@@ -138,6 +138,16 @@ func IntArrayCycleAutomation(f IntArrayAutomation) IntAutomation {
 	}
 }
 
+func IntArrayIndexAutomation(ix int, f IntArrayAutomation) IntArrayAutomation {
+	return func(s *Sequencer, counter, t uint) []int {
+		ints := f(s, counter, t)
+		if len(ints) == 0 {
+			return ints
+		}
+		return []int{ints[ix%len(ints)]}
+	}
+}
+
 func IntBackAndForthAutomation(ints []int) IntAutomation {
 	l := uint(len(ints))
 	return func(s *Sequencer, counter, t uint) int {

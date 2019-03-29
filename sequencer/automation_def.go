@@ -76,6 +76,7 @@ type IntArrayAutomationDef struct {
 	CycleChords *CycleChordsDef       `yaml:"cycle_chords"`
 	Register    *int                  `yaml:"register"`
 	Transpose   *IntArrayTransposeDef `yaml:"transpose"`
+	Index       *IntArrayIndexDef     `yaml:"index"`
 }
 
 func (a *IntArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, error) {
@@ -89,8 +90,19 @@ func (a *IntArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomatio
 			return nil, err
 		}
 		return IntArrayTransposeAutomation(a.Transpose.Transpose, automation), nil
+	} else if a.Index != nil {
+		automation, err := a.Index.Automation.GetAutomation(seq)
+		if err != nil {
+			return nil, err
+		}
+		return IntArrayIndexAutomation(a.Index.Index, automation), nil
 	}
 	return nil, fmt.Errorf("Missing array automation")
+}
+
+type IntArrayIndexDef struct {
+	Index      int                   `yaml:"value"`
+	Automation IntArrayAutomationDef `yaml:",inline"`
 }
 
 type IntTransposeDef struct {

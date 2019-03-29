@@ -1,0 +1,265 @@
+bpm: 200.0
+granularity: 16.0
+
+channels:
+- channel: 0
+  instrument: 28
+  reverb: 50
+  reverb_time: Sixteenth
+  volume: 120
+  panning: 57
+
+- channel: 1
+  description: Root note
+  instrument: 20
+  reverb: 100
+  reverb_time: Quarter
+  volume: 100
+  panning: 90
+
+- channel: 2
+  description: Chord accents
+  instrument: 33
+  reverb: 50
+  reverb_time: Eight
+  volume: 20
+  panning: 100
+
+- channel: 3
+  description: Bass
+  instrument: 30
+  reverb: 90
+  reverb_time: Quarter
+  volume: 20
+  panning: 47
+
+- channel: 4
+  description: Birdy chatter
+  reverb: 50
+  reverb_time: Eight
+  volume: 5
+  panning: 67
+  generator:
+    filter:
+      average:
+      - bpf:
+          lowest: 1090
+          highest: 1220
+      - bpf:
+          lowest: 2440
+          highest: 2810
+      filter:
+        flanger:
+          time: 0.5
+          factor: 0.3
+          rate: 5
+        combined:
+        - sine:
+            attack: 0.5
+            decay: 4.0
+            sustain: 0.4
+            release: 0.25
+        - transpose:
+            semitones: 12
+            gain: 0.5
+            sine:
+              attack: 0.5
+              decay: 4.0
+              sustain: 0.4
+              release: 0.25
+
+- channel: 9
+  volume: 30
+  panning: 67
+
+sequences:
+
+- repeat:
+    every: Whole
+    sequence:
+      array_register:
+        register: 0
+        auto_values:
+          cycle_chords:
+            count: 1
+            chords:
+            - [60, 72, 76]
+            - [59, 71, 76]
+            - [57, 67, 72, 76]
+            - [55, 67, 72]
+
+            - [65, 77, 81]
+            - [64, 76, 81]
+            - [62, 74, 78]
+            - [62, 74, 78]
+
+            - [62, 74, 77]
+            - [60, 74, 77]
+            - [62, 74, 77]
+            - [63, 75, 77, 81, 86]
+
+            - [60, 72, 76]
+            - [59, 71, 76]
+            - [60, 72, 76]
+            - [60, 72, 76]
+
+- repeat:
+    description: Set register 1 to bass note
+    every: Whole
+    sequence:
+      array_register:
+        register: 1
+        auto_values:
+          index:
+            value: 0
+            register: 0
+
+- repeat:
+    every: Sixteenth
+    description: Accentuate the beats
+    sequence:
+      register:
+        register: 2
+        auto_value:
+          cycle: [127, 90, 100, 90, 
+                  110, 90, 100, 90,
+                  118, 90, 100, 90,
+                  110, 90, 100, 90]
+
+
+- repeat:
+    every: Whole
+    sequence:
+      array_register:
+        register: 2
+        auto_values:
+          transpose:
+            value: -12
+            register: 0
+
+- offset:
+    offset: Half
+    sequence:
+      play_notes:
+        every: Whole
+        duration: Quarter
+        channel: 0
+        auto_notes:
+          register: 0
+        auto_velocity:
+          transpose: 
+            value: -70
+            register: 2
+
+- play_notes:
+    every: Whole
+    duration: Quarter
+    channel: 1
+    auto_notes:
+      register: 1
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- offset:
+    offset: 3.5
+    sequence:
+      play_notes:
+        every: Whole
+        duration: Eight
+        channel: 3
+        auto_notes:
+          register: 1
+        auto_velocity:
+          transpose: 
+            value: -70
+            register: 2
+
+- euclidian:
+    pulses: 2
+    over: 5
+    duration: Eight
+    sequence:
+      play_notes:
+        every: Eight
+        duration: Sixteenth
+        channel: 2
+        auto_notes:
+          transpose:
+            value: 12
+            register: 0
+        auto_velocity: 
+          transpose: 
+            value: -20
+            register: 2
+
+- play_notes:
+    description: Bass guitar on root note
+    every: Whole
+    duration: Eight
+    channel: 3
+    auto_notes:
+      transpose:
+        value: -12
+        register: 1
+    auto_velocity:
+      register: 2
+
+- play_notes:
+    every: Whole
+    duration: Whole
+    channel: 4
+    auto_notes:
+      transpose:
+        value: 0
+        register: 0
+    auto_velocity:
+      register: 2
+
+- repeat:
+    every: Whole
+    sequence:
+      volume:
+        channel: 4
+        fade_in:
+          from: 0
+          to: 4
+          change_every: 2
+
+- repeat:
+    every: Thirtysecond
+    sequence:
+      panning:
+        channel: 4
+        sweep:
+          from: 40
+          to: 104
+          change_every: 1
+
+- play_note:
+    every: Quarter
+    duration: Eight
+    channel: 9
+    note: 36
+    auto_velocity:
+      register: 2
+
+- play_note:
+    every: Eight
+    duration: Eight
+    channel: 9
+    note: 42
+    auto_velocity:
+      register: 2
+
+- offset:
+    offset: Half
+    sequence:
+      play_notes:
+        every: Whole
+        duration: Quarter
+        channel: 9
+        notes: [46,38,40]
+        auto_velocity:
+          register: 2

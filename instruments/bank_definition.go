@@ -151,7 +151,7 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 	} else if f.HPF != nil {
 		return filters.NewHighPassConvolutionFilter(f.HPF.Cutoff, 11)
 	} else if f.BPF != nil {
-		return filters.NewBandPassConvolutionFilter(f.BPF.Lowest, f.BPF.Highest, 51)
+		return filters.NewBandPassConvolutionFilter(f.BPF.Lowest, f.BPF.Highest, 13)
 	} else if f.Distortion != nil {
 		return filters.NewDistortionFilter(f.Distortion.Level)
 	} else if f.Flanger != nil {
