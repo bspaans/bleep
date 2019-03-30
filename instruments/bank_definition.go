@@ -325,6 +325,32 @@ func (w *WavOptionsDef) Validate() error {
 	return w.Options.Validate()
 }
 
+type VocoderDef struct {
+	Source  *GeneratorDef `json:"source" yaml:"source"`
+	Vocoder *GeneratorDef `json:"vocoder" yaml:"vocoder"`
+}
+
+func (w *VocoderDef) Generator(cfg *audio.AudioConfig) generators.Generator {
+	sg := w.Source.Generator(cfg)
+	vg := w.Vocoder.Generator(cfg)
+	return derived.NewVocoder(sg, vg)
+}
+
+func (w *VocoderDef) Validate() error {
+	if w.Source == nil {
+		return WrapError("vocoder", fmt.Errorf("missing 'source' parameter"))
+	} else if w.Vocoder == nil {
+		return WrapError("vocoder", fmt.Errorf("missing 'vocoder' parameter"))
+	}
+	if err := w.Source.Validate(); err != nil {
+		return WrapError("vocoder > source", err)
+	}
+	if err := w.Vocoder.Validate(); err != nil {
+		return WrapError("vocoder > vocoder", err)
+	}
+	return nil
+}
+
 type GeneratorOptionsDef struct {
 	Attack  *float64 `json:"attack" yaml:"attack"`
 	Decay   *float64 `json:"decay" yaml:"decay"`
@@ -368,6 +394,7 @@ type GeneratorDef struct {
 	Wav           *WavOptionsDef       `json:"wav" yaml:"wav"`
 	Grains        *GrainsOptionsDef    `json:"grains" yaml:"grains"`
 	Combined      []*GeneratorDef      `json:"combined" yaml:"combined"`
+	Vocoder       *VocoderDef          `json:"vocoder" yaml:"vocoder"`
 }
 
 func (d *GeneratorDef) Generator(cfg *audio.AudioConfig) generators.Generator {
@@ -392,6 +419,8 @@ func (d *GeneratorDef) Generator(cfg *audio.AudioConfig) generators.Generator {
 		g = d.ConstantPitch.Generator(cfg)
 	} else if d.Grains != nil {
 		g = d.Grains.Generator(cfg)
+	} else if d.Vocoder != nil {
+		g = d.Vocoder.Generator(cfg)
 	} else if len(d.Combined) > 0 {
 		gs := []generators.Generator{}
 		for _, gen := range d.Combined {
@@ -425,6 +454,8 @@ func (d *GeneratorDef) Validate() error {
 		return d.WhiteNoise.Validate()
 	} else if d.Wav != nil {
 		return d.Wav.Validate()
+	} else if d.Vocoder != nil {
+		return d.Vocoder.Validate()
 	} else if len(d.Combined) > 0 {
 		gs := []string{}
 		for _, gen := range d.Combined {
