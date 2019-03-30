@@ -16,6 +16,7 @@ import (
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
 var sequencer = flag.String("sequencer", "", "Load sequencer from file")
 var debugPlots = flag.Bool("plot", false, "Plot outputs (debugging tool)")
+var enable8bit = flag.Bool("8bit", false, "Set bit depth to 8bit")
 var record = flag.String("record", "", "Record .wav output")
 var instruments = flag.String("instruments", "examples/bank.yaml", "The instruments bank to load")
 var percussion = flag.String("percussion", "examples/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
@@ -31,6 +32,10 @@ func main() {
 	flag.Parse()
 
 	cfg := audio.NewAudioConfig()
+
+	if *enable8bit {
+		cfg.BitDepth = 8
+	}
 	ctrl := controller.NewController(cfg)
 
 	if *debugPlots {
@@ -57,8 +62,9 @@ func main() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
+		fmt.Println("Quitting")
 		ctrl.Quit()
-		os.Exit(1)
+		os.Exit(0)
 	}()
 
 	if *virtualMidi {

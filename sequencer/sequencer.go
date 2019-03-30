@@ -50,7 +50,7 @@ func NewSequencer(bpm float64, granularity int) *Sequencer {
 		BPM:               bpm,
 		Granularity:       granularity,
 		Sequences:         []Sequence{},
-		Inputs:            make(chan *SequencerEvent, 10),
+		Inputs:            make(chan *SequencerEvent, 32),
 		IntRegisters:      make([]int, 128),
 		IntArrayRegisters: make([][]int, 128),
 		FloatRegisters:    make([]float64, 128),
@@ -106,6 +106,10 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 		for canRead {
 			select {
 			case ev := <-seq.Inputs:
+				if ev.Type == QuitSequencer {
+					fmt.Println("Quitting sequencer")
+					return
+				}
 				seq.dispatchEvent(ev)
 			default:
 				canRead = false
@@ -189,6 +193,9 @@ func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 			}
 			seq.Sequences = seqs
 		}
+	} else if ev.Type == QuitSequencer {
+		seq.Time = 0
+		return
 	}
 }
 
@@ -197,4 +204,7 @@ func (seq *Sequencer) Restart() {
 }
 func (seq *Sequencer) Reload() {
 	seq.Inputs <- NewSequencerEvent(ReloadSequencer)
+}
+func (seq *Sequencer) Quit() {
+	seq.Inputs <- NewSequencerEvent(QuitSequencer)
 }

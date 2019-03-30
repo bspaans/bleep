@@ -6,7 +6,7 @@ import (
 )
 
 // A vocoder modulates a source generator.
-// The pitch, pitchbend and gain of the source generator are
+// The pitchbend and gain of the source generator are
 // never modified by this generator.
 //
 func NewVocoder(source, vocoder generators.Generator) generators.Generator {

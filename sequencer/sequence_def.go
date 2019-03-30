@@ -56,6 +56,7 @@ type PlayNoteEveryDef struct {
 	VelocityAutomation *AutomationDef `yaml:"auto_velocity"`
 	Duration           interface{}    `yaml:"duration"`
 	Every              interface{}    `yaml:"every"`
+	Offset             interface{}    `yaml:"offset"`
 }
 
 func (e *PlayNoteEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
@@ -89,7 +90,15 @@ func (e *PlayNoteEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	if e.VelocityAutomation == nil && e.Velocity == 0.0 {
 		return nil, WrapError("play_note", fmt.Errorf("missing velocity or auto_velocity"))
 	}
-	return PlayNoteEveryAutomation(every, duration, e.Channel, noteF, velocityF), nil
+	result := PlayNoteEveryAutomation(every, duration, e.Channel, noteF, velocityF)
+	if e.Offset != nil {
+		offset, err := parseDuration(e.Offset, seq)
+		if err != nil {
+			return nil, WrapError("play_note > offset", err)
+		}
+		return Offset(offset, result), nil
+	}
+	return result, nil
 }
 
 type PlayNotesEveryDef struct {
@@ -100,6 +109,7 @@ type PlayNotesEveryDef struct {
 	VelocityAutomation *AutomationDef         `yaml:"auto_velocity"`
 	Duration           interface{}            `yaml:"duration"`
 	Every              interface{}            `yaml:"every"`
+	Offset             interface{}            `yaml:"offset"`
 }
 
 func (e *PlayNotesEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
@@ -127,7 +137,15 @@ func (e *PlayNotesEveryDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		}
 		velocityF = velocityF_
 	}
-	return PlayNotesEveryAutomation(every, duration, e.Channel, notesF, velocityF), nil
+	result := PlayNotesEveryAutomation(every, duration, e.Channel, notesF, velocityF)
+	if e.Offset != nil {
+		offset, err := parseDuration(e.Offset, seq)
+		if err != nil {
+			return nil, WrapError("play_note > offset", err)
+		}
+		return Offset(offset, result), nil
+	}
+	return result, nil
 }
 
 type ChannelAutomationDef struct {

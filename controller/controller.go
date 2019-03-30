@@ -118,6 +118,7 @@ func (c *Controller) StartVirtualMIDIDevice() {
 // Close the Synthesizer and its sinks.
 func (c *Controller) Quit() {
 	c.Synth.Close()
+	c.Sequencer.Quit()
 }
 
 func (c *Controller) ToggleSoloChannel(ch int) {

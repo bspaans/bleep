@@ -5,6 +5,7 @@ type EventType int
 const (
 	RestartSequencer EventType = iota
 	ReloadSequencer  EventType = iota
+	QuitSequencer    EventType = iota
 )
 
 type SequencerEvent struct {

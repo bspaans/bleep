@@ -44,6 +44,7 @@ Things that wrap things that generate waveforms (`generators/derived/`):
 * Transposing generator
 * Combining multiple generators into one
 * Harmonics generator
+* Vocoder
 * A filtered generator (see below)
 
 Things that filter (`filters/`):
@@ -57,6 +58,7 @@ Things that filter (`filters/`):
 * Convolution filter
 * Low Pass Convolution filter
 * High Pass Convolution filter
+* Band Pass Convolution filter
 
 Things that mix: 
 
