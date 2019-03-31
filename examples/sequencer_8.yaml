@@ -1,4 +1,4 @@
-bpm: 80.0
+bpm: 90.0
 granularity: 16.0
 
 channels:
@@ -6,36 +6,144 @@ channels:
   volume: 15
   panning: 57
   reverb: 40
-  reverb_time: 0.1
+  reverb_time: Eight
   generator:
-    pulse:
-      duty_cycle: 0.6
-      duty_cycle_depth: 0.15
-      duty_cycle_modulator:
-        triangle:
-          pitch: 1.0
-          attack: 0.001
-          decay: 0
+    vocoder:
+      source:
+        square:
+          attack: 0.1
+          decay: 0.2
+          sustain: 1.0
+          release: 8.5
+      vocoder:
+        pulse:
+          duty_cycle: 0.9
+          duty_cycle_depth: 0.10
+          duty_cycle_modulator:
+            triangle:
+              pitch: 10.0
+              attack: 0.001
+              decay: 0
+              sustain: 0.7
+              release: 400000
+          attack: 0.5
+          decay: 0.2
           sustain: 0.7
-          release: 400000
-      attack: 0.5
-      decay: 0
-      sustain: 0.9
-      release: 2
+          release: 4
+
+- channel: 1
+  volume: 45
+  panning: 67
+  reverb: 0
+  reverb_time: 0
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/kicks/808-Kicks02.wav
+      gain: 2.0
+
+- channel: 2
+  volume: 45
+  panning: 47
+  reverb: 3
+  reverb_time: Sixteenth
+  generator:
+    filter:
+      lpf:
+        cutoff: 8000
+      wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/hihats/808-Ride3.wav
+        gain: 2.0
+
+- channel: 3
+  volume: 15
+  panning: 57
+  reverb: 3
+  reverb_time: Sixteenth
+  generator:
+    filter:
+      flanger:
+        time: 3.0
+        rate: 1
+        factor: 1.0
+      triangle:
+        attack: 0.0001
+        decay: 0
+        sustain: 0.2
+        release: 0.0
+
+- channel: 4
+  volume: 35
+  panning: 77
+  reverb: 23
+  reverb_time: Sixteenth
+  lpf_cutoff: 8000
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/hihats/808-Ride2.wav
+      gain: 1.2
 
 
 sequences:
-- repeat:
-    every: Whole
+- before: 
+    before: 48
     sequence:
-      array_register:
-        register: 0
-        auto_values:
-          cycle_chords:
-            count: 1
-            chords:
-            - [45, 48, 52]
-            - [41, 48, 50]
+      repeat:
+        every: Whole
+        sequence:
+          array_register:
+            register: 0
+            auto_values:
+              cycle_chords:
+                count: 1
+                chords:
+                - [45, 48, 52]
+                - [41, 48, 50]
+
+- after:
+    after: 48
+    sequence:
+      before:
+        before: 60
+        sequence:
+          repeat:
+            every: Whole
+            sequence:
+              array_register:
+                register: 0
+                auto_values:
+                  cycle_chords:
+                    count: 1
+                    chords:
+                    - [39, 48, 50]
+                    - [38, 48, 50]
+                    - [38, 42, 48]
+
+- after: 
+    after: 60
+    sequence:
+      repeat:
+        every: Whole
+        sequence:
+          array_register:
+            register: 0
+            auto_values:
+              cycle_chords:
+                count: 1
+                chords:
+                - [39, 44, 47]
+                - [37, 44, 45]
+- repeat:
+    every: Sixteenth
+    description: Accentuate the beats
+    sequence:
+      register:
+        register: 2
+        auto_value:
+          cycle: [127, 90, 100, 90, 
+                  110, 90, 100, 90,
+                  118, 90, 100, 90,
+                  110, 90, 100, 90]
+
 
 #############
 # CHANNEL 0 #
@@ -54,3 +162,118 @@ sequences:
       transpose: 
         value: -70
         register: 2
+
+- repeat:
+    every: Half
+    sequence:
+      volume:
+        channel: 0
+        fade_in:
+          from: 4
+          to: 8
+          change_every: 4
+
+#############
+# CHANNEL 1 #
+#############
+
+- play_note:
+    every: Quarter
+    duration: Eight
+    channel: 1
+    note: 40
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+#############
+# CHANNEL 2 #
+#############
+
+- after:
+    after: 16
+    sequence:
+      play_note:
+        every: Eight
+        duration: Eight
+        channel: 2
+        note: 40
+        auto_velocity:
+          transpose: 
+            value: -70
+            register: 2
+
+#############
+# CHANNEL 3 #
+#############
+
+- euclidian:
+    pulses: 3
+    over: 5
+    duration: Sixteenth
+    sequence:
+      play_notes:
+        every: Sixteenth
+        duration: Sixteenth
+        channel: 3
+        note: 35
+        velocity: 127
+        auto_notes:
+          transpose:
+            value: -12
+            index:
+              value: 2
+              register: 0
+        auto_velocity:
+          transpose: 
+            value: -70
+            register: 2
+
+- repeat:
+    every: Thirtysecond
+    sequence:
+      panning:
+        channel: 3
+        sweep:
+          from: 40
+          to: 104
+          change_every: 1
+
+- repeat:
+    every: Half
+    sequence:
+      volume:
+        channel: 3
+        fade_in:
+          from: 15
+          to: 25
+          change_every: 4
+
+#############
+# CHANNEL 4 #
+#############
+
+- after:
+    after: 32
+    sequence:
+      play_note:
+        every: Quarter
+        duration: Eight
+        offset: Eight
+        channel: 4
+        note: 40
+        auto_velocity:
+          transpose: 
+            value: -70
+            register: 2
+
+- repeat:
+    every: Eight
+    sequence:
+      lpf_cutoff:
+        channel: 4
+        cycle:
+          - 8000
+          - 7800
+          - 7500

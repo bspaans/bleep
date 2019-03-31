@@ -147,9 +147,9 @@ func (f *FilterOptionsDef) Filter() filters.Filter {
 	} else if f.Overdrive != nil {
 		return filters.NewOverdriveFilter(f.Overdrive.Factor)
 	} else if f.LPF != nil {
-		return filters.NewLowPassConvolutionFilter(f.LPF.Cutoff, 11)
+		return filters.NewLowPassConvolutionFilter(f.LPF.Cutoff, 5)
 	} else if f.HPF != nil {
-		return filters.NewHighPassConvolutionFilter(f.HPF.Cutoff, 11)
+		return filters.NewHighPassConvolutionFilter(f.HPF.Cutoff, 5)
 	} else if f.BPF != nil {
 		return filters.NewBandPassConvolutionFilter(f.BPF.Lowest, f.BPF.Highest, 13)
 	} else if f.Distortion != nil {

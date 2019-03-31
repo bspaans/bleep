@@ -280,45 +280,62 @@ bank:
 
 - index: 29
   name: Overdrive Guitar
+  overdrive: 
+    factor: 3.5
   filter:
-    flanger:
-      time: 0.015
-      factor: 0.4
-      rate: 1
-    filter:
-      overdrive: 
-        factor: 3.5
-      filter:
-        distortion: 
-          level: 0.5
-        combined:
-        - sine: 
+    distortion: 
+      level: 0.5
+    combined:
+    - pulse:
+        duty_cycle: 0.5
+        duty_cycle_depth: 0.15
+        duty_cycle_modulator:
+          sine:
+            pitch: 5.0
             attack: 0.001
-            decay: 0.25
-            sustain: 0.8
-            release: 4.0
-        - transpose:
-            semitones: 12.0
-            gain: 0.8 
-            triangle: 
-              attack: 0.001
-              decay: 0.25
-              sustain: 0.8
-              release: 4.0
+            decay: 0
+            sustain: 0.7
+            release: 400000
+        attack: 0.0001
+        decay: 0.25
+        sustain: 0.5
+        release: 4.0
+    - sine: 
+        attack: 0.0001
+        decay: 0.25
+        sustain: 0.5
+        release: 4.0
+    - transpose:
+        semitones: 12.0
+        gain: 0.8 
+        triangle: 
+          attack: 0.0001
+          decay: 0.25
+          sustain: 0.5
+          release: 4.0
 
 - index: 30
   name: Distortion Guitar
   filter:
-    overdrive:
-      factor: 3.0
+    lpf:
+      cutoff: 4000
     filter:
       distortion: 
-        level: 0.4
+        level: 0.95
       combined:
-      - sawtooth: 
-          attack: 0.001
+      - pulse:
+          duty_cycle: 0.7
+          duty_cycle_depth: 0.05
+          duty_cycle_modulator:
+            sine:
+              pitch: 5.0
+              attack: 0.001
+              decay: 0
+              sustain: 0.7
+              release: 400000
+          attack: 0.0001
           decay: 0.25
-          sustain: 0.8
+          sustain: 0.5
           release: 4.0
       - transpose:
           semitones: 12.0
@@ -404,46 +421,48 @@ bank:
 
 - index: 40
   name: Violin
-  filter:
-    flanger: 
-      time: 0.01
-      factor: 0.7
-      rate: 5.0
-    combined:
-    - filter:
-        overdrive: 
-          factor: 1.1
-        sawtooth: 
-          attack: 0.05
-          decay: 0.5
-          sustain: 0.8
-          release: 4.0
-    - triangle:
-        attack: 0.05
-        decay: 0.5
-        sustain: 0.8
-        release: 4.0
+  combined:
+  - sine:
+      attack: 0.001
+      decay: 2.0
+      sustain: 0.8
+      release: 2.0
+  - pulse:
+      duty_cycle: 0.2
+      duty_cycle_depth: 0.15
+      duty_cycle_modulator:
+        sine:
+          pitch: 5.0
+          attack: 0.001
+          decay: 0
+          sustain: 0.7
+          release: 400000
+      attack: 0.001
+      decay: 2.0
+      sustain: 0.8
+      release: 2.0
+
 
 - index: 48
   name: String Ensemble 1
   filter:
     delay:
       time: 1.0
-      factor: 0.8
-    combined:
-    - sine:
-        attack: 0.1
-        decay: 4.0
-        sustain: 0.4
-        release: 0.25
-    - transpose:
-        semitones: 12
-        gain: 0.5
-        sine:
-          attack: 0.1
-          decay: 4.0
-          sustain: 0.4
-          release: 0.25
+      factor: 0.4
+    pulse:
+      duty_cycle: 0.7
+      duty_cycle_depth: 0.05
+      duty_cycle_modulator:
+        triangle:
+          pitch: 5.0
+          attack: 0.001
+          decay: 0
+          sustain: 0.7
+          release: 400000
+      attack: 0.5
+      decay: 0
+      sustain: 0.9
+      release: 9
 
 - index: 49
   name: String Ensemble 2 (Slow Strings)
@@ -465,6 +484,56 @@ bank:
           decay: 4.0
           sustain: 0.4
           release: 0.25
+
+- index: 52
+  name: Voice Aahs
+  filter:
+    delay:
+      time: 1.0
+      factor: 0.4
+    filter:
+      bpf:
+        lowest: 1040
+        highest: 1070
+      pulse:
+        duty_cycle: 0.7
+        duty_cycle_depth: 0.05
+        duty_cycle_modulator:
+          triangle:
+            pitch: 5.0
+            attack: 0.001
+            decay: 0
+            sustain: 0.7
+            release: 400000
+        attack: 0.5
+        decay: 0
+        sustain: 0.9
+        release: 9
+
+- index: 53
+  name: Voice Oohs
+  filter:
+    delay:
+      time: 1.0
+      factor: 0.4
+    filter:
+      bpf:
+        lowest: 870
+        highest: 890
+      pulse:
+        duty_cycle: 0.7
+        duty_cycle_depth: 0.05
+        duty_cycle_modulator:
+          triangle:
+            pitch: 5.0
+            attack: 0.001
+            decay: 0
+            sustain: 0.7
+            release: 400000
+        attack: 0.5
+        decay: 0
+        sustain: 0.9
+        release: 9
 
 - index: 80
   name: Syn Square
