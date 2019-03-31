@@ -2,6 +2,7 @@ package synth
 
 import (
 	"math"
+	"sync"
 
 	"github.com/bspaans/bleep/audio"
 	"github.com/bspaans/bleep/channels"
@@ -115,6 +116,60 @@ func (m *Mixer) SetInstrument(cfg *audio.AudioConfig, channel int, instr instrum
 }
 
 func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int, outputEvents chan *ui.UIEvent) []int {
+	samples := generators.GetEmptySampleArray(cfg, n)
+	channelValues := make([][]float64, len(m.Channels))
+	solo := m.HasSolo()
+
+	latestValues := make([]float64, len(m.Channels))
+	var wg sync.WaitGroup
+	for channelNr, ch := range m.Channels {
+
+		wg.Add(1)
+		go func(channelNr int, ch channels.Channel) {
+			defer wg.Done()
+			chSamples := ch.GetSamples(cfg, n)
+			if solo && !m.Solo[channelNr] {
+				return
+			}
+			channelValues[channelNr] = make([]float64, len(chSamples))
+			for i := 0; i < n; i++ {
+				if cfg.Stereo {
+					left := chSamples[i*2] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+					right := chSamples[i*2+1] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+					left, right = SinusoidalPanning(left, right, m.Panning[channelNr])
+					channelValues[channelNr][i*2] = left
+					channelValues[channelNr][i*2+1] = right
+					latestValues[channelNr] = (left + right) / 2
+				} else {
+					v := chSamples[i] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+					channelValues[channelNr][i] = v
+					latestValues[channelNr] = v
+				}
+			}
+		}(channelNr, ch)
+	}
+	wg.Wait()
+	for _, channelSamples := range channelValues {
+		for i, s := range channelSamples {
+			samples[i] += s
+		}
+	}
+
+	ev := ui.NewUIEvent(ui.ChannelsOutputEvent)
+	ev.Values = latestValues
+	outputEvents <- ev
+
+	result := make([]int, len(samples))
+	maxValue := math.Pow(2, float64(cfg.BitDepth))
+	for i, sample := range samples {
+		scaled := (sample + 1) * (maxValue / 2)
+		maxClipped := math.Max(0, math.Ceil(scaled))
+		result[i] = int(math.Min(maxClipped, maxValue-1))
+	}
+	return result
+}
+
+func (m *Mixer) GetSamples_old(cfg *audio.AudioConfig, n int, outputEvents chan *ui.UIEvent) []int {
 	samples := generators.GetEmptySampleArray(cfg, n)
 	solo := m.HasSolo()
 
