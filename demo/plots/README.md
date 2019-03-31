@@ -128,7 +128,7 @@ func main() {
 
 ## Pulse (25% duty cycle)
 
-![Pulse wave](./pulse.png)
+![Pulse wave](./pulse_wave.png)
 
 
 ```
