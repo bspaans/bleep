@@ -26,6 +26,7 @@ Things that generate waveforms (`generators/`):
 * Square wave oscillator
 * Sawtooth wave oscillator
 * Triangle wave oscillator
+* Pulse wave oscillator 
 * White noise generator
 * .wav playback
 * Grain generator

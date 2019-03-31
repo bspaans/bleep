@@ -351,11 +351,37 @@ func (w *VocoderDef) Validate() error {
 	return nil
 }
 
+type PulseWaveDef struct {
+	DutyCycle          float64             `json:"duty_cycle" yaml:"duty_cycle"`
+	DutyCycleDepth     float64             `json:"duty_cycle_depth" yaml:"duty_cycle_depth"`
+	DutyCycleModulator *GeneratorDef       `json:"duty_cycle_modulator" yaml:"duty_cycle_modulator"`
+	Options            GeneratorOptionsDef `json:",inline" yaml:",inline"`
+}
+
+func (p *PulseWaveDef) Generator(cfg *audio.AudioConfig) generators.Generator {
+	var mod generators.Generator
+	if p.DutyCycleModulator != nil {
+		mod = p.DutyCycleModulator.Generator(cfg)
+	}
+	g := generators.NewPulseWaveGenerator(p.DutyCycle, mod, p.DutyCycleDepth)
+	return p.Options.Generator(g)
+}
+
+func (g *PulseWaveDef) Validate() error {
+	if g.DutyCycleModulator != nil {
+		if err := g.DutyCycleModulator.Validate(); err != nil {
+			return WrapError("pulse > duty_cycle_modulator", err)
+		}
+	}
+	return g.Options.Validate()
+}
+
 type GeneratorOptionsDef struct {
 	Attack  *float64 `json:"attack" yaml:"attack"`
 	Decay   *float64 `json:"decay" yaml:"decay"`
 	Sustain *float64 `json:"sustain" yaml:"sustain"`
 	Release *float64 `json:"release" yaml:"release"`
+	Pitch   *float64 `json:"pitch" yaml:"pitch"`
 }
 
 func (g *GeneratorOptionsDef) Generator(gen generators.Generator) generators.Generator {
@@ -375,6 +401,9 @@ func (g *GeneratorOptionsDef) Generator(gen generators.Generator) generators.Gen
 		}
 		gen = derived.NewEnvelopeGenerator(gen, attack, decay, sustain, release)
 	}
+	if g.Pitch != nil {
+		gen.SetPitch(*g.Pitch)
+	}
 	return gen
 }
 
@@ -391,6 +420,7 @@ type GeneratorDef struct {
 	Sawtooth      *GeneratorOptionsDef `json:"sawtooth" yaml:"sawtooth"`
 	Triangle      *GeneratorOptionsDef `json:"triangle" yaml:"triangle"`
 	WhiteNoise    *GeneratorOptionsDef `json:"white_noise" yaml:"white_noise"`
+	Pulse         *PulseWaveDef        `json:"pulse" yaml:"pulse"`
 	Wav           *WavOptionsDef       `json:"wav" yaml:"wav"`
 	Grains        *GrainsOptionsDef    `json:"grains" yaml:"grains"`
 	Combined      []*GeneratorDef      `json:"combined" yaml:"combined"`
@@ -407,6 +437,8 @@ func (d *GeneratorDef) Generator(cfg *audio.AudioConfig) generators.Generator {
 		g = d.Sawtooth.Generator(generators.NewSawtoothWaveOscillator())
 	} else if d.Triangle != nil {
 		g = d.Triangle.Generator(generators.NewTriangleWaveOscillator())
+	} else if d.Pulse != nil {
+		g = d.Pulse.Generator(cfg)
 	} else if d.WhiteNoise != nil {
 		g = d.WhiteNoise.Generator(generators.NewWhiteNoiseGenerator())
 	} else if d.Filter != nil {
@@ -446,6 +478,8 @@ func (d *GeneratorDef) Validate() error {
 		return d.Filter.Validate()
 	} else if d.Grains != nil {
 		return d.Grains.Validate()
+	} else if d.Pulse != nil {
+		return d.Pulse.Validate()
 	} else if d.Transpose != nil {
 		return d.Transpose.Validate()
 	} else if d.ConstantPitch != nil {

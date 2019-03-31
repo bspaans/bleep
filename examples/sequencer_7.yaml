@@ -1,0 +1,441 @@
+bpm: 50.0
+granularity: 16.0
+
+channels:
+- channel: 0
+  reverb: 12
+  reverb_time: Sixteenth
+  volume: 200
+  panning: 57
+  generator:
+    vocoder:
+      source:
+        wav:
+          file: examples/nice-work.wav
+          gain: 1.0
+      vocoder:
+        sine:
+          attack: 0.1
+          decay: 0
+          sustain: 0.9
+          release: 4
+
+- channel: 1
+  reverb: 12
+  reverb_time: Sixteenth
+  volume: 10
+  panning: 57
+  lpf_cutoff: 3040
+  generator:
+    filter:
+      average:
+      - hpf:
+          cutoff: 1040
+      - flanger:
+          time: 1.5
+          factor: 0.7
+          rate: 1
+      combined:
+      - triangle:
+          attack: 0.1
+          decay: 0
+          sustain: 0.9
+          release: 40
+
+- channel: 2
+  volume: 5
+  panning: 60
+  generator:
+    filter:
+      overdrive:
+        factor: 3.0
+      filter:
+        distortion: 
+          level: 0.4
+        combined:
+        - sawtooth: 
+            attack: 0.001
+            decay: 0.25
+            sustain: 0.8
+            release: 4.0
+        - transpose:
+            semitones: 12.0
+            gain: 0.8 
+            triangle: 
+              attack: 0.001
+              decay: 0.25
+              sustain: 0.8
+              release: 4.0
+
+- channel: 3
+  volume: 5
+  panning: 60
+  lpf_cutoff: 1000
+  combined:
+  - sine: 
+      attack: 0.01
+      decay: 1.0
+      sustain: 0.5
+      release: 0.1
+  - transpose:
+      semitones: 12.0
+      gain: 0.8 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+  - transpose:
+      semitones: 24.0
+      gain: 0.5 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+  - transpose:
+      semitones: 19.0
+      gain: 0.3 
+      sine: 
+        attack: 0.01
+        decay: 0.5
+        sustain: 0.5
+        release: 0.1
+
+- channel: 4
+  volume: 10
+  instrument: 11
+  panning: 100
+
+- channel: 5
+  volume: 15
+  panning: 67
+  reverb: 90
+  reverb_time: 0.1
+  generator:
+    pulse:
+      duty_cycle: 0.7
+      duty_cycle_depth: 0.05
+      duty_cycle_modulator:
+        triangle:
+          pitch: 3.0
+          attack: 0.001
+          decay: 0
+          sustain: 0.7
+          release: 400000
+      attack: 0.5
+      decay: 0
+      sustain: 0.9
+      release: 4
+
+sequences:
+
+- repeat:
+    every: Half
+    sequence:
+      array_register:
+        register: 0
+        auto_values:
+          cycle_chords:
+            count: 1
+            chords:
+            - [60]
+            - [64]
+            - [68]
+            - [72]
+            - [76]
+            - [80]
+            - [72]
+            - [64]
+
+            - [60]
+            - [64]
+            - [68]
+            - [72]
+            - [76]
+            - [80]
+            - [72]
+            - [64]
+
+            - [58]
+            - [62]
+            - [66]
+            - [70]
+            - [60]
+            - [80]
+            - [72]
+            - [64]
+
+- repeat:
+    every: Whole
+    sequence:
+      array_register:
+        register: 1
+        auto_values:
+          register: 0
+
+
+- offset:
+    offset: 3
+    sequence:
+      repeat:
+        every: Whole
+        sequence:
+          array_register:
+            register: 1
+            auto_values:
+              transpose: 
+                value: 7
+                register: 0
+
+- repeat:
+    every: Sixteenth
+    description: Accentuate the beats
+    sequence:
+      register:
+        register: 2
+        auto_value:
+          cycle: [127, 90, 100, 90, 
+                  110, 90, 100, 90,
+                  118, 90, 100, 90,
+                  110, 90, 100, 90]
+
+#############
+# CHANNEL 9 #
+#############
+
+- after:
+    after: 16
+    sequence:
+      combine:
+      - play_note:
+          every: Quarter
+          duration: Quarter
+          channel: 9
+          note: 36
+          auto_velocity: 
+            register: 2
+      - play_note:
+          every: Half
+          duration: Quarter
+          offset: Quarter
+          channel: 9
+          note: 40
+          auto_velocity: 
+            register: 2
+
+      - play_note:
+          every: Sixteenth
+          duration: Sixteenth
+          channel: 9
+          note: 42
+          auto_velocity: 
+            register: 2
+
+#############
+# CHANNEL 0 #
+#############
+
+- after: 
+    after: 16
+    sequence:
+      play_notes:
+        every: Quarter
+        duration: Quarter
+        channel: 0
+        auto_notes: 
+          register: 0
+        auto_velocity:
+          transpose: 
+            value: -70
+            register: 2
+
+#############
+# CHANNEL 1 #
+#############
+
+- play_notes:
+    every: Half
+    duration: Whole
+    channel: 1
+    auto_notes: 
+      register: 0
+    velocity: 40
+
+- repeat:
+    every: Thirtysecond
+    sequence:
+      volume:
+        channel: 1
+        cycle: 
+        - 20
+        - 5
+
+- repeat:
+    every: Sixteenth
+    sequence:
+      lpf_cutoff:
+        channel: 1
+        cycle: 
+        - 3040
+        - 2040
+        - 2740
+        - 2040
+
+#############
+# CHANNEL 2 #
+#############
+
+- play_notes:
+    every: Quarter
+    duration: Sixteenth
+    channel: 2
+    auto_notes: 
+      transpose:
+        value: -12
+        register: 0
+    velocity: 40
+
+- play_notes:
+    every: Quarter
+    duration: Sixteenth
+    offset: Sixteenth
+    channel: 2
+    auto_notes: 
+      transpose:
+        value: -12
+        register: 0
+    velocity: 40
+
+- repeat:
+    every: Sixteenth
+    sequence:
+      panning:
+        channel: 2
+        cycle: 
+        - 20
+        - 100
+
+#############
+# CHANNEL 3 #
+#############
+
+- play_notes:
+    every: Half
+    duration: Half
+    channel: 3
+    auto_notes: 
+      transpose:
+        value: 4
+        register: 0
+    velocity: 40
+
+- play_notes:
+    every: Half
+    duration: Half
+    channel: 3
+    auto_notes: 
+      transpose:
+        value: 7
+        register: 0
+    velocity: 40
+
+- repeat:
+    every: Eight
+    sequence:
+      volume:
+        channel: 1
+        cycle: 
+        - 20
+        - 5
+
+#############
+# CHANNEL 4 #
+#############
+
+- after:
+    after: 16
+    sequence:
+      combine:
+      - play_notes:
+          every: Eight
+          duration: Eight
+          channel: 4
+          auto_notes: 
+            transpose:
+              value: -12
+              register: 1
+          velocity: 40
+      - repeat:
+          every: Eight
+          sequence:
+            panning:
+              channel: 4
+              cycle: 
+              - 100
+              - 20
+
+- after:
+    after: 32
+    sequence:
+      combine:
+      - play_notes:
+          every: Eight
+          duration: Eight
+          offset: Sixteenth
+          channel: 4
+          auto_notes: 
+            transpose:
+              value: -5
+              register: 1
+          velocity: 40
+
+#############
+# CHANNEL 5 #
+#############
+
+- before:
+    before: 64
+    sequence:
+      after:
+        after: 32
+        sequence:
+          combine:
+          - play_notes:
+              every: Half
+              duration: Half
+              channel: 5
+              auto_notes: 
+                transpose:
+                  value: -12
+                  register: 0
+              auto_velocity:
+                transpose: 
+                  value: -70
+                  register: 2
+
+          - play_notes:
+              every: Half
+              duration: Half
+              channel: 5
+              auto_notes: 
+                transpose:
+                  value: -8
+                  register: 0
+              auto_velocity:
+                transpose: 
+                  value: -70
+                  register: 2
+
+          - play_notes:
+              every: Half
+              duration: Half
+              channel: 5
+              auto_notes: 
+                transpose:
+                  value: -5
+                  register: 0
+              auto_velocity:
+                transpose: 
+                  value: -70
+                  register: 2

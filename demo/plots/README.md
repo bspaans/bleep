@@ -125,3 +125,24 @@ func main() {
 }
 
 ```
+
+## Pulse (25% duty cycle)
+
+![Pulse wave](./pulse.png)
+
+
+```
+package main 
+
+import (
+    "github.com/bspaans/bleep/audio"
+    "github.com/bspaans/bleep/generators"
+)
+
+func main() {
+    cfg := audio.NewAudioConfig()
+    g := generators.NewPulseWaveGenerator(0.25, nil, 0.0)
+    g.GetSamples(cfg, 4000)
+}
+
+```

@@ -25,6 +25,7 @@ func DoPlots(cfg *audio.AudioConfig) {
 		generators.NewSawtoothWaveOscillator(),
 		generators.NewTriangleWaveOscillator(),
 		generators.NewWhiteNoiseGenerator(),
+		generators.NewPulseWaveGenerator(0.25, nil, 0.0),
 		wav,
 	}
 	files := []string{
@@ -33,14 +34,18 @@ func DoPlots(cfg *audio.AudioConfig) {
 		"demo/plots/saw.png",
 		"demo/plots/triangle.png",
 		"demo/plots/white_noise.png",
+		"demo/plots/pulse_wave.png",
 		"demo/plots/wav.png",
 	}
 	for i, g := range generators {
-		g.SetPitch(110.0)
-		values := g.GetSamples(cfg, 4000)
-		PlotValues(values, files[i])
+		PlotGenerator(cfg, g, files[i])
 	}
+}
 
+func PlotGenerator(cfg *audio.AudioConfig, g generators.Generator, file string) {
+	g.SetPitch(110.0)
+	values := g.GetSamples(cfg, 4000)
+	PlotValues(values, file)
 }
 
 func PlotValues(v []float64, file string) error {

@@ -1,4 +1,4 @@
-bpm: 150.0
+bpm: 200.0
 granularity: 16.0
 
 channels:
@@ -6,23 +6,23 @@ channels:
   instrument: 0
   reverb: 50
   reverb_time: Sixteenth
-  lpf_cuttoff: 1
-  volume: 10
+  lpf_cuttoff: 100.0
+  volume: 120
   panning: 57
 
 - channel: 1
   instrument: 0
   reverb: 50
   reverb_time: Sixteenth
-  lpf_cuttoff: 2
-  volume: 10
+  lpf_cuttoff: 400.0
+  volume: 200
   panning: 30
 
 - channel: 2
   instrument: 22
   reverb: 50
   reverb_time: Sixteenth
-  lpf_cuttoff: 1
+  lpf_cuttoff: 100.0
   volume: 20
   panning: 97
 
@@ -30,29 +30,29 @@ channels:
   instrument: 22
   reverb: 50
   reverb_time: Sixteenth
-  lpf_cuttoff: 1
+  lpf_cuttoff: 100.0
   volume: 20
   panning: 97
 
 sequences:
 
 - repeat:
-    every: Eight
+    every: Thirtysecond
     sequence:
       lpf_cutoff:
         channel: 0
         range:
-          from: 1.0
-          to: 9.0
+          from: 1500.0
+          to: 6000.0
           
 - repeat:
-    every: Eight
+    every: Thirtysecond
     sequence:
       lpf_cutoff:
         channel: 1
         range:
-          from: 1.0
-          to: 9.0
+          from: 400.0
+          to: 500.0
 
 - offset:
     offset: Half

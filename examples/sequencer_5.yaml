@@ -1,0 +1,228 @@
+bpm: 80.0
+granularity: 64.0
+
+channels:
+- channel: 0
+  reverb: 60
+  reverb_time: Quarter
+  volume: 60
+  panning: 67
+  generator:
+    filter:
+      average: 
+      - bpf:
+          lowest: 700
+          highest: 730
+      - bpf:
+          lowest: 1090
+          highest: 1220
+      - bpf:
+          lowest: 2440
+          highest: 2810
+      combined:
+      - filter: 
+          flanger:
+            time: 0.01
+            factor: 0.9
+            rate: 1
+          sawtooth:
+            attack: 0.5
+            decay: 4.0
+            sustain: 0.4
+            release: 0.25
+      - transpose:
+          semitones: 12
+          gain: 0.5
+          sawtooth:
+            attack: 0.5
+            decay: 4.0
+            sustain: 0.4
+            release: 0.25
+
+      - transpose:
+          semitones: 19
+          gain: 0.25
+          sawtooth:
+            attack: 0.5
+            decay: 4.0
+            sustain: 0.4
+            release: 0.25
+
+      - transpose:
+          semitones: 24
+          gain: 0.125
+          sawtooth:
+            attack: 0.5
+            decay: 4.0
+            sustain: 0.4
+            release: 0.25
+
+channels:
+- channel: 2
+  reverb: 60
+  reverb_time: Quarter
+  volume: 12
+  panning: 67
+  generator:
+    filter:
+      average: 
+      - bpf:
+          lowest: 1090
+          highest: 4220
+      - bpf:
+          lowest: 2440
+          highest: 2610
+      combined:
+      - filter: 
+          lpf:
+            cutoff: 2000
+          triangle:
+            attack: 0.01
+            decay: 0.0
+            sustain: 0.2
+            release: 0.1
+
+sequences:
+
+- play_note:
+    every: 5
+    duration: 5
+    channel: 0
+    auto_note:
+      range:
+        from: 50
+        to: 63
+        step: 4
+    auto_velocity: 
+        cycle:
+        - 127
+        - 90
+        - 100
+        - 90
+
+- play_note:
+    every: 5
+    duration: 5
+    channel: 0
+    auto_note:
+      range:
+        from: 57
+        to: 70
+        step: 4
+    auto_velocity: 
+        cycle:
+        - 90
+        - 127
+        - 90
+        - 100
+
+- euclidian:
+    pulses: 1
+    over: 5
+    duration: Eight
+    sequence:
+      play_note:
+        every: Eight
+        duration: Sixteenth
+        channel: 9
+        note: 35
+        velocity: 127
+
+- euclidian:
+    pulses: 3
+    over: 5
+    duration: Eight
+    sequence:
+      play_note:
+        every: Eight
+        duration: Sixteenth
+        channel: 9
+        note: 42
+        auto_velocity: 
+          cycle:
+          - 127
+          - 90
+          - 90
+
+- euclidian:
+    pulses: 2
+    over: 5
+    duration: Eight
+    sequence:
+      play_note:
+        every: Eight
+        duration: Sixteenth
+        channel: 9
+        note: 44
+        auto_velocity: 
+          cycle:
+          - 127
+          - 90
+
+- euclidian:
+    pulses: 7
+    over: 10
+    duration: Eight
+    sequence:
+      play_note:
+        every: Eight
+        duration: Eight
+        channel: 9
+        note: 41
+        auto_velocity: 
+          cycle:
+          - 107
+          - 90
+          - 100
+          - 90
+          - 100
+          - 90
+          - 80
+
+- euclidian:
+    pulses: 5
+    over: 20
+    duration: Eight
+    sequence:
+      play_note:
+        every: Eight
+        duration: Eight
+        channel: 9
+        note: 38
+        auto_velocity: 
+          cycle:
+          - 107
+          - 90
+          - 100
+          - 90
+          - 100
+
+- repeat:
+    every: 0.5
+    sequence:
+      register:
+        register: 1
+        auto_value:
+          cycle:
+          - 70
+          - 74
+          - 78
+          - 82
+
+- euclidian:
+    pulses: 7
+    over: 10
+    duration: Eight
+    sequence:
+      play_note:
+        every: Eight
+        duration: Eight
+        channel: 2
+        auto_note: 
+          register: 1
+        auto_velocity: 
+          cycle:
+          - 107
+          - 90
+          - 100
+          - 90
