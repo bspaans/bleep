@@ -16,6 +16,8 @@ github.com/go-audio/wav v0.0.0-20181013172942-de841e69b884 h1:2TaXIaVA4ff/MHHezO
 github.com/go-audio/wav v0.0.0-20181013172942-de841e69b884/go.mod h1:UiqzUyfX0zs3pJ/DPyvS5v8sN6s5bXPUDDIVA5v8dks=
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 h1:DACJavvAHhabrF08vX0COfcOBJRhZ8lUbR+ZWIs0Y5g=
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0/go.mod h1:E/TSTwGwJL78qG/PmXZO1EjYhfJinVAhrmmHX6Z8B9k=
+github.com/gomidi/midi v1.6.0 h1:g/aUVDRfFKzCIvmlI2MRc6IKopKdBno2bBb/2a4RYmo=
+github.com/gomidi/midi v1.6.0/go.mod h1:B16DbgtsXSbQK9Q75aVezVL6VGhaK+2CVe/ybwUUCHE=
 github.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20181023173540-4751d32e0b95 h1:MuVFrYiZjQQ3K+n7roMlntUiDTUngEAwXxDacL4382c=
 github.com/gomidi/rtmididrv/imported/rtmidi v0.0.0-20181023173540-4751d32e0b95/go.mod h1:dbXfsHh+fNtafItiJIgnK6EMw5M/xgtXc7Rmya+cZsQ=
 github.com/gordonklaus/portaudio v0.0.0-20180817120803-00e7307ccd93 h1:TSG+DyZBnazM22ZHyHLeUkzM34ClkJRjIWHTq4btvek=
@@ -33,6 +35,8 @@ github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d h1:x3S6kxmy49zXVVyh
 github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d/go.mod h1:IuKpRQcYE1Tfu+oAQqaLisqDeXgjyyltCfsaoYN18NQ=
 github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7 h1:GmnQBLZSOXI1F2hXKlyUuV19bW6DpCnWN14p/jP+WXA=
 github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7/go.mod h1:6Wezm38bOZuwEwcq0W+WIrLxkod95+jT5xxaqU9xcj4=
+gitlab.com/gomidi/midi v1.13.0 h1:SawozwajCLPS6AUyvgsdVt4HUwjHn6kB08reUY1DIKU=
+gitlab.com/gomidi/midi v1.13.0/go.mod h1:3ohtNOhqoSakkuLG/Li1OI6I3J1c2LErnJF5o/VBq1c=
 golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045/go.mod h1:cYlCBUl1MsqxdiKgmc4uh7TxZfWSFLOGSRR090WDxt8=
 golang.org/x/exp v0.0.0-20180321215751-8460e604b9de/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20180807140117-3d87b88a115f/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=

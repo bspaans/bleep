@@ -1,8 +1,12 @@
 package sequencer
 
 import (
+	"fmt"
+
+	"github.com/bspaans/bleep/midi"
 	"github.com/bspaans/bleep/synth"
 	"github.com/bspaans/bleep/theory"
+	"gitlab.com/gomidi/midi/midimessage/channel"
 )
 
 func Every(n uint, seq Sequence) Sequence {
@@ -73,6 +77,52 @@ func NoteOn(channel, note, velocity int) Sequence {
 		IntIdAutomation(note),
 		IntIdAutomation(velocity),
 	)
+}
+
+func MidiSequence(mid *midi.MIDISequences, inputChannels, outputChannels []int) Sequence {
+	inputCh := map[int]bool{}
+	for _, i := range inputChannels {
+		inputCh[i] = true
+	}
+	sendEvent := func(s chan *synth.Event, fromChannel int, ty synth.EventType, params []int) {
+		if len(outputChannels) == 0 {
+			s <- synth.NewEvent(ty, fromChannel, params)
+		} else {
+			for _, o := range outputChannels {
+				s <- synth.NewEvent(ty, o, params)
+			}
+		}
+	}
+	return func(sequencer *Sequencer, counter, t uint, s chan *synth.Event) {
+
+		tickRatio := float64(mid.TimeFormat) / float64(sequencer.Granularity)
+		timeInTrack := int(float64(t) * tickRatio)
+		for channelNr, ch := range mid.Channels {
+			if ch == nil {
+				continue
+			}
+			if len(inputChannels) != 0 && !inputCh[channelNr] {
+				continue
+			}
+			for _, ev := range ch.Events {
+				if ev.Offset == timeInTrack {
+					switch ev.Message.(type) {
+					case channel.NoteOn:
+						n := ev.Message.(channel.NoteOn)
+						sendEvent(s, channelNr, synth.NoteOn, []int{int(n.Key()), int(n.Velocity())})
+					case channel.NoteOff:
+						n := ev.Message.(channel.NoteOff)
+						sendEvent(s, channelNr, synth.NoteOff, []int{int(n.Key())})
+					case channel.NoteOffVelocity:
+						n := ev.Message.(channel.NoteOffVelocity)
+						sendEvent(s, channelNr, synth.NoteOff, []int{int(n.Key()), int(n.Velocity())})
+					default:
+						fmt.Println("Do something", ev.Message)
+					}
+				}
+			}
+		}
+	}
 }
 
 func NotesOnAutomation(channel int, noteF IntArrayAutomation, velocityF IntAutomation) Sequence {

@@ -1,0 +1,37 @@
+bpm: 120.0
+granularity: 24.0
+
+channels:
+- channel: 0
+  volume: 95
+  panning: 27
+  reverb: 90
+  reverb_time: Quarter
+  generator:
+    vocoder:
+      source:
+        square:
+          attack: 0.1
+          decay: 0.2
+          sustain: 1.0
+          release: 8.5
+      vocoder:
+        pulse:
+          duty_cycle: 0.7
+          duty_cycle_depth: 0.30
+          duty_cycle_modulator:
+            triangle:
+              pitch: 1.0
+              attack: 0.001
+              decay: 0
+              sustain: 0.7
+              release: 400000
+          attack: 0.5
+          decay: 0.2
+          sustain: 0.7
+          release: 8
+
+
+sequences:
+- midi:
+    file: test2.mid

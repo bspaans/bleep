@@ -1,5 +1,6 @@
 bpm: 200.0
 granularity: 16.0
+name: Always Be Testing
 
 channels:
 - channel: 0

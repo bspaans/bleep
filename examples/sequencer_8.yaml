@@ -1,4 +1,4 @@
-bpm: 90.0
+bpm: 20.0
 granularity: 64.0
 
 channels:
@@ -17,11 +17,11 @@ channels:
           release: 8.5
       vocoder:
         pulse:
-          duty_cycle: 0.9
-          duty_cycle_depth: 0.10
+          duty_cycle: 0.7
+          duty_cycle_depth: 0.30
           duty_cycle_modulator:
             triangle:
-              pitch: 10.0
+              pitch: 1.0
               attack: 0.001
               decay: 0
               sustain: 0.7
@@ -29,7 +29,7 @@ channels:
           attack: 0.5
           decay: 0.2
           sustain: 0.7
-          release: 4
+          release: 8
 
 - channel: 1
   volume: 65

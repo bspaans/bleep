@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 
 	"github.com/bspaans/bleep/channels"
+	"github.com/bspaans/bleep/midi"
 	"gopkg.in/yaml.v2"
 )
 
@@ -282,6 +283,20 @@ func (e *IntArrayRegisterDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	return SetIntArrayRegisterAutomation(e.Register, valueF), nil
 }
 
+type MIDISequencesDef struct {
+	File           string `yaml:"file"`
+	InputChannels  []int  `yaml:"input_channels"`
+	OutputChannels []int  `yaml:"output_channels"`
+}
+
+func (m *MIDISequencesDef) GetSequence(seq *Sequencer) (Sequence, error) {
+	seqs, err := midi.ReadMidiFile(m.File)
+	if err != nil {
+		return nil, err
+	}
+	return MidiSequence(seqs, m.InputChannels, m.OutputChannels), nil
+}
+
 type SequenceDef struct {
 	Every          *RepeatDef                 `yaml:"repeat"`
 	Euclidian      *EuclidianDef              `yaml:"euclidian"`
@@ -304,6 +319,7 @@ type SequenceDef struct {
 	Register       *RegisterDef               `yaml:"register"`
 	FloatRegister  *FloatRegisterDef          `yaml:"float_register"`
 	ArrayRegister  *IntArrayRegisterDef       `yaml:"array_register"`
+	MIDI           *MIDISequencesDef          `yaml:"midi"`
 	Combine        []*SequenceDef             `yaml:"combine"`
 }
 
@@ -401,6 +417,12 @@ func (e *SequenceDef) GetSequence(seq *Sequencer) (Sequence, error) {
 		s, err := e.ArrayRegister.GetSequence(seq)
 		if err != nil {
 			return nil, WrapError("array_register", err)
+		}
+		return s, nil
+	} else if e.MIDI != nil {
+		s, err := e.MIDI.GetSequence(seq)
+		if err != nil {
+			return nil, WrapError("midi", err)
 		}
 		return s, nil
 	} else if e.After != nil {
