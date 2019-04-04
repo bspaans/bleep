@@ -8,6 +8,8 @@ const (
 	QuitSequencer     EventType = iota
 	ForwardSequencer  EventType = iota
 	BackwardSequencer EventType = iota
+	IncreaseBPM       EventType = iota
+	DecreaseBPM       EventType = iota
 )
 
 type SequencerEvent struct {

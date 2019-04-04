@@ -80,6 +80,10 @@ func (t *TermBox) start(ctrl *controller.Controller) {
 					ctrl.MoveSequencerForward()
 				} else if ev.ID == "<Left>" {
 					ctrl.MoveSequencerBackward()
+				} else if ev.ID == "<Up>" {
+					ctrl.IncreaseSequencerBPM()
+				} else if ev.ID == "<Down>" {
+					ctrl.DecreaseSequencerBPM()
 				} else {
 					fmt.Println("No binding for key", ev.ID)
 				}

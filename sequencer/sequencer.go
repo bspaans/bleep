@@ -195,12 +195,23 @@ func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 		}
 	} else if ev.Type == ForwardSequencer {
 		seq.Time += uint(seq.Granularity) * 16
+		fmt.Println("t =", seq.Time)
 	} else if ev.Type == BackwardSequencer {
 		if seq.Time < uint(seq.Granularity)*16 {
 			seq.Time = 0
 		} else {
 			seq.Time -= uint(seq.Granularity) * 16
 		}
+		fmt.Println("t =", seq.Time)
+	} else if ev.Type == IncreaseBPM {
+		seq.BPM += 10
+		fmt.Println("bpm =", seq.BPM)
+	} else if ev.Type == DecreaseBPM {
+		seq.BPM -= 10
+		if seq.BPM <= 0 {
+			seq.BPM = 1
+		}
+		fmt.Println("bpm =", seq.BPM)
 	} else if ev.Type == QuitSequencer {
 		seq.Time = 0
 		return
@@ -218,6 +229,12 @@ func (seq *Sequencer) MoveForward() {
 }
 func (seq *Sequencer) MoveBackward() {
 	seq.Inputs <- NewSequencerEvent(BackwardSequencer)
+}
+func (seq *Sequencer) IncreaseBPM() {
+	seq.Inputs <- NewSequencerEvent(IncreaseBPM)
+}
+func (seq *Sequencer) DecreaseBPM() {
+	seq.Inputs <- NewSequencerEvent(DecreaseBPM)
 }
 func (seq *Sequencer) Quit() {
 	seq.Inputs <- NewSequencerEvent(QuitSequencer)

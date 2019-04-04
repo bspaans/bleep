@@ -97,6 +97,16 @@ func (c *Controller) MoveSequencerBackward() {
 		c.Sequencer.MoveBackward()
 	}
 }
+func (c *Controller) IncreaseSequencerBPM() {
+	if c.Sequencer != nil {
+		c.Sequencer.IncreaseBPM()
+	}
+}
+func (c *Controller) DecreaseSequencerBPM() {
+	if c.Sequencer != nil {
+		c.Sequencer.DecreaseBPM()
+	}
+}
 
 // Start Synthesizer. Note that this synthesizer isn't run in a go-routine by
 // default.
