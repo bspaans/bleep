@@ -34,4 +34,6 @@ channels:
 
 sequences:
 - midi:
-    file: test2.mid
+    file: test.mid
+    input_channels: [4]
+    output_channels: [0]

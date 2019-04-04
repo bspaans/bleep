@@ -284,9 +284,10 @@ func (e *IntArrayRegisterDef) GetSequence(seq *Sequencer) (Sequence, error) {
 }
 
 type MIDISequencesDef struct {
-	File           string `yaml:"file"`
-	InputChannels  []int  `yaml:"input_channels"`
-	OutputChannels []int  `yaml:"output_channels"`
+	File           string  `yaml:"file"`
+	InputChannels  []int   `yaml:"input_channels"`
+	OutputChannels []int   `yaml:"output_channels"`
+	Speed          float64 `yaml:"speed"`
 }
 
 func (m *MIDISequencesDef) GetSequence(seq *Sequencer) (Sequence, error) {
@@ -294,7 +295,7 @@ func (m *MIDISequencesDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	if err != nil {
 		return nil, err
 	}
-	return MidiSequence(seqs, m.InputChannels, m.OutputChannels), nil
+	return MidiSequence(seqs, m.InputChannels, m.OutputChannels, m.Speed), nil
 }
 
 type SequenceDef struct {

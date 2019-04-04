@@ -1,5 +1,5 @@
 bpm: 200.0
-granularity: 16.0
+granularity: 24.0
 name: Always Be Testing
 
 channels:
@@ -68,6 +68,15 @@ channels:
               decay: 4.0
               sustain: 0.4
               release: 0.25
+
+- channel: 5
+  description: Solo
+  instrument: 20
+  tremelo: 20
+  reverb: 90
+  reverb_time: Quarter
+  volume: 40
+  panning: 87
 
 - channel: 9
   volume: 30
@@ -264,3 +273,9 @@ sequences:
         notes: [46,38,40]
         auto_velocity:
           register: 2
+
+- midi:
+    file: test.mid
+    input_channels: [4]
+    output_channels: [5, 6, 7]
+    speed: 0.5
