@@ -288,6 +288,7 @@ type MIDISequencesDef struct {
 	InputChannels  []int   `yaml:"input_channels"`
 	OutputChannels []int   `yaml:"output_channels"`
 	Speed          float64 `yaml:"speed"`
+	Loop           bool    `yaml:"loop"`
 }
 
 func (m *MIDISequencesDef) GetSequence(seq *Sequencer) (Sequence, error) {
@@ -295,7 +296,7 @@ func (m *MIDISequencesDef) GetSequence(seq *Sequencer) (Sequence, error) {
 	if err != nil {
 		return nil, err
 	}
-	return MidiSequence(seqs, m.InputChannels, m.OutputChannels, m.Speed), nil
+	return MidiSequence(seqs, m.InputChannels, m.OutputChannels, m.Speed, m.Loop), nil
 }
 
 type SequenceDef struct {

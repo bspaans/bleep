@@ -1,4 +1,4 @@
-bpm: 120.0
+bpm: 100.0
 granularity: 24.0
 
 channels:
@@ -34,6 +34,5 @@ channels:
 
 sequences:
 - midi:
-    file: test.mid
-    input_channels: [4]
-    output_channels: [0]
+    file: test2.mid
+    loop: true

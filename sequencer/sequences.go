@@ -79,7 +79,7 @@ func NoteOn(channel, note, velocity int) Sequence {
 	)
 }
 
-func MidiSequence(mid *midi.MIDISequences, inputChannels, outputChannels []int, speed float64) Sequence {
+func MidiSequence(mid *midi.MIDISequences, inputChannels, outputChannels []int, speed float64, loop bool) Sequence {
 	inputCh := map[int]bool{}
 	for _, i := range inputChannels {
 		inputCh[i] = true
@@ -99,6 +99,8 @@ func MidiSequence(mid *midi.MIDISequences, inputChannels, outputChannels []int, 
 	return func(sequencer *Sequencer, counter, t uint, s chan *synth.Event) {
 
 		tickRatio := float64(mid.TimeFormat) / float64(sequencer.Granularity)
+		length := mid.Length
+
 		timeInTrack := int(float64(t) * tickRatio * speed)
 		for channelNr, ch := range mid.Channels {
 			if ch == nil {
@@ -108,7 +110,7 @@ func MidiSequence(mid *midi.MIDISequences, inputChannels, outputChannels []int, 
 				continue
 			}
 			for _, ev := range ch.Events {
-				if ev.Offset == timeInTrack {
+				if ev.Offset == timeInTrack || (loop && timeInTrack >= length && ((timeInTrack%length) == ev.Offset || ((timeInTrack%length) == 0 && ev.Offset == length))) {
 					switch ev.Message.(type) {
 					case channel.NoteOn:
 						n := ev.Message.(channel.NoteOn)
