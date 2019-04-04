@@ -26,6 +26,10 @@ func NewWavSink(cfg *audio.AudioConfig, file string) (*WavSink, error) {
 	}, nil
 }
 
+func (w *WavSink) Start(f func(cfg *audio.AudioConfig, n int) []int) error {
+	return nil
+}
+
 func (w *WavSink) Write(cfg *audio.AudioConfig, samples []int) error {
 	for _, s := range samples {
 		if cfg.BitDepth == 16 {

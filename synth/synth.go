@@ -2,7 +2,6 @@ package synth
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"time"
 
@@ -14,12 +13,13 @@ import (
 )
 
 type Synth struct {
-	Config  *audio.AudioConfig
-	Mixer   *Mixer
-	Sinks   []sinks.Sink
-	Inputs  chan *Event
-	Outputs chan *ui.UIEvent
-	Debug   bool
+	Config   *audio.AudioConfig
+	Mixer    *Mixer
+	Sinks    []sinks.Sink
+	Inputs   chan *Event
+	Outputs  chan *ui.UIEvent
+	Debug    bool
+	Recorder *sinks.WavSink
 }
 
 func NewSynth(cfg *audio.AudioConfig) *Synth {
@@ -48,16 +48,27 @@ func (s *Synth) EnableWavSink(file string) error {
 		return err
 	}
 	s.Sinks = append(s.Sinks, sink)
+	s.Recorder = sink
 	return nil
 }
 
 func (s *Synth) Start() {
-	stepsPerSecond := float64(s.Config.SampleRate) / float64(s.Config.StepSize)
-	stepDuration := time.Duration(1000.0/stepsPerSecond) * time.Millisecond
+	stepsPerSecond := float64(s.Config.StepSize) / float64(s.Config.SampleRate)
+	stepDuration := time.Duration(stepsPerSecond * 1000000000)
+
+	for _, sink := range s.Sinks {
+		if s.Recorder != nil {
+			portAudio, ok := sink.(*sinks.PortAudioSink)
+			if ok {
+				portAudio.WavSink = s.Recorder
+			}
+		}
+		sink.Start(s.Mixer.GetSamples)
+	}
 
 	for {
 		start := time.Now()
-		s.writeSamples(s.Config.StepSize)
+		//s.writeSamples(s.Config.StepSize)
 		canRead := true
 		for canRead {
 			select {
@@ -142,15 +153,6 @@ func (s *Synth) dispatchEvent(ev *Event) {
 		}
 	}
 
-}
-
-func (s *Synth) writeSamples(n int) {
-	samples := s.Mixer.GetSamples(s.Config, n, s.Outputs)
-	for _, sink := range s.Sinks {
-		if err := sink.Write(s.Config, samples); err != nil {
-			log.Println(err.Error())
-		}
-	}
 }
 
 func (s *Synth) ChangeInstrument(channel, instrument int) {

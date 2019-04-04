@@ -1,12 +1,12 @@
 bpm: 90.0
-granularity: 16.0
+granularity: 64.0
 
 channels:
 - channel: 0
   volume: 15
-  panning: 57
-  reverb: 40
-  reverb_time: Eight
+  panning: 27
+  reverb: 90
+  reverb_time: Quarter
   generator:
     vocoder:
       source:
@@ -32,10 +32,10 @@ channels:
           release: 4
 
 - channel: 1
-  volume: 45
+  volume: 65
   panning: 67
-  reverb: 0
-  reverb_time: 0
+  reverb: 100
+  reverb_time: 0.65
   generator:
     wav:
       file: /home/bspaans/Music/samples/808_drum_kit/kicks/808-Kicks02.wav
@@ -57,8 +57,8 @@ channels:
 - channel: 3
   volume: 15
   panning: 57
-  reverb: 3
-  reverb_time: Sixteenth
+  reverb: 50
+  reverb_time: Eight
   generator:
     filter:
       flanger:
@@ -81,6 +81,17 @@ channels:
     wav:
       file: /home/bspaans/Music/samples/808_drum_kit/hihats/808-Ride2.wav
       gain: 1.2
+
+- channel: 5
+  volume: 25
+  panning: 70
+  reverb: 23
+  reverb_time: Sixteenth
+  lpf_cutoff: 8000
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare32.wav
+      gain: 8.2
 
 
 sequences:
@@ -132,6 +143,21 @@ sequences:
                 chords:
                 - [39, 44, 47]
                 - [37, 44, 45]
+
+- after: 
+    after: 76
+    sequence:
+      repeat:
+        every: Whole
+        sequence:
+          array_register:
+            register: 0
+            auto_values:
+              cycle_chords:
+                count: 1
+                chords:
+                - [45, 48, 52]
+                - [41, 48, 50]
 - repeat:
     every: Sixteenth
     description: Accentuate the beats
@@ -277,3 +303,59 @@ sequences:
           - 8000
           - 7800
           - 7500
+
+#############
+# CHANNEL 5 #
+#############
+
+- after:
+    after: 32
+    sequence:
+      euclidian:
+        pulses: 3
+        over: 5
+        duration: Sixteenth
+        sequence:
+          play_note:
+            every: Sixteenth
+            duration: Eight
+            offset: Half
+            channel: 5
+            note: 40
+            auto_velocity:
+              transpose: 
+                value: -70
+                register: 2
+
+- after:
+    after: 76
+    sequence:
+      play_note:
+        every: Quarter
+        duration: Eight
+        offset: Eight
+        channel: 5
+        note: 40
+        auto_velocity:
+          transpose: 
+            value: -50
+            register: 2
+
+- after:
+    after: 76
+    sequence:
+      play_notes:
+        every: Quarter
+        duration: Eight
+        offset: Eight
+        channel: 6
+        auto_notes: 
+          transpose:
+            value: 36
+            index:
+              value: 0
+              register: 0
+        auto_velocity:
+          transpose: 
+            value: -50
+            register: 2

@@ -14,9 +14,9 @@ func NewAudioConfig() *AudioConfig {
 	return &AudioConfig{
 		BitDepth:                 16,
 		SampleRate:               44100,
-		StepSize:                 441,
+		StepSize:                 64,
 		Stereo:                   true,
-		MidiEventInputBufferSize: 64,
+		MidiEventInputBufferSize: 128,
 		Debug:                    false,
 	}
 }

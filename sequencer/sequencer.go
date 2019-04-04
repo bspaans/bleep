@@ -193,6 +193,14 @@ func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 			}
 			seq.Sequences = seqs
 		}
+	} else if ev.Type == ForwardSequencer {
+		seq.Time += uint(seq.Granularity) * 16
+	} else if ev.Type == BackwardSequencer {
+		if seq.Time < uint(seq.Granularity)*16 {
+			seq.Time = 0
+		} else {
+			seq.Time -= uint(seq.Granularity) * 16
+		}
 	} else if ev.Type == QuitSequencer {
 		seq.Time = 0
 		return
@@ -204,6 +212,12 @@ func (seq *Sequencer) Restart() {
 }
 func (seq *Sequencer) Reload() {
 	seq.Inputs <- NewSequencerEvent(ReloadSequencer)
+}
+func (seq *Sequencer) MoveForward() {
+	seq.Inputs <- NewSequencerEvent(ForwardSequencer)
+}
+func (seq *Sequencer) MoveBackward() {
+	seq.Inputs <- NewSequencerEvent(BackwardSequencer)
 }
 func (seq *Sequencer) Quit() {
 	seq.Inputs <- NewSequencerEvent(QuitSequencer)

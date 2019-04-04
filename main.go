@@ -79,5 +79,6 @@ func main() {
 	if *enableUI {
 		ctrl.UI = termbox.NewTermBox().Start(ctrl)
 	}
-	ctrl.StartSynth()
+	go ctrl.StartSynth()
+	<-c
 }

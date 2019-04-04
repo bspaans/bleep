@@ -7,12 +7,11 @@ channels:
   instrument: 22
   reverb: 50
   reverb_time: Sixteenth
-  lpf_cuttoff: 1
   volume: 15
   panning: 27
 
 - channel: 1
-  instrument: 22
+  instrument: 30
   reverb: 50
   reverb_time: Eight
   volume: 15
@@ -22,18 +21,18 @@ channels:
   instrument: 23
   reverb: 50
   reverb_time: Eight
-  volume: 39
+  volume: 60
   panning: 67
   grain:
     name: Grain Test
     file: examples/nice-work.wav
-    gain: 8.0
-    grain_size: 12.0
-    birth_rate: 15.0
+    gain: 4.0
+    grain_size: 50.0
+    birth_rate: 35.0
     repeat: true
-    density: 3
-    spread: 150.0
-    speed: 1.2
+    density: 4
+    spread: 50.0
+    speed: -1.2
 
 - channel: 3
   instrument: 33
@@ -43,25 +42,24 @@ channels:
   panning: 67
 
 - channel: 4
-  instrument: 34
+  instrument: 30
   reverb: 50
-  lpf_cuttoff: 1.0
   reverb_time: Half
   volume: 16
   panning: 90
 
 - channel: 5
-  instrument: 51
+  instrument: 50
   reverb: 50
-  lpf_cuttoff: 1.0
+  lpf_cuttoff: 4000.0
   reverb_time: Eight
-  volume: 16
+  volume: 56
   panning: 90
 
 - channel: 6
   instrument: 6
   reverb: 50
-  lpf_cuttoff: 1.0
+  lpf_cuttoff: 1000.0
   reverb_time: Eight
   volume: 16
   panning: 90
@@ -69,7 +67,7 @@ channels:
 - channel: 7
   instrument: 11
   reverb: 50
-  lpf_cuttoff: 1.0
+  lpf_cuttoff: 1000.0
   reverb_time: Eight
   volume: 16
   panning: 90
@@ -82,8 +80,8 @@ sequences:
       lpf_cutoff:
         channel: 0
         sweep:
-          from: 1.0
-          to: 5.0
+          from: 1000.0
+          to: 5000.0
           change_every: 1
 
 - repeat:
@@ -112,8 +110,8 @@ sequences:
       lpf_cutoff:
         channel: 2
         sweep:
-          from: 3
-          to: 5
+          from: 3050
+          to: 3020
           change_every: 1
 
 - euclidian:

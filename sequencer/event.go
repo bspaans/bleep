@@ -3,9 +3,11 @@ package sequencer
 type EventType int
 
 const (
-	RestartSequencer EventType = iota
-	ReloadSequencer  EventType = iota
-	QuitSequencer    EventType = iota
+	RestartSequencer  EventType = iota
+	ReloadSequencer   EventType = iota
+	QuitSequencer     EventType = iota
+	ForwardSequencer  EventType = iota
+	BackwardSequencer EventType = iota
 )
 
 type SequencerEvent struct {

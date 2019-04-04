@@ -65,8 +65,10 @@ func (f *DelayFilter) Filter(cfg *audio.AudioConfig, samples []float64) []float6
 func Delay(s, factor float64, ring *ring.Ring) float64 {
 	if ring.Value != nil {
 		prev := ring.Value.(float64)
+		ring.Value = s
 		s += prev * factor
+	} else {
+		ring.Value = s
 	}
-	ring.Value = s
 	return s
 }

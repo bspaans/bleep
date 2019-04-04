@@ -115,7 +115,7 @@ func (m *Mixer) SetInstrument(cfg *audio.AudioConfig, channel int, instr instrum
 	}
 }
 
-func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int, outputEvents chan *ui.UIEvent) []int {
+func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	samples := generators.GetEmptySampleArray(cfg, n)
 	channelValues := make([][]float64, len(m.Channels))
 	solo := m.HasSolo()
@@ -157,7 +157,7 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int, outputEvents chan *ui.
 
 	ev := ui.NewUIEvent(ui.ChannelsOutputEvent)
 	ev.Values = latestValues
-	outputEvents <- ev
+	//outputEvents <- ev
 
 	result := make([]int, len(samples))
 	maxValue := math.Pow(2, float64(cfg.BitDepth))

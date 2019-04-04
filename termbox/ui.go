@@ -76,6 +76,12 @@ func (t *TermBox) start(ctrl *controller.Controller) {
 				} else if ev.ID >= "0" && ev.ID <= "9" {
 					i, _ := strconv.Atoi(ev.ID)
 					ctrl.ToggleSoloChannel(i)
+				} else if ev.ID == "<Right>" {
+					ctrl.MoveSequencerForward()
+				} else if ev.ID == "<Left>" {
+					ctrl.MoveSequencerBackward()
+				} else {
+					fmt.Println("No binding for key", ev.ID)
 				}
 			default:
 				fmt.Println("Unknown event", ev)

@@ -6,7 +6,7 @@ channels:
   instrument: 0
   reverb: 50
   reverb_time: Sixteenth
-  lpf_cuttoff: 100.0
+  lpf_cuttoff: 1000.0
   volume: 120
   panning: 57
 
@@ -22,7 +22,7 @@ channels:
   instrument: 22
   reverb: 50
   reverb_time: Sixteenth
-  lpf_cuttoff: 100.0
+  lpf_cuttoff: 1000.0
   volume: 20
   panning: 97
 

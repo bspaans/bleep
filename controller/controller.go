@@ -87,6 +87,16 @@ func (c *Controller) ReloadSequencer() {
 		c.Sequencer.Reload()
 	}
 }
+func (c *Controller) MoveSequencerForward() {
+	if c.Sequencer != nil {
+		c.Sequencer.MoveForward()
+	}
+}
+func (c *Controller) MoveSequencerBackward() {
+	if c.Sequencer != nil {
+		c.Sequencer.MoveBackward()
+	}
+}
 
 // Start Synthesizer. Note that this synthesizer isn't run in a go-routine by
 // default.
