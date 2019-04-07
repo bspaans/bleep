@@ -8,6 +8,7 @@ type AutomationDef struct {
 	Range        *RangeDef        `yaml:"range"`
 	Sweep        *RangeDef        `yaml:"sweep"`
 	FadeIn       *RangeDef        `yaml:"fade_in"`
+	Random       *RandomDef       `yaml:"random"`
 	Register     *int             `yaml:"register"`
 	Transpose    *IntTransposeDef `yaml:"transpose"`
 }
@@ -25,6 +26,8 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 		return IntFadeInAutomation(a.FadeIn.From, a.FadeIn.To, a.FadeIn.ChangeEvery), nil
 	} else if a.Register != nil {
 		return IntRegisterAutomation(*a.Register), nil
+	} else if a.Random != nil {
+		return IntRandomAutomation(a.Random.Min, a.Random.Max), nil
 	} else if a.Transpose != nil {
 		automation, err := a.Transpose.Automation.GetAutomation()
 		if err != nil {
@@ -33,6 +36,11 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 		return IntTransposeAutomation(a.Transpose.Transpose, automation), nil
 	}
 	return nil, fmt.Errorf("Missing automation")
+}
+
+type RandomDef struct {
+	Max int
+	Min int
 }
 
 type FloatAutomationDef struct {
@@ -95,13 +103,22 @@ func (a *IntArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomatio
 		if err != nil {
 			return nil, err
 		}
-		return IntArrayIndexAutomation(a.Index.Index, automation), nil
+		indexF := IntIdAutomation(a.Index.Index)
+		if a.Index.AutoIndex != nil {
+			indexF_, err := a.Index.AutoIndex.GetAutomation()
+			if err != nil {
+				return nil, WrapError("index > auto_value", err)
+			}
+			indexF = indexF_
+		}
+		return IntArrayIndexAutomation(indexF, automation), nil
 	}
 	return nil, fmt.Errorf("Missing array automation")
 }
 
 type IntArrayIndexDef struct {
 	Index      int                   `yaml:"value"`
+	AutoIndex  *AutomationDef        `yaml:"auto_value"`
 	Automation IntArrayAutomationDef `yaml:",inline"`
 }
 

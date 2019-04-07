@@ -2,6 +2,7 @@ package sequencer
 
 import (
 	"math"
+	"math/rand"
 )
 
 type IntAutomation func(s *Sequencer, counter, t uint) int
@@ -86,6 +87,15 @@ func IntFadeInAutomation(from, to, changeEvery int) IntAutomation {
 	}
 }
 
+func IntRandomAutomation(min, max int) IntAutomation {
+	return func(s *Sequencer, counter, t uint) int {
+		if min > max {
+			min, max = max, min
+		}
+		return rand.Intn(max-min) + min
+	}
+}
+
 func IntSweepAutomation(min, max, changeEvery int) IntAutomation {
 	if changeEvery == 0 {
 		changeEvery = 1
@@ -97,8 +107,8 @@ func IntSweepAutomation(min, max, changeEvery int) IntAutomation {
 		diff = -1.0
 	}
 	diff *= 1.0 / float64(changeEvery)
-	r := make([]int, l*changeEvery)
-	for i := 0; i < l; i++ {
+	r := make([]int, l*changeEvery+1)
+	for i := 0; i <= l; i++ {
 		r[i] = min + int(float64(i)*diff)
 	}
 	return IntBackAndForthAutomation(r)
@@ -138,12 +148,13 @@ func IntArrayCycleAutomation(f IntArrayAutomation) IntAutomation {
 	}
 }
 
-func IntArrayIndexAutomation(ix int, f IntArrayAutomation) IntArrayAutomation {
+func IntArrayIndexAutomation(ixF IntAutomation, f IntArrayAutomation) IntArrayAutomation {
 	return func(s *Sequencer, counter, t uint) []int {
 		ints := f(s, counter, t)
 		if len(ints) == 0 {
 			return ints
 		}
+		ix := ixF(s, counter, t)
 		return []int{ints[ix%len(ints)]}
 	}
 }
