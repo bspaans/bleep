@@ -89,6 +89,7 @@ func NewPitchedWavGenerator(file string, gain, sampleBasePitch float64) (Generat
 
 var WavCache = map[string][]float64{}
 
+// Loads file and returns a stereo sample
 func LoadWavData(file string) ([]float64, error) {
 	cached, ok := WavCache[file]
 	if ok {

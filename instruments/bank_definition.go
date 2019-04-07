@@ -304,11 +304,18 @@ func (w *GrainsOptionsDef) Validate() error {
 type WavOptionsDef struct {
 	File    string              `json:"file" yaml:"file"`
 	Gain    float64             `json:"gain" yaml:"gain"`
+	Pitched bool                `json:"pitched" yaml:"pitched"`
 	Options GeneratorOptionsDef `json:",inline" yaml:",inline"`
 }
 
 func (w *WavOptionsDef) Generator() generators.Generator {
-	g, err := generators.NewWavGenerator(w.File, w.Gain)
+	var g generators.Generator
+	var err error
+	if w.Pitched {
+		g, err = generators.NewPitchedWavGenerator(w.File, w.Gain, 440.0)
+	} else {
+		g, err = generators.NewWavGenerator(w.File, w.Gain)
+	}
 	if err != nil {
 		panic(err)
 	}

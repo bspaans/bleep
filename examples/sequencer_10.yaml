@@ -1,0 +1,26 @@
+bpm: 90.0
+granularity: 24.0
+
+channels:
+- channel: 0
+  volume: 25
+  panning: 67
+  generator:
+    wav:
+      file: examples/piano.wav
+      gain: 2.0
+
+
+sequences:
+- euclidian:
+    pulses: 3
+    over: 5
+    duration: Quarter
+    sequence:
+      play_note:
+        every: Quarter
+        duration: Quarter
+        channel: 0
+        note: 69
+        velocity: 40
+
