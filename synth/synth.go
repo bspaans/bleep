@@ -101,6 +101,8 @@ func (s *Synth) dispatchEvent(ev *Event) {
 		s.Mixer.SetReverb(ch, values[0])
 	} else if et == SetReverbTime {
 		s.Mixer.SetReverbTime(ch, ev.FloatValues[0])
+	} else if et == SetReverbFeedback {
+		s.Mixer.SetReverbFeedback(ch, ev.FloatValues[0])
 	} else if et == SetLPFCutoff {
 		s.Mixer.SetLPFCutoff(ch, values[0])
 	} else if et == SetHPFCutoff {

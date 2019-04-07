@@ -1,38 +1,253 @@
-bpm: 100.0
+bpm: 150.0
 granularity: 24.0
 
 channels:
 - channel: 0
-  volume: 95
+  volume: 25
   panning: 27
   reverb: 90
   reverb_time: Quarter
   generator:
-    vocoder:
-      source:
-        square:
+    filter:
+      distortion:
+        level: 0.05
+        factor: 0.7
+      combined:
+      - sine:
           attack: 0.1
           decay: 0.2
-          sustain: 1.0
-          release: 8.5
-      vocoder:
-        pulse:
-          duty_cycle: 0.7
-          duty_cycle_depth: 0.30
-          duty_cycle_modulator:
-            triangle:
-              pitch: 1.0
-              attack: 0.001
-              decay: 0
-              sustain: 0.7
-              release: 400000
-          attack: 0.5
-          decay: 0.2
-          sustain: 0.7
+          sustain: 0.2
           release: 8
+      - transpose:
+          semitones: 12
+          gain: 0.1
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.2
+            release: 8
+      - transpose:
+          semitones: 19
+          gain: 0.15
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.8
+            release: 8
+      - transpose:
+          semitones: 24
+          gain: 0.125
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.2
+            release: 8
+
+- channel: 1
+  volume: 25
+  panning: 87
+  reverb: 90
+  reverb_time: Quarter
+  reverb_feedback: 0.2
+  lpf_cutoff: 1000
+  generator:
+    filter:
+      distortion:
+        level: 0.05
+        factor: 0.7
+      combined:
+      - sine:
+          attack: 0.1
+          decay: 0.2
+          sustain: 0.2
+          release: 8
+      - transpose:
+          semitones: 12
+          gain: 0.1
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.2
+            release: 8
+      - transpose:
+          semitones: 19
+          gain: 0.15
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.8
+            release: 8
+      - transpose:
+          semitones: 24
+          gain: 0.125
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.4
+            release: 8
+
+- channel: 2
+  volume: 25
+  panning: 57
+  reverb: 90
+  reverb_time: Quarter
+  generator:
+    filter:
+      distortion:
+        level: 0.05
+        factor: 0.7
+      combined:
+      - sine:
+          attack: 0.1
+          decay: 0.2
+          sustain: 0.2
+          release: 8
+      - transpose:
+          semitones: 12
+          gain: 0.1
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.2
+            release: 8
+      - transpose:
+          semitones: 19
+          gain: 0.15
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.8
+            release: 8
+      - transpose:
+          semitones: 24
+          gain: 0.125
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.4
+            release: 8
+
+- channel: 3
+  volume: 25
+  panning: 87
+  reverb: 90
+  reverb_time: Quarter
+  reverb_feedback: 0.2
+  lpf_cutoff: 1000
+  generator:
+    filter:
+      distortion:
+        level: 0.05
+        factor: 0.7
+      combined:
+      - sine:
+          attack: 0.1
+          decay: 0.2
+          sustain: 0.2
+          release: 8
+      - transpose:
+          semitones: 12
+          gain: 0.1
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.2
+            release: 8
+      - transpose:
+          semitones: 19
+          gain: 0.15
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.8
+            release: 8
+      - transpose:
+          semitones: 24
+          gain: 0.125
+          sine:
+            attack: 0.15
+            decay: 0
+            sustain: 0.4
+            release: 8
+
+
+- channel: 4
+  volume: 25
+  panning: 67
+  reverb: 100
+  reverb_time: 0.65
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/kicks/808-Kicks02.wav
+      gain: 2.0
+
+- channel: 5
+  volume: 45
+  panning: 47
+  reverb: 3
+  reverb_time: Eight
+  reverb_feedback: 0.9
+  generator:
+    filter:
+      lpf:
+        cutoff: 8000
+      wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/hihats/808-Ride3.wav
+        gain: 2.0
+
+- channel: 6
+  volume: 25
+  panning: 70
+  reverb: 23
+  reverb_time: Sixteenth
+  reverb_feedback: 0.5
+  lpf_cutoff: 8000
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare32.wav
+      gain: 4.2
 
 
 sequences:
 - midi:
-    file: test2.mid
+    file: test4.mid
     loop: true
+
+- euclidian:
+    pulses: 3
+    over: 5
+    duration: Eight
+    sequence:
+      play_note:
+        every: Eight
+        duration: Eight
+        channel: 4
+        note: 35
+        velocity: 40
+        note: 49
+
+- euclidian:
+    pulses: 3
+    over: 10
+    duration: Quarter
+    sequence:
+      play_note:
+        every: Quarter
+        duration: Quarter
+        channel: 5
+        note: 35
+        velocity: 40
+        note: 49
+
+- euclidian:
+    pulses: 2
+    over: 12
+    duration: Eight
+    sequence:
+      play_note:
+        every: Eight
+        duration: Eight
+        channel: 6
+        note: 35
+        velocity: 40
+        note: 49

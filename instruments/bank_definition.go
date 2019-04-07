@@ -19,8 +19,9 @@ func WrapError(in string, err error) error {
 }
 
 type DelayOptionsDef struct {
-	Time   float64 `json:"time" yaml:"time"`
-	Factor float64 `json:"factor" yaml:"factor"`
+	Time     float64 `json:"time" yaml:"time"`
+	Factor   float64 `json:"factor" yaml:"factor"`
+	Feedback float64 `json:"feedback" yaml:"feedback"`
 }
 
 func (f *DelayOptionsDef) Validate() error {
@@ -143,7 +144,7 @@ type FilterOptionsDef struct {
 
 func (f *FilterOptionsDef) Filter() filters.Filter {
 	if f.Delay != nil {
-		return filters.NewDelayFilter(f.Delay.Time, f.Delay.Factor)
+		return filters.NewDelayFilter(f.Delay.Time, f.Delay.Factor, f.Delay.Feedback)
 	} else if f.Overdrive != nil {
 		return filters.NewOverdriveFilter(f.Overdrive.Factor)
 	} else if f.LPF != nil {

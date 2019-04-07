@@ -77,6 +77,12 @@ func (m *Mixer) SetReverbTime(channel int, time float64) {
 	}
 }
 
+func (m *Mixer) SetReverbFeedback(channel int, fb float64) {
+	if channel < len(m.Channels) {
+		m.Channels[channel].SetFX(channels.ReverbFeedback, fb)
+	}
+}
+
 func (m *Mixer) SetLPFCutoff(channel int, freq int) {
 	if channel < len(m.Channels) {
 		m.Channels[channel].SetFX(channels.LPF_Cutoff, float64(freq))

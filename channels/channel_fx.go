@@ -1,29 +1,33 @@
 package channels
 
 import (
+	"fmt"
+
 	"github.com/bspaans/bleep/filters"
 )
 
 type FX int
 
 const (
-	Reverb     FX = iota
-	ReverbTime FX = iota
-	Chorus     FX = iota
-	Phaser     FX = iota
-	Tremelo    FX = iota
-	LPF_Cutoff FX = iota
-	HPF_Cutoff FX = iota
+	Reverb         FX = iota
+	ReverbTime     FX = iota
+	ReverbFeedback FX = iota
+	Chorus         FX = iota
+	Phaser         FX = iota
+	Tremelo        FX = iota
+	LPF_Cutoff     FX = iota
+	HPF_Cutoff     FX = iota
 )
 
 type ChannelFX struct {
-	Tremelo    float64 // supported
-	Reverb     float64 // fake supported (through delayfilter)
-	ReverbTime float64
-	LPF_Cutoff float64
-	HPF_Cutoff float64
-	Chorus     float64 // not supported
-	Phaser     float64 // not supported
+	Tremelo        float64 // supported
+	Reverb         float64 // fake supported (through delayfilter)
+	ReverbTime     float64
+	ReverbFeedback float64
+	LPF_Cutoff     float64
+	HPF_Cutoff     float64
+	Chorus         float64 // not supported
+	Phaser         float64 // not supported
 
 	CachedFilter filters.Filter
 
@@ -62,27 +66,38 @@ func (f *ChannelFX) Set(fx FX, value float64) {
 	if fx == Reverb {
 		f.Reverb = value
 		if f.reverb == nil {
+			fmt.Println("Setting factor", value)
 			time := f.ReverbTime
 			if time == 0.0 {
 				time = 0.2
 			}
-			f.reverb = filters.NewDelayFilter(time, value)
+			f.reverb = filters.NewDelayFilter(time, value, f.ReverbFeedback)
 		} else {
 			f.reverb.(*filters.DelayFilter).LeftFactor = value
 			f.reverb.(*filters.DelayFilter).RightFactor = value
 		}
 		f.CachedFilter = nil
 	} else if fx == ReverbTime {
+		fmt.Println("Setting time", value)
 		f.ReverbTime = value
 		if f.reverb == nil {
-			time := f.ReverbTime
-			if time == 0.0 {
-				time = 0.2
-			}
-			f.reverb = filters.NewDelayFilter(time, value)
+			f.reverb = filters.NewDelayFilter(f.ReverbTime, f.Reverb, f.ReverbFeedback)
 		} else {
-			f.reverb.(*filters.DelayFilter).LeftFactor = value
-			f.reverb.(*filters.DelayFilter).RightFactor = value
+			/*
+				not supported at the moment
+					f.reverb.(*filters.DelayFilter).LeftFactor = value
+					f.reverb.(*filters.DelayFilter).RightFactor = value
+			*/
+		}
+		f.CachedFilter = nil
+	} else if fx == ReverbFeedback {
+		fmt.Println("Setting feedback", value)
+		f.ReverbFeedback = value
+		if f.reverb == nil {
+			f.reverb = filters.NewDelayFilter(f.ReverbTime, f.Reverb, value)
+		} else {
+			f.reverb.(*filters.DelayFilter).LeftFeedback = value
+			f.reverb.(*filters.DelayFilter).RightFeedback = value
 		}
 		f.CachedFilter = nil
 	} else if fx == Tremelo {
