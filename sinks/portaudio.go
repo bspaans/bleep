@@ -56,13 +56,16 @@ func (p *PortAudioSink) Start(f func(cfg *audio.AudioConfig, n int) []int) error
 
 func (p *PortAudioSink) Callback_8bit(out []uint8, timeInfo portaudio.StreamCallbackTimeInfo, flags portaudio.StreamCallbackFlags) {
 	var samples []int
+	samples = p.GetSamples(p.Config, len(out)/2)
 	if p.Config.Stereo {
-		samples = p.GetSamples(p.Config, len(out)/2)
+		for i := 0; i < len(out); i++ {
+			out[i] = uint8(samples[i])
+		}
 	} else {
-		samples = p.GetSamples(p.Config, len(out))
-	}
-	for i := 0; i < len(out); i++ {
-		out[i] = uint8(samples[i])
+		for i := 0; i < len(out)/2; i++ {
+			out[i*2] = uint8(samples[i])
+			out[i*2+1] = uint8(samples[i])
+		}
 	}
 	if p.WavSink != nil {
 		p.WavSink.Write(p.Config, samples)
@@ -71,14 +74,17 @@ func (p *PortAudioSink) Callback_8bit(out []uint8, timeInfo portaudio.StreamCall
 
 func (p *PortAudioSink) Callback_16bit(out []int16, timeInfo portaudio.StreamCallbackTimeInfo, flags portaudio.StreamCallbackFlags) {
 	var samples []int
-	if p.Config.Stereo {
-		samples = p.GetSamples(p.Config, len(out)/2)
-	} else {
-		samples = p.GetSamples(p.Config, len(out))
-	}
+	samples = p.GetSamples(p.Config, len(out)/2)
 	m := int16(math.Pow(2, 15))
-	for i := 0; i < len(out); i++ {
-		out[i] = int16(samples[i]) - m
+	if p.Config.Stereo {
+		for i := 0; i < len(out); i++ {
+			out[i] = int16(samples[i]) - m
+		}
+	} else {
+		for i := 0; i < len(out)/2; i++ {
+			out[i*2] = int16(samples[i]) - m
+			out[i*2+1] = int16(samples[i]) - m
+		}
 	}
 	if p.WavSink != nil {
 		p.WavSink.Write(p.Config, samples)
