@@ -42,6 +42,51 @@ func NewWavGenerator(file string, gain float64) (Generator, error) {
 	return g, nil
 }
 
+func NewPitchedWavGenerator(file string, gain, sampleBasePitch float64) (Generator, error) {
+	g := NewBaseGenerator()
+	data, err := LoadWavData(file)
+	if err != nil {
+		return nil, err
+	}
+	if sampleBasePitch == 0.0 {
+		sampleBasePitch = 440.0
+	}
+	sampleLength := len(data) / 2
+
+	g.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
+		freqRatio := g.Pitch / sampleBasePitch
+		result := GetEmptySampleArray(cfg, n)
+		if g.Pitch == 0.0 {
+			return result
+		}
+		for i := 0; i < n; i++ {
+			if g.Phase >= sampleLength {
+				continue
+			}
+			ix := int(float64(g.Phase) * freqRatio)
+			remainder := (float64(g.Phase) * freqRatio) - float64(ix)
+
+			if cfg.Stereo {
+				v1 := (1.0-remainder)*data[ix*2] + remainder*data[ix*2+2]
+				v2 := (1.0-remainder)*data[ix*2+1] + remainder*data[ix*2+3]
+
+				result[i*2] = v1 * gain * g.Gain
+				result[i*2+1] = v2 * gain * g.Gain
+			} else {
+				v := (1.0-remainder)*data[ix*2] + remainder*data[ix*2+2]
+				result[i] = v * gain * g.Gain
+			}
+			g.Phase++
+		}
+		return result
+	}
+	g.SetPitchFunc = func(f float64) {
+		g.Pitch = f
+		g.Phase = 0
+	}
+	return g, nil
+}
+
 var WavCache = map[string][]float64{}
 
 func LoadWavData(file string) ([]float64, error) {
