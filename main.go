@@ -17,6 +17,7 @@ var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input devic
 var sequencer = flag.String("sequencer", "", "Load sequencer from file")
 var debugPlots = flag.Bool("plot", false, "Plot outputs (debugging tool)")
 var enable8bit = flag.Bool("8bit", false, "Set bit depth to 8bit")
+var enableMono = flag.Bool("mono", false, "Mono output")
 var record = flag.String("record", "", "Record .wav output")
 var instruments = flag.String("instruments", "examples/bank.yaml", "The instruments bank to load")
 var percussion = flag.String("percussion", "examples/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
@@ -35,6 +36,9 @@ func main() {
 
 	if *enable8bit {
 		cfg.BitDepth = 8
+	}
+	if *enableMono {
+		cfg.Stereo = false
 	}
 	ctrl := controller.NewController(cfg)
 
