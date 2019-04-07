@@ -60,15 +60,23 @@ func NewPitchedWavGenerator(file string, gain, sampleBasePitch float64) (Generat
 			return result
 		}
 		for i := 0; i < n; i++ {
-			if g.Phase >= sampleLength {
+			ix := int(float64(g.Phase) * freqRatio)
+			if ix >= sampleLength {
 				continue
 			}
-			ix := int(float64(g.Phase) * freqRatio)
 			remainder := (float64(g.Phase) * freqRatio) - float64(ix)
 
 			if cfg.Stereo {
-				v1 := (1.0-remainder)*data[ix*2] + remainder*data[ix*2+2]
-				v2 := (1.0-remainder)*data[ix*2+1] + remainder*data[ix*2+3]
+				dx1 := 0.0
+				dx2 := 0.0
+				if ix*2+2 < len(data) {
+					dx1 = data[ix*2+2]
+				}
+				if ix*2+3 < len(data) {
+					dx2 = data[ix*2+3]
+				}
+				v1 := (1.0-remainder)*data[ix*2] + remainder*dx1
+				v2 := (1.0-remainder)*data[ix*2+1] + remainder*dx2
 
 				result[i*2] = v1 * gain * g.Gain
 				result[i*2+1] = v2 * gain * g.Gain

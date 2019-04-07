@@ -333,6 +333,19 @@ func (w *WavOptionsDef) Validate() error {
 	return w.Options.Validate()
 }
 
+type PitchedPanningDef struct {
+	Source GeneratorDef `json:",inline" yaml:",inline"`
+}
+
+func (w *PitchedPanningDef) Generator(cfg *audio.AudioConfig) generators.Generator {
+	g := w.Source.Generator(cfg)
+	return derived.NewPitchControlledPanningGenerator(g)
+}
+
+func (w *PitchedPanningDef) Validate() error {
+	return w.Source.Validate()
+}
+
 type VocoderDef struct {
 	Source  *GeneratorDef `json:"source" yaml:"source"`
 	Vocoder *GeneratorDef `json:"vocoder" yaml:"vocoder"`
@@ -433,6 +446,7 @@ type GeneratorDef struct {
 	Grains        *GrainsOptionsDef    `json:"grains" yaml:"grains"`
 	Combined      []*GeneratorDef      `json:"combined" yaml:"combined"`
 	Vocoder       *VocoderDef          `json:"vocoder" yaml:"vocoder"`
+	Panning       *PitchedPanningDef   `json:"panning" yaml:"panning"`
 }
 
 func (d *GeneratorDef) Generator(cfg *audio.AudioConfig) generators.Generator {
@@ -461,6 +475,8 @@ func (d *GeneratorDef) Generator(cfg *audio.AudioConfig) generators.Generator {
 		g = d.Grains.Generator(cfg)
 	} else if d.Vocoder != nil {
 		g = d.Vocoder.Generator(cfg)
+	} else if d.Panning != nil {
+		g = d.Panning.Generator(cfg)
 	} else if len(d.Combined) > 0 {
 		gs := []generators.Generator{}
 		for _, gen := range d.Combined {
@@ -498,6 +514,8 @@ func (d *GeneratorDef) Validate() error {
 		return d.Wav.Validate()
 	} else if d.Vocoder != nil {
 		return d.Vocoder.Validate()
+	} else if d.Panning != nil {
+		return d.Panning.Validate()
 	} else if len(d.Combined) > 0 {
 		gs := []string{}
 		for _, gen := range d.Combined {

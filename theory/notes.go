@@ -2,9 +2,14 @@
 // rhythms, etc.
 package theory
 
-import "strings"
+import (
+	"math"
+	"strings"
+)
 
 const (
+	C1  = 24
+	C2  = 36
 	C3  = 48
 	C4  = 60
 	Db4 = 61
@@ -15,6 +20,9 @@ const (
 	A4  = 69
 	B4  = 71
 	C5  = 72
+	C6  = 84
+	C7  = 96
+	A7  = 105
 )
 
 type Notes []*Note
@@ -48,5 +56,14 @@ func (n Notes) Augment() {
 func (n Notes) Diminish() {
 	for _, note := range n {
 		note.Diminish()
+	}
+}
+
+var NoteToPitch = make([]float64, 128)
+
+func init() {
+	a := 440.0
+	for i := 0; i < 128; i++ {
+		NoteToPitch[i] = (a / 32) * (math.Pow(2, ((float64(i) - 9) / 12)))
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/bspaans/bleep/audio"
 	"github.com/bspaans/bleep/channels"
 	"github.com/bspaans/bleep/generators"
+	"github.com/bspaans/bleep/generators/derived"
 	"github.com/bspaans/bleep/instruments"
 	"github.com/bspaans/bleep/ui"
 )
@@ -142,7 +143,7 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 				if cfg.Stereo {
 					left := chSamples[i*2] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
 					right := chSamples[i*2+1] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
-					left, right = SinusoidalPanning(left, right, m.Panning[channelNr])
+					left, right = derived.SinusoidalPanning(left, right, m.Panning[channelNr])
 					channelValues[channelNr][i*2] = left
 					channelValues[channelNr][i*2+1] = right
 					latestValues[channelNr] = (left + right) / 2
@@ -164,46 +165,6 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	ev := ui.NewUIEvent(ui.ChannelsOutputEvent)
 	ev.Values = latestValues
 	//outputEvents <- ev
-
-	result := make([]int, len(samples))
-	maxValue := math.Pow(2, float64(cfg.BitDepth))
-	for i, sample := range samples {
-		scaled := (sample + 1) * (maxValue / 2)
-		maxClipped := math.Max(0, math.Ceil(scaled))
-		result[i] = int(math.Min(maxClipped, maxValue-1))
-	}
-	return result
-}
-
-func (m *Mixer) GetSamples_old(cfg *audio.AudioConfig, n int, outputEvents chan *ui.UIEvent) []int {
-	samples := generators.GetEmptySampleArray(cfg, n)
-	solo := m.HasSolo()
-
-	latestValues := make([]float64, len(m.Channels))
-	for channelNr, ch := range m.Channels {
-		chSamples := ch.GetSamples(cfg, n)
-		if solo && !m.Solo[channelNr] {
-			continue
-		}
-		for i := 0; i < n; i++ {
-			if cfg.Stereo {
-				left := chSamples[i*2] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
-				right := chSamples[i*2+1] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
-				left, right = SinusoidalPanning(left, right, m.Panning[channelNr])
-				samples[i*2] += left
-				samples[i*2+1] += right
-				latestValues[channelNr] = (left + right) / 2
-			} else {
-				v := chSamples[i] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
-				samples[i] += v
-				latestValues[channelNr] = v
-			}
-		}
-	}
-
-	ev := ui.NewUIEvent(ui.ChannelsOutputEvent)
-	ev.Values = latestValues
-	outputEvents <- ev
 
 	result := make([]int, len(samples))
 	maxValue := math.Pow(2, float64(cfg.BitDepth))
