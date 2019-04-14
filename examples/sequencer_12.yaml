@@ -1,4 +1,4 @@
-bpm: 120.0
+bpm: 150.0
 granularity: 64.0
 
 channels:
@@ -13,7 +13,7 @@ channels:
       gain: 2.0
 
 - channel: 2
-  volume: 40
+  volume: 20
   panning: 67
   reverb: 1
   reverb_time: 0.25
@@ -373,7 +373,7 @@ sequences:
 #############
 
 - after:
-    after: 32
+    after: 56
     sequence:
       before:
         before: 64
@@ -394,13 +394,13 @@ sequences:
                     fade_in:
                       from: 0
                       to: 32
-                      change_every: 4
+                      change_every: 1
                 - hpf_cutoff:
                     channel: 6
                     sweep:
                       from: 1000
                       to: 20000
-                      change_every: 4
+                      change_every: 1
                       step: 250
 - after:
     after: 64

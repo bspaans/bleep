@@ -33,115 +33,86 @@ type SequenceDef struct {
 	Combine        []*SequenceDef             `yaml:"combine"`
 }
 
+type SequenceGenerator interface {
+	GetSequence(granularity int) (Sequence, error)
+}
+
 func (e *SequenceDef) GetSequence(granularity int) (Sequence, error) {
 	if e == nil {
 		return nil, fmt.Errorf("Missing sequence")
 	}
+
+	var result Sequence
+	var err error
+	var field string
 	if e.Every != nil {
-		return e.Every.GetSequence(granularity)
+		field = "repeat"
+		result, err = e.Every.GetSequence(granularity)
 	} else if e.Euclidian != nil {
-		return e.Euclidian.GetSequence(granularity)
+		field = "euclidian"
+		result, err = e.Euclidian.GetSequence(granularity)
 	} else if e.PlayNoteEvery != nil {
-		return e.PlayNoteEvery.GetSequence(granularity)
+		field = "play_note"
+		result, err = e.PlayNoteEvery.GetSequence(granularity)
 	} else if e.PlayNotesEvery != nil {
-		return e.PlayNotesEvery.GetSequence(granularity)
+		field = "play_notes"
+		result, err = e.PlayNotesEvery.GetSequence(granularity)
 	} else if e.Panning != nil {
-		s, err := e.Panning.GetSequence(PanningAutomation)
-		if err != nil {
-			return nil, util.WrapError("panning", err)
-		}
-		return s, nil
+		field = "panning"
+		result, err = e.Panning.GetSequence(PanningAutomation)
 	} else if e.Reverb != nil {
-		s, err := e.Reverb.GetSequence(ReverbAutomation)
-		if err != nil {
-			return nil, util.WrapError("reverb", err)
-		}
-		return s, nil
+		field = "reverb"
+		result, err = e.Reverb.GetSequence(ReverbAutomation)
 	} else if e.ReverbTime != nil {
-		s, err := e.ReverbTime.GetSequence(ReverbTimeAutomation)
-		if err != nil {
-			return nil, util.WrapError("reverb_time", err)
-		}
-		return s, nil
+		field = "reverb_time"
+		result, err = e.ReverbTime.GetSequence(ReverbTimeAutomation)
 	} else if e.LPF_Cutoff != nil {
-		s, err := e.LPF_Cutoff.GetSequence(LPF_CutoffAutomation)
-		if err != nil {
-			return nil, util.WrapError("lpf_cutoff", err)
-		}
-		return s, nil
+		field = "lpf_cutoff"
+		result, err = e.LPF_Cutoff.GetSequence(LPF_CutoffAutomation)
 	} else if e.HPF_Cutoff != nil {
-		s, err := e.HPF_Cutoff.GetSequence(HPF_CutoffAutomation)
-		if err != nil {
-			return nil, util.WrapError("lpf_cutoff", err)
-		}
-		return s, nil
+		field = "hpf_cutoff"
+		result, err = e.HPF_Cutoff.GetSequence(HPF_CutoffAutomation)
 	} else if e.Tremelo != nil {
-		s, err := e.Tremelo.GetSequence(TremeloAutomation)
-		if err != nil {
-			return nil, util.WrapError("tremelo", err)
-		}
-		return s, nil
+		field = "tremelo"
+		result, err = e.Tremelo.GetSequence(TremeloAutomation)
 	} else if e.Volume != nil {
-		s, err := e.Volume.GetSequence(ChannelVolumeAutomation)
-		if err != nil {
-			return nil, util.WrapError("volume", err)
-		}
-		return s, nil
+		field = "volume"
+		result, err = e.Volume.GetSequence(ChannelVolumeAutomation)
 	} else if e.GrainSize != nil {
-		s, err := e.GrainSize.GetSequence(GrainSizeAutomation)
-		if err != nil {
-			return nil, util.WrapError("grain_size", err)
-		}
-		return s, nil
+		field = "grain_size"
+		result, err = e.GrainSize.GetSequence(GrainSizeAutomation)
 	} else if e.GrainBirthRate != nil {
-		s, err := e.GrainBirthRate.GetSequence(GrainBirthRateAutomation)
-		if err != nil {
-			return nil, util.WrapError("grain_birth_rate", err)
-		}
-		return s, nil
+		field = "grain_birth_rate"
+		result, err = e.GrainBirthRate.GetSequence(GrainBirthRateAutomation)
 	} else if e.GrainSpread != nil {
-		s, err := e.GrainSpread.GetSequence(GrainSpreadAutomation)
-		if err != nil {
-			return nil, util.WrapError("grain_spread", err)
-		}
-		return s, nil
+		field = "grain_spread"
+		result, err = e.GrainSpread.GetSequence(GrainSpreadAutomation)
 	} else if e.GrainSpeed != nil {
-		s, err := e.GrainSpeed.GetSequence(GrainSpeedAutomation)
-		if err != nil {
-			return nil, util.WrapError("grain_speed", err)
-		}
-		return s, nil
+		field = "grain_speed"
+		result, err = e.GrainSpeed.GetSequence(GrainSpeedAutomation)
 	} else if e.Register != nil {
-		s, err := e.Register.GetSequence()
-		if err != nil {
-			return nil, util.WrapError("register", err)
-		}
-		return s, nil
+		field = "register"
+		result, err = e.Register.GetSequence()
 	} else if e.FloatRegister != nil {
-		s, err := e.FloatRegister.GetSequence()
-		if err != nil {
-			return nil, util.WrapError("float_register", err)
-		}
-		return s, nil
+		field = "float_register"
+		result, err = e.FloatRegister.GetSequence()
 	} else if e.ArrayRegister != nil {
-		s, err := e.ArrayRegister.GetSequence()
-		if err != nil {
-			return nil, util.WrapError("array_register", err)
-		}
-		return s, nil
+		field = "array_register"
+		result, err = e.ArrayRegister.GetSequence()
 	} else if e.MIDI != nil {
-		s, err := e.MIDI.GetSequence()
-		if err != nil {
-			return nil, util.WrapError("midi", err)
-		}
-		return s, nil
+		field = "midi"
+		result, err = e.MIDI.GetSequence()
 	} else if e.After != nil {
-		return e.After.GetSequence(granularity)
+		field = "after"
+		result, err = e.After.GetSequence(granularity)
 	} else if e.Before != nil {
-		return e.Before.GetSequence(granularity)
+		field = "before"
+		result, err = e.Before.GetSequence(granularity)
 	} else if e.Offset != nil {
-		return e.Offset.GetSequence(granularity)
+		field = "offset"
+		result, err = e.Offset.GetSequence(granularity)
 	} else if e.Combine != nil {
+		field = "combine"
 		sequences := []Sequence{}
 		for _, s := range e.Combine {
 			s_, err := s.GetSequence(granularity)
@@ -150,7 +121,13 @@ func (e *SequenceDef) GetSequence(granularity int) (Sequence, error) {
 			}
 			sequences = append(sequences, s_)
 		}
-		return Combine(sequences...), nil
+		result = Combine(sequences...)
+	}
+	if err != nil {
+		return nil, util.WrapError(field, err)
+	}
+	if result != nil {
+		return result, nil
 	}
 	return nil, util.WrapError("sequence", fmt.Errorf("Missing sequence"))
 }
