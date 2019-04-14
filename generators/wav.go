@@ -54,9 +54,10 @@ func NewPitchedWavGenerator(file string, gain, sampleBasePitch float64) (Generat
 	sampleLength := len(data) / 2
 
 	g.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
-		freqRatio := g.Pitch / sampleBasePitch
+		pitch := g.GetPitch()
+		freqRatio := pitch / sampleBasePitch
 		result := GetEmptySampleArray(cfg, n)
-		if g.Pitch == 0.0 {
+		if pitch == 0.0 {
 			return result
 		}
 		for i := 0; i < n; i++ {

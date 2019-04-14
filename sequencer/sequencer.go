@@ -5,68 +5,40 @@ import (
 	"time"
 
 	"github.com/bspaans/bleep/channels"
+	"github.com/bspaans/bleep/sequencer/definitions"
+	"github.com/bspaans/bleep/sequencer/sequences"
+	"github.com/bspaans/bleep/sequencer/status"
 	"github.com/bspaans/bleep/synth"
+	"github.com/bspaans/bleep/util"
 )
 
-type Sequence func(seq *Sequencer, counter, t uint, s chan *synth.Event)
-
-func Whole(seq *Sequencer) uint {
-	return uint(seq.Granularity) * 4
-}
-func Half(seq *Sequencer) uint {
-	return uint(seq.Granularity) * 2
-}
-
-func Quarter(seq *Sequencer) uint {
-	return uint(seq.Granularity)
-}
-
-func Eight(seq *Sequencer) uint {
-	return uint(seq.Granularity / 2)
-}
-func Sixteenth(seq *Sequencer) uint {
-	return uint(seq.Granularity / 4)
-}
-func Thirtysecond(seq *Sequencer) uint {
-	return uint(seq.Granularity / 8)
-}
-
 type Sequencer struct {
-	BPM                 float64
-	Granularity         int
-	Sequences           []Sequence
+	status.Status
+	Sequences           []sequences.Sequence
 	Inputs              chan *SequencerEvent
 	Time                uint
 	FromFile            string
 	Started             bool
 	InitialChannelSetup []*channels.ChannelDef
-	IntRegisters        []int
-	IntArrayRegisters   [][]int
-	FloatRegisters      []float64
 }
 
 func NewSequencer(bpm float64, granularity int) *Sequencer {
 	seq := &Sequencer{
-		BPM:               bpm,
-		Granularity:       granularity,
-		Sequences:         []Sequence{},
-		Inputs:            make(chan *SequencerEvent, 32),
-		IntRegisters:      make([]int, 128),
-		IntArrayRegisters: make([][]int, 128),
-		FloatRegisters:    make([]float64, 128),
+		Status:    status.NewStatus(bpm, granularity),
+		Sequences: []sequences.Sequence{},
+		Inputs:    make(chan *SequencerEvent, 32),
 	}
 	return seq
 }
-
 func NewSequencerFromFile(file string) (*Sequencer, error) {
-	s, err := NewSequencerDefFromFile(file)
+	s, err := definitions.NewSequencerDefFromFile(file)
 	if err != nil {
-		return nil, WrapError("sequencer", err)
+		return nil, util.WrapError("sequencer", err)
 	}
 	seq := NewSequencer(s.BPM, s.Granularity)
-	seqs, err := s.GetSequences(seq)
+	seqs, err := s.GetSequences()
 	if err != nil {
-		return nil, WrapError("sequencer", err)
+		return nil, util.WrapError("sequencer", err)
 	}
 	seq.Sequences = seqs
 	seq.InitialChannelSetup = s.Channels.Channels
@@ -90,14 +62,15 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 
 	for {
 
-		start := time.Now()
 		if seq.Time == 0 {
 			s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)
 			seq.loadInstruments(s)
 		}
 
+		start := time.Now()
+
 		for _, sequence := range seq.Sequences {
-			sequence(seq, seq.Time, seq.Time, s)
+			sequence(&seq.Status, seq.Time, seq.Time, s)
 		}
 
 		seq.Time += 1
@@ -179,7 +152,7 @@ func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 		seq.Time = 0
 		fmt.Println("reloading")
 		if seq.FromFile != "" {
-			s, err := NewSequencerDefFromFile(seq.FromFile)
+			s, err := definitions.NewSequencerDefFromFile(seq.FromFile)
 			if err != nil {
 				fmt.Println("Failed to reload sequencer:", err.Error())
 				return
@@ -187,7 +160,7 @@ func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 			seq.BPM = s.BPM
 			seq.Granularity = s.Granularity
 			seq.InitialChannelSetup = s.Channels.Channels
-			seqs, err := s.GetSequences(seq)
+			seqs, err := s.GetSequences()
 			if err != nil {
 				fmt.Println("Failed to reload sequencer:", err.Error())
 				return

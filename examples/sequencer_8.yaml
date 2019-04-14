@@ -93,6 +93,19 @@ channels:
       file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare32.wav
       gain: 8.2
 
+- channel: 6
+  volume: 25
+  panning: 70
+  reverb: 23
+  reverb_time: Sixteenth
+  lpf_cutoff: 8000
+  generator:
+    white_noise:
+      attack: 0.0001
+      delay: 0
+      sustain: 1.0
+      release: 100000.0
+
 
 sequences:
 - before: 
@@ -234,47 +247,51 @@ sequences:
 # CHANNEL 3 #
 #############
 
-- euclidian:
-    pulses: 3
-    over: 5
-    duration: Sixteenth
+- before: 
+    before: 64
     sequence:
-      play_notes:
-        every: Sixteenth
-        duration: Sixteenth
-        channel: 3
-        note: 35
-        velocity: 127
-        auto_notes:
-          transpose:
-            value: -12
-            index:
-              value: 2
-              register: 0
-        auto_velocity:
-          transpose: 
-            value: -70
-            register: 2
+      combine:
+      - euclidian:
+          pulses: 3
+          over: 5
+          duration: Sixteenth
+          sequence:
+            play_notes:
+              every: Sixteenth
+              duration: Sixteenth
+              channel: 3
+              note: 35
+              velocity: 127
+              auto_notes:
+                transpose:
+                  value: -12
+                  index:
+                    value: 2
+                    register: 0
+              auto_velocity:
+                transpose: 
+                  value: -70
+                  register: 2
 
-- repeat:
-    every: Thirtysecond
-    sequence:
-      panning:
-        channel: 3
-        sweep:
-          from: 40
-          to: 104
-          change_every: 1
+      - repeat:
+          every: Thirtysecond
+          sequence:
+            panning:
+              channel: 3
+              sweep:
+                from: 40
+                to: 104
+                change_every: 1
 
-- repeat:
-    every: Half
-    sequence:
-      volume:
-        channel: 3
-        fade_in:
-          from: 15
-          to: 25
-          change_every: 4
+      - repeat:
+          every: Half
+          sequence:
+            volume:
+              channel: 3
+              fade_in:
+                from: 15
+                to: 25
+                change_every: 4
 
 #############
 # CHANNEL 4 #
@@ -341,21 +358,3 @@ sequences:
             value: -50
             register: 2
 
-- after:
-    after: 76
-    sequence:
-      play_notes:
-        every: Quarter
-        duration: Eight
-        offset: Eight
-        channel: 6
-        auto_notes: 
-          transpose:
-            value: 36
-            index:
-              value: 0
-              register: 0
-        auto_velocity:
-          transpose: 
-            value: -50
-            register: 2

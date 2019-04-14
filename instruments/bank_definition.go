@@ -11,6 +11,7 @@ import (
 	"github.com/bspaans/bleep/filters"
 	"github.com/bspaans/bleep/generators"
 	"github.com/bspaans/bleep/generators/derived"
+	"github.com/bspaans/bleep/theory"
 	"gopkg.in/yaml.v2"
 )
 
@@ -302,17 +303,28 @@ func (w *GrainsOptionsDef) Validate() error {
 }
 
 type WavOptionsDef struct {
-	File    string              `json:"file" yaml:"file"`
-	Gain    float64             `json:"gain" yaml:"gain"`
-	Pitched bool                `json:"pitched" yaml:"pitched"`
-	Options GeneratorOptionsDef `json:",inline" yaml:",inline"`
+	File      string              `json:"file" yaml:"file"`
+	Gain      float64             `json:"gain" yaml:"gain"`
+	Pitched   bool                `json:"pitched" yaml:"pitched"`
+	BasePitch interface{}         `json:"base_pitch" yaml:"base_pitch"`
+	Options   GeneratorOptionsDef `json:",inline" yaml:",inline"`
 }
 
 func (w *WavOptionsDef) Generator() generators.Generator {
 	var g generators.Generator
 	var err error
 	if w.Pitched {
-		g, err = generators.NewPitchedWavGenerator(w.File, w.Gain, 440.0)
+		basePitch := 440.0
+		if w.BasePitch != nil {
+			switch w.BasePitch.(type) {
+			case string:
+				n, _ := theory.NoteFromString(w.BasePitch.(string))
+				basePitch = n.Pitch()
+			case float64:
+				basePitch = w.BasePitch.(float64)
+			}
+		}
+		g, err = generators.NewPitchedWavGenerator(w.File, w.Gain, basePitch)
 	} else {
 		g, err = generators.NewWavGenerator(w.File, w.Gain)
 	}

@@ -20,7 +20,6 @@ func NewPitchControlledPanningGenerator(g generators.Generator) generators.Gener
 		}
 		samples := g.GetSamples(cfg, n)
 
-		// Centred around middle C (C4) = 261.625565 Hz
 		panning := 0.5
 		if pitch < minPitch {
 			panning = 0.0

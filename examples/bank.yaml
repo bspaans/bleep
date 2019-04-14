@@ -3,28 +3,11 @@ bank:
 
 - index: 0
   name: Piano
-  combined:
-  - sine: 
-      attack: 0.01
-      decay: 0.2
-      sustain: 0.9
-      release: 4.0
-  - transpose:
-    semitones: 12.0
-    gain: 0.3
-    sawtooth: 
-      attack: 0.01
-      decay: 0.2
-      sustain: 0.4
-      release: 4.0
-  - transpose:
-    semitones: 24.0
-    gain: 0.1
-    square: 
-      attack: 0.01
-      decay: 0.2
-      sustain: 0.3
-      release: 4.0
+  panning:
+    wav:
+      file: examples/piano.wav
+      pitched: true
+      gain: 8.0
 
 - index: 1
   name: Bright Piano
@@ -143,36 +126,11 @@ bank:
 
 - index: 11
   name: Vibraphone
-  combined:
-  - sine: 
-      attack: 0.01
-      decay: 1.0
-      sustain: 0.5
-      release: 0.1
-  - transpose:
-      semitones: 12.0
-      gain: 0.8 
-      sine: 
-        attack: 0.01
-        decay: 0.5
-        sustain: 0.5
-        release: 0.1
-  - transpose:
-      semitones: 24.0
-      gain: 0.5 
-      sine: 
-        attack: 0.01
-        decay: 0.5
-        sustain: 0.5
-        release: 0.1
-  - transpose:
-      semitones: 19.0
-      gain: 0.3 
-      sine: 
-        attack: 0.01
-        decay: 0.5
-        sustain: 0.5
-        release: 0.1
+  wav:
+    file: vibraphone.wav
+    gain: 4.0
+    pitched: true
+    base_pitch: c4
 
 - index: 20
   name: Reed Organ

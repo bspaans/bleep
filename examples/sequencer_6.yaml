@@ -277,5 +277,5 @@ sequences:
 - midi:
     file: test.mid
     input_channels: [4]
-    output_channels: [5, 6, 7]
+    output_channels: [5]
     speed: 0.5

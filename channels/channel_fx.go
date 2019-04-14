@@ -110,6 +110,7 @@ func (f *ChannelFX) Set(fx FX, value float64) {
 		f.CachedFilter = nil
 	} else if fx == LPF_Cutoff {
 		f.LPF_Cutoff = value
+		fmt.Println("set", value)
 		if f.lpf == nil {
 			f.lpf = filters.NewLowPassConvolutionFilter(f.LPF_Cutoff, 25)
 		} else {

@@ -1,0 +1,349 @@
+bpm: 150.0
+granularity: 64.0
+
+channels:
+- channel: 1
+  volume: 25
+  panning: 80
+  lpf_cutoff: 5000
+  generator:
+    combined:
+    - wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare31.wav
+        pitched: true
+        gain: 3.2
+        base_pitch: c4
+    - wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare32.wav
+        pitched: true
+        gain: 4.2
+        base_pitch: c4
+
+- channel: 2
+  volume: 125
+  panning: 67
+  reverb: 10
+  reverb_time: Eight
+  reverb_feedback: 0.1
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/kicks/808-Kicks31.wav
+      gain: 3.2
+
+
+- channel: 3
+  volume: 25
+  panning: 90
+  reverb: 3
+  reverb_time: Eight
+  reverb_feedback: 0.9
+  lpf_cutoff: 2000
+  generator:
+      wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/hihats/808-Ride1.wav
+        pitched: true
+        gain: 2.0
+
+- channel: 5
+  volume: 45
+  panning: 57
+  reverb: 23
+  reverb_time: Sixteenth
+  lpf_cutoff: 8000
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/hihats/808-HiHats04.wav
+      gain: 1.2
+
+- channel: 6
+  volume: 40
+  panning: 67
+  reverb: 1
+  reverb_time: 0.25
+  generator:
+    wav:
+      file: "/home/bspaans/Music/samples/dynamix_bass_samples/Edgy/Edgy - C4.wav"
+      pitched: true
+      base_pitch: c4
+      gain: 1.0
+
+- channel: 7
+  volume: 10
+  panning: 47
+  reverb: 90
+  reverb_time: 0.1
+  generator:
+    panning:
+      pulse:
+        duty_cycle: 0.4
+        duty_cycle_depth: 0.05
+        duty_cycle_modulator:
+          triangle:
+            pitch: 3.0
+            attack: 0.001
+            decay: 0
+            sustain: 0.7
+            release: 400000
+        attack: 0.000001
+        decay: 0.1
+        sustain: 0.5
+        release: 0.02
+
+- channel: 8
+  volume: 55
+  panning: 67
+  reverb: 90
+  tremelo: 50
+  reverb_time: Eight
+  reverb_feedback: 0.2
+  generator:
+    panning:
+      wav:
+        file: examples/piano.wav
+        pitched: true
+        gain: 1.5
+
+sequences:
+- repeat:
+    every: Sixteenth
+    description: Accentuate the beats
+    sequence:
+      register:
+        register: 2
+        auto_value:
+          cycle: [127, 90, 100, 90, 
+                  110, 90, 100, 90,
+                  118, 90, 100, 90,
+                  110, 90, 100, 90]
+
+- play_note:
+    every: Half
+    duration: Eight
+    offset: Quarter
+    channel: 1
+    note: 50
+    auto_velocity:
+      transpose: 
+        value: -50
+        register: 2
+
+- play_note:
+    every: 8
+    duration: Eight
+    offset: 3.75
+    channel: 1
+    note: 50
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: 16
+    duration: Eight
+    offset: 14.25
+    channel: 1
+    note: 50
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: Whole
+    duration: Eight
+    channel: 2
+    note: 30
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: Whole
+    duration: Eight
+    offset: Eight
+    channel: 2
+    note: 30
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: Whole
+    duration: Eight
+    offset: 1.5
+    channel: 2
+    note: 30
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: Whole
+    duration: Eight
+    offset: Half
+    channel: 2
+    note: 30
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: Whole
+    duration: Eight
+    offset: 3.5
+    channel: 2
+    note: 30
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: Eight
+    duration: Eight
+    channel: 3
+    auto_note:
+      random:
+        min: 69
+        max: 75
+    auto_velocity:
+      transpose: 
+        value: -80
+        register: 2
+
+- repeat:
+    every: 16
+    sequence:
+      register:
+        register: 0
+        auto_value:
+          random:
+            min: 76
+            max: 95
+            step: 6
+
+- play_note:
+    every: Half
+    duration: Half
+    offset: Quarter
+    channel: 5
+    note: 42
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: Eight
+    duration: Eight
+    offset: Quarter
+    channel: 6
+    auto_note:
+      register: 0
+    auto_velocity:
+      transpose: 
+        value: -90
+        register: 2
+
+- play_note:
+    every: Eight
+    duration: Eight
+    offset: Quarter
+    channel: 8
+    auto_note:
+      register: 0
+    auto_velocity:
+      transpose: 
+        value: -90
+        register: 2
+
+- play_note:
+    every: Eight
+    duration: Eight
+    offset: Quarter
+    channel: 8
+    auto_note:
+      transpose:
+        value: 5
+        register: 0
+    auto_velocity:
+      transpose: 
+        value: -90
+        register: 2
+
+- play_note:
+    every: Eight
+    duration: Eight
+    offset: Quarter
+    channel: 8
+    auto_note:
+      transpose:
+        value: 9
+        register: 0
+    auto_velocity:
+      transpose: 
+        value: -90
+        register: 2
+
+- play_note:
+    every: 8
+    duration: Sixteenth
+    offset: 3.75
+    channel: 8
+    auto_note:
+      transpose:
+        value: 11
+        register: 0
+    auto_velocity:
+      transpose: 
+        value: -70
+        register: 2
+
+- play_note:
+    every: 16
+    duration: Eight
+    offset: 14.25
+    channel: 8
+    auto_note:
+      transpose:
+        value: 7
+        register: 0
+    auto_velocity:
+      transpose: 
+        value: -60
+        register: 2
+
+- play_note:
+    every: Eight
+    duration: Sixteenth
+    channel: 7
+    auto_note:
+      transpose:
+        value: -36
+        register: 0
+    velocity: 30
+
+- play_note:
+    every: Eight
+    duration: Sixteenth
+    channel: 7
+    auto_note:
+      transpose:
+        value: -24
+        register: 0
+    velocity: 30
+
+- repeat:
+    every: Sixteenth
+    sequence:
+      panning:
+        channel: 7
+        sweep:
+          from: 26
+          to: 100
+          step: 5

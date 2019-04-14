@@ -1,6 +1,11 @@
-package sequencer
+package definitions
 
-import "fmt"
+import (
+	"fmt"
+
+	. "github.com/bspaans/bleep/sequencer/automations"
+	"github.com/bspaans/bleep/util"
+)
 
 type AutomationDef struct {
 	BackAndForth *[]int           `yaml:"back_and_forth"`
@@ -21,7 +26,7 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 	} else if a.Range != nil {
 		return IntRangeAutomation(a.Range.From, a.Range.To, a.Range.Step), nil
 	} else if a.Sweep != nil {
-		return IntSweepAutomation(a.Sweep.From, a.Sweep.To, a.Sweep.ChangeEvery), nil
+		return IntSweepAutomation(a.Sweep.From, a.Sweep.To, a.Sweep.ChangeEvery, a.Sweep.Step), nil
 	} else if a.FadeIn != nil {
 		return IntFadeInAutomation(a.FadeIn.From, a.FadeIn.To, a.FadeIn.ChangeEvery), nil
 	} else if a.Register != nil {
@@ -42,11 +47,16 @@ type RandomDef struct {
 	Max int
 	Min int
 }
+type FloatRandomDef struct {
+	Max float64
+	Min float64
+}
 
 type FloatAutomationDef struct {
 	BackAndForth *[]float64         `yaml:"back_and_forth"`
 	Register     *int               `yaml:"register"`
 	Transpose    *FloatTransposeDef `yaml:"transpose"`
+	Random       *FloatRandomDef    `yaml:"random"`
 }
 
 func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
@@ -54,6 +64,8 @@ func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
 		return FloatBackAndForthAutomation(*a.BackAndForth), nil
 	} else if a.Register != nil {
 		return FloatRegisterAutomation(*a.Register), nil
+	} else if a.Random != nil {
+		return FloatRandomAutomation(a.Random.Min, a.Random.Min), nil
 	} else if a.Transpose != nil {
 		automation, err := a.Transpose.Automation.GetAutomation()
 		if err != nil {
@@ -76,7 +88,7 @@ type CycleChordsDef struct {
 	Chords [][]int `yaml:"chords"`
 }
 
-func (c *CycleChordsDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, error) {
+func (c *CycleChordsDef) GetAutomation() (IntArrayAutomation, error) {
 	return ChordCycleArrayAutomation(c.Count, c.Chords), nil
 }
 
@@ -87,19 +99,19 @@ type IntArrayAutomationDef struct {
 	Index       *IntArrayIndexDef     `yaml:"index"`
 }
 
-func (a *IntArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomation, error) {
+func (a *IntArrayAutomationDef) GetAutomation() (IntArrayAutomation, error) {
 	if a.Register != nil {
 		return IntArrayRegisterAutomation(*a.Register), nil
 	} else if a.CycleChords != nil {
-		return a.CycleChords.GetAutomation(seq)
+		return a.CycleChords.GetAutomation()
 	} else if a.Transpose != nil {
-		automation, err := a.Transpose.Automation.GetAutomation(seq)
+		automation, err := a.Transpose.Automation.GetAutomation()
 		if err != nil {
 			return nil, err
 		}
 		return IntArrayTransposeAutomation(a.Transpose.Transpose, automation), nil
 	} else if a.Index != nil {
-		automation, err := a.Index.Automation.GetAutomation(seq)
+		automation, err := a.Index.Automation.GetAutomation()
 		if err != nil {
 			return nil, err
 		}
@@ -107,7 +119,7 @@ func (a *IntArrayAutomationDef) GetAutomation(seq *Sequencer) (IntArrayAutomatio
 		if a.Index.AutoIndex != nil {
 			indexF_, err := a.Index.AutoIndex.GetAutomation()
 			if err != nil {
-				return nil, WrapError("index > auto_value", err)
+				return nil, util.WrapError("index > auto_value", err)
 			}
 			indexF = indexF_
 		}

@@ -1,26 +1,359 @@
-bpm: 90.0
+bpm: 200.0
 granularity: 24.0
 
 channels:
 - channel: 0
+  volume: 55
+  panning: 67
+  reverb: 90
+  reverb_time: Eight
+  reverb_feedback: 0.2
+  generator:
+    panning:
+      wav:
+        file: examples/piano.wav
+        pitched: true
+        gain: 2.0
+
+- channel: 4
+  volume: 35
+  panning: 67
+  reverb: 100
+  reverb_time: 0.65
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/kicks/808-Kicks02.wav
+      gain: 2.0
+
+- channel: 5
+  volume: 45
+  panning: 90
+  reverb: 3
+  reverb_time: Eight
+  reverb_feedback: 0.9
+  lpf_cutoff: 5000
+  generator:
+    filter:
+      lpf:
+        cutoff: 8000
+      wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/hihats/808-Ride3.wav
+        gain: 2.0
+
+- channel: 6
   volume: 25
+  panning: 80
+  lpf_cutoff: 5000
+  generator:
+    combined:
+    - wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare31.wav
+        gain: 3.2
+    - wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare32.wav
+        gain: 4.2
+        
+- channel: 7
+  volume: 15
+  panning: 47
+  reverb: 90
+  reverb_time: 0.1
+  generator:
+    panning:
+      pulse:
+        duty_cycle: 0.4
+        duty_cycle_depth: 0.05
+        duty_cycle_modulator:
+          triangle:
+            pitch: 3.0
+            attack: 0.001
+            decay: 0
+            sustain: 0.7
+            release: 400000
+        attack: 0.5
+        decay: 0
+        sustain: 0.9
+        release: 4
+
+- channel: 8
+  volume: 13
+  panning: 67
+  reverb: 90
+  reverb_time: Eight
+  reverb_feedback: 0.7
+  generator:
+    panning:
+      combined:
+      - sine: 
+          attack: 0.01
+          decay: 1.0
+          sustain: 0.5
+          release: 0.1
+      - transpose:
+          semitones: 12.0
+          gain: 0.8 
+          sine: 
+            attack: 0.01
+            decay: 0.5
+            sustain: 0.5
+            release: 0.1
+      - transpose:
+          semitones: 24.0
+          gain: 0.5 
+          sine: 
+            attack: 0.01
+            decay: 0.5
+            sustain: 0.5
+            release: 0.1
+      - transpose:
+          semitones: 19.0
+          gain: 0.3 
+          sine: 
+            attack: 0.01
+            decay: 0.5
+            sustain: 0.5
+            release: 0.1
+
+- channel: 10
+  volume: 35
   panning: 67
   generator:
     wav:
-      file: examples/piano.wav
+      file: /home/bspaans/Music/samples/crashes/cw_vinyl_crash03.wav
+      gain: 2.0
+
+- channel: 11
+  volume: 35
+  panning: 67
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/crashes/cw_vinyl_crash08.wav
       gain: 2.0
 
 
+
 sequences:
-- euclidian:
-    pulses: 3
-    over: 5
-    duration: Quarter
+- repeat:
+    every: Whole
+    sequence:
+      array_register:
+        register: 0
+        auto_values:
+          cycle_chords:
+            count: 1
+            chords:
+            - [60, 72, 76, 79]
+            - [59, 71, 76, 80]
+            - [57, 67, 72, 76]
+            - [55, 67, 72, 76]
+
+            - [65, 77, 81]
+            - [64, 76, 81]
+            - [62, 74, 78, 81]
+            - [62, 74, 78]
+
+
+            - [62, 74, 77]
+            - [60, 74, 77]
+            - [62, 74, 77]
+            - [63, 75, 77, 81, 86]
+
+            - [60, 72, 76, 79]
+            - [59, 71, 76, 80]
+            - [60, 72, 76, 79]
+            - [60, 72, 76, 79]
+
+            - [60, 72, 76, 79]
+            - [59, 71, 76, 80]
+            - [57, 67, 72, 76]
+            - [55, 67, 72, 76]
+
+            - [65, 77, 81]
+            - [64, 76, 81]
+            - [62, 74, 78, 81]
+            - [62, 74, 78]
+
+
+            - [62, 74, 77]
+            - [60, 74, 77]
+            - [62, 74, 77]
+            - [63, 75, 77, 81, 86]
+
+            - [60, 72, 76, 79]
+            - [59, 71, 76, 80]
+            - [60, 72, 76, 79]
+            - [60, 72, 76, 79]
+
+            - [60, 72, 76, 79]
+            - [59, 71, 76, 80]
+            - [57, 67, 72, 76]
+            - [55, 67, 72, 76]
+
+            - [65, 77, 81]
+            - [64, 76, 81]
+            - [62, 74, 78, 81]
+            - [62, 74, 78]
+
+            - [62, 74, 77]
+            - [60, 74, 77]
+            - [62, 74, 77]
+            - [63, 75, 77, 81, 86]
+
+            - [60, 72, 76, 79]
+            - [59, 71, 76, 80]
+            - [60, 72, 76, 79]
+            - [60, 72, 75, 79]
+
+            - [64, 76, 80, 83]
+            - [64, 76, 80, 83]
+            - [64, 76, 80, 83]
+            - [64, 76, 80, 83]
+
+            - [57, 69, 73, 76]
+            - [57, 69, 73, 76]
+            - [57, 69, 73, 76]
+            - [57, 69, 73, 76]
+
+            - [62, 69, 74, 78]
+            - [62, 69, 74, 78]
+            - [62, 69, 74, 78]
+            - [62, 69, 74, 78]
+
+            - [62]
+            - [62]
+            - [63]
+            - [63]
+
+            - [61, 73, 77, 80]
+            - [60, 72, 77, 81]
+            - [58, 68, 73, 77]
+            - [56, 68, 73, 77]
+
+- play_notes:
+    every: Whole
+    duration: Whole
+    channel: 0
+    auto_notes:
+      transpose: 
+        value: -12
+        register: 0
+    velocity: 40
+
+- play_notes:
+    every: Whole
+    duration: 3.5
+    channel: 0
+    auto_notes:
+      transpose: 
+        value: -24
+        index:
+          value: 0
+          register: 0
+    velocity: 128
+
+- play_notes:
+    every: Whole
+    duration: 0.5
+    offset: 3
+    channel: 0
+    auto_notes:
+      transpose: 
+        value: -24
+        index:
+          value: 0
+          register: 0
+    velocity: 128
+
+- play_notes:
+    every: Eight
+    duration: Eight
+    channel: 0
+    auto_notes:
+      index:
+        auto_value: 
+          sweep:
+            from: 0
+            to: 4
+        register: 0
+    velocity: 40
+
+- play_note:
+    every: Whole
+    duration: Whole
+    channel: 4
+    note: 35
+    velocity: 40
+    note: 49
+
+- after: 
+    after: 32
     sequence:
       play_note:
-        every: Quarter
+        every: Whole
         duration: Quarter
-        channel: 0
-        note: 69
+        offset: Half
+        channel: 6
+        note: 35
         velocity: 40
+        note: 49
 
+- play_note:
+    every: 64
+    duration: Quarter
+    offset: 63.5
+    channel: 6
+    note: 35
+    velocity: 40
+    note: 49
+
+- play_note:
+    every: 64
+    duration: Whole
+    offset: 64
+    channel: 10
+    note: 35
+    velocity: 40
+    note: 49
+
+- play_note:
+    every: 64
+    duration: Whole
+    offset: 32
+    channel: 11
+    note: 35
+    velocity: 40
+    note: 49
+
+- after: 
+    after: 64
+    sequence:
+      combine:
+      - midi:
+          file: test.mid
+          input_channels: [4]
+          output_channels: [8]
+          speed: 0.5
+      - play_notes:
+          every: Whole
+          duration: Whole
+          channel: 7
+          auto_notes:
+            transpose: 
+              value: -12
+              register: 0
+          velocity: 40
+      - play_note:
+          every: Half
+          duration: Half
+          channel: 5
+          note: 35
+          velocity: 40
+          note: 49
+      - play_note:
+          every: Whole
+          duration: 0.5
+          offset: 3.5
+          channel: 5
+          note: 35
+          velocity: 20
+          note: 49

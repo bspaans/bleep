@@ -71,18 +71,17 @@ func main() {
 		os.Exit(0)
 	}()
 
-	if *virtualMidi {
-		ctrl.StartVirtualMIDIDevice()
-	}
 	if *sequencer != "" {
 		err := ctrl.LoadSequencerFromFile(*sequencer)
 		if err != nil {
 			QuitWithError(err)
 		}
 	}
+	if *virtualMidi {
+		ctrl.StartVirtualMIDIDevice()
+	}
 	if *enableUI {
 		ctrl.UI = termbox.NewTermBox().Start(ctrl)
 	}
-	go ctrl.StartSynth()
-	<-c
+	ctrl.StartSynth()
 }

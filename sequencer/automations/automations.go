@@ -1,28 +1,31 @@
-package sequencer
+package automations
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
+
+	. "github.com/bspaans/bleep/sequencer/status"
 )
 
-type IntAutomation func(s *Sequencer, counter, t uint) int
-type IntArrayAutomation func(s *Sequencer, counter, t uint) []int
-type FloatAutomation func(s *Sequencer, counter, t uint) float64
+type IntAutomation func(s *Status, counter, t uint) int
+type IntArrayAutomation func(s *Status, counter, t uint) []int
+type FloatAutomation func(s *Status, counter, t uint) float64
 
 func IntIdAutomation(id int) IntAutomation {
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		return id
 	}
 }
 
 func FloatIdAutomation(id float64) FloatAutomation {
-	return func(s *Sequencer, counter, t uint) float64 {
+	return func(s *Status, counter, t uint) float64 {
 		return id
 	}
 }
 
 func IntArrayIdAutomation(id []int) IntArrayAutomation {
-	return func(s *Sequencer, counter, t uint) []int {
+	return func(s *Status, counter, t uint) []int {
 		return id
 	}
 }
@@ -36,7 +39,7 @@ func IntRangeAutomation(min, max, step int) IntAutomation {
 		reverse = true
 	}
 
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		if reverse {
 			intRange := uint(min - max)
 			steps := uint(math.Ceil(float64(intRange) / float64(step)))
@@ -52,17 +55,17 @@ func IntRangeAutomation(min, max, step int) IntAutomation {
 }
 
 func IntTransposeAutomation(transpose int, automation IntAutomation) IntAutomation {
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		return transpose + automation(s, counter, t)
 	}
 }
 func FloatTransposeAutomation(transpose float64, automation FloatAutomation) FloatAutomation {
-	return func(s *Sequencer, counter, t uint) float64 {
+	return func(s *Status, counter, t uint) float64 {
 		return transpose + automation(s, counter, t)
 	}
 }
 func IntArrayTransposeAutomation(transpose int, automation IntArrayAutomation) IntArrayAutomation {
-	return func(s *Sequencer, counter, t uint) []int {
+	return func(s *Status, counter, t uint) []int {
 		values := automation(s, counter, t)
 		result := make([]int, len(values))
 		for i, v := range values {
@@ -73,22 +76,26 @@ func IntArrayTransposeAutomation(transpose int, automation IntArrayAutomation) I
 }
 
 func IntFadeInAutomation(from, to, changeEvery int) IntAutomation {
-	l := to - from
+	if changeEvery == 0 {
+		changeEvery = 1
+	}
+	width := to - from
 	diff := 1.0 / float64(changeEvery)
-	r := make([]int, l*changeEvery)
-	for i := 0; i < l; i++ {
+	r := make([]int, int(float64(width+1)/diff))
+	for i := 0; i < len(r); i++ {
 		r[i] = from + int(float64(i)*diff)
 	}
-	return func(s *Sequencer, counter, t uint) int {
-		if counter >= uint(l) {
+	return func(s *Status, counter, t uint) int {
+		if counter >= uint(len(r)) {
 			return to
 		}
+		fmt.Println(r[counter])
 		return r[counter]
 	}
 }
 
 func IntRandomAutomation(min, max int) IntAutomation {
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		if min > max {
 			min, max = max, min
 		}
@@ -96,19 +103,35 @@ func IntRandomAutomation(min, max int) IntAutomation {
 	}
 }
 
-func IntSweepAutomation(min, max, changeEvery int) IntAutomation {
+func FloatRandomAutomation(min, max float64) FloatAutomation {
+	return func(s *Status, counter, t uint) float64 {
+		if min > max {
+			min, max = max, min
+		}
+		randomRange := max - min
+		return rand.Float64()*randomRange + min
+	}
+}
+
+func IntSweepAutomation(min, max, changeEvery, step int) IntAutomation {
 	if changeEvery == 0 {
 		changeEvery = 1
 	}
-	l := max - min
-	diff := 1.0
+	if step == 0 {
+		step = 1
+	}
+	diff := float64(math.Abs(float64(step)))
+
+	width := max - min
 	if min > max {
-		l = min - max
-		diff = -1.0
+		width = min - max
+		diff = -diff
 	}
 	diff *= 1.0 / float64(changeEvery)
-	r := make([]int, l*changeEvery+1)
-	for i := 0; i <= l; i++ {
+
+	r := make([]int, int((float64(width+1) / diff)))
+
+	for i := 0; i < len(r); i++ {
 		r[i] = min + int(float64(i)*diff)
 	}
 	return IntBackAndForthAutomation(r)
@@ -116,7 +139,7 @@ func IntSweepAutomation(min, max, changeEvery int) IntAutomation {
 
 func IntCycleAutomation(ints []int) IntAutomation {
 	l := uint(len(ints))
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		ix := counter % l
 		v := ints[ix]
 		return v
@@ -124,32 +147,32 @@ func IntCycleAutomation(ints []int) IntAutomation {
 }
 
 func IntRegisterAutomation(register int) IntAutomation {
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		return s.IntRegisters[register]
 	}
 }
 
 func IntArrayRegisterAutomation(register int) IntArrayAutomation {
-	return func(s *Sequencer, counter, t uint) []int {
+	return func(s *Status, counter, t uint) []int {
 		return s.IntArrayRegisters[register]
 	}
 }
 
 func FloatRegisterAutomation(register int) FloatAutomation {
-	return func(s *Sequencer, counter, t uint) float64 {
+	return func(s *Status, counter, t uint) float64 {
 		return s.FloatRegisters[register]
 	}
 }
 
 func IntArrayCycleAutomation(f IntArrayAutomation) IntAutomation {
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		ints := f(s, counter, t)
 		return IntCycleAutomation(ints)(s, counter, t)
 	}
 }
 
 func IntArrayIndexAutomation(ixF IntAutomation, f IntArrayAutomation) IntArrayAutomation {
-	return func(s *Sequencer, counter, t uint) []int {
+	return func(s *Status, counter, t uint) []int {
 		ints := f(s, counter, t)
 		if len(ints) == 0 {
 			return ints
@@ -161,7 +184,7 @@ func IntArrayIndexAutomation(ixF IntAutomation, f IntArrayAutomation) IntArrayAu
 
 func IntBackAndForthAutomation(ints []int) IntAutomation {
 	l := uint(len(ints))
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		ix := counter % (l*2 - 2)
 		if ix < l {
 			return ints[ix]
@@ -173,7 +196,7 @@ func IntBackAndForthAutomation(ints []int) IntAutomation {
 
 func FloatBackAndForthAutomation(floats []float64) FloatAutomation {
 	l := uint(len(floats))
-	return func(s *Sequencer, counter, t uint) float64 {
+	return func(s *Status, counter, t uint) float64 {
 		ix := counter % (l*2 - 2)
 		if ix < l {
 			return floats[ix]
@@ -184,25 +207,25 @@ func FloatBackAndForthAutomation(floats []float64) FloatAutomation {
 }
 
 func OffsetAutomation(offset uint, a IntAutomation) IntAutomation {
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		return a(s, counter, t+offset)
 	}
 }
 
 func IntNegativeOffsetAutomation(offset uint, a IntAutomation) IntAutomation {
-	return func(s *Sequencer, counter, t uint) int {
+	return func(s *Status, counter, t uint) int {
 		return a(s, counter-1, t-offset)
 	}
 }
 
 func IntArrayNegativeOffsetAutomation(offset uint, a IntArrayAutomation) IntArrayAutomation {
-	return func(s *Sequencer, counter, t uint) []int {
+	return func(s *Status, counter, t uint) []int {
 		return a(s, counter-1, t-offset)
 	}
 }
 
 func ChordCycleArrayAutomation(changeEvery int, chords [][]int) IntArrayAutomation {
-	return func(s *Sequencer, counter, t uint) []int {
+	return func(s *Status, counter, t uint) []int {
 		ix := counter % (uint(changeEvery * len(chords)))
 		v := chords[ix/uint(changeEvery)]
 		return v

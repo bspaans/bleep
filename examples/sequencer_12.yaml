@@ -1,0 +1,526 @@
+bpm: 120.0
+granularity: 64.0
+
+channels:
+- channel: 1
+  volume: 65
+  panning: 67
+  reverb: 1
+  reverb_time: 0.25
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/kicks/808-Kicks01.wav
+      gain: 2.0
+
+- channel: 2
+  volume: 40
+  panning: 67
+  reverb: 1
+  reverb_time: 0.25
+  generator:
+    wav:
+      file: "/home/bspaans/Music/samples/dynamix_bass_samples/Edgy/Edgy - C4.wav"
+      pitched: true
+      base_pitch: c4
+      gain: 1.0
+
+- channel: 4
+  volume: 35
+  panning: 77
+  reverb: 1
+  reverb_time: Sixteenth
+  reverb_feedback: 0.9
+  lpf_cutoff: 8000
+  generator:
+    wav:
+      file: /home/bspaans/Music/samples/808_drum_kit/hihats/808-Ride2.wav
+      gain: 1.2
+
+- channel: 5
+  volume: 25
+  panning: 80
+  lpf_cutoff: 5000
+  generator:
+    combined:
+    - wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare31.wav
+        gain: 3.2
+    - wav:
+        file: /home/bspaans/Music/samples/808_drum_kit/snares/808-Snare32.wav
+        gain: 4.2
+
+- channel: 6
+  volume: 25
+  panning: 70
+  reverb: 23
+  reverb_time: Thirtysecond
+  lpf_cutoff: 8000
+  generator:
+    white_noise:
+      attack: 0.0001
+      delay: 0
+      sustain: 1.0
+      release: 100000.0
+
+- channel: 7
+  volume: 15
+  panning: 47
+  reverb: 90
+  reverb_time: 0.1
+  generator:
+    panning:
+      pulse:
+        duty_cycle: 0.4
+        duty_cycle_depth: 0.05
+        duty_cycle_modulator:
+          triangle:
+            pitch: 3.0
+            attack: 0.001
+            decay: 0
+            sustain: 0.7
+            release: 400000
+        attack: 0.5
+        decay: 0
+        sustain: 0.9
+        release: 4
+
+- channel: 8
+  volume: 55
+  panning: 67
+  reverb: 90
+  reverb_time: Eight
+  reverb_feedback: 0.2
+  generator:
+    panning:
+      wav:
+        file: examples/piano.wav
+        pitched: true
+        gain: 2.0
+  grain:
+    name: Grain Test
+    file: examples/nice-work.wav
+    gain: 4.0
+    grain_size: 25.0
+    birth_rate: 125.0
+    repeat: true
+    density: 9
+    spread: 500.0
+    speed: 1.0
+
+
+sequences:
+
+- before: 
+    before: 64
+    sequence:
+      repeat:
+        every: Whole
+        sequence:
+          array_register:
+            register: 0
+            auto_values:
+              cycle_chords:
+                count: 1
+                chords:
+                - [45, 48, 52]
+                - [41, 48, 50]
+
+- after: 
+    after: 80
+    sequence:
+      repeat:
+        every: Whole
+        sequence:
+          array_register:
+            register: 0
+            auto_values:
+              cycle_chords:
+                count: 4
+                chords:
+                - [45, 48, 52]
+                - [41, 48, 50]
+
+- repeat:
+    every: Sixteenth
+    description: Accentuate the beats
+    sequence:
+      register:
+        register: 2
+        auto_value:
+          cycle: [127, 90, 100, 90, 
+                  110, 90, 100, 90,
+                  118, 90, 100, 90,
+                  110, 90, 100, 90]
+
+#############
+# CHANNEL 1 #
+#############
+
+- before:
+    before: 64
+    sequence:
+      play_note:
+        every: Quarter
+        duration: Eight
+        channel: 1
+        note: 40
+        auto_velocity:
+          transpose: 
+            value: -70
+            register: 2
+
+- after:
+    after: 80
+    sequence:
+      play_note:
+        every: Quarter
+        duration: Eight
+        channel: 1
+        note: 40
+        auto_velocity:
+          transpose: 
+            value: -70
+            register: 2
+
+
+#############
+# CHANNEL 2 #
+#############
+
+- before:
+    before: 64
+    sequence:
+      combine: 
+      - euclidian:
+          pulses: 5
+          over: 16
+          duration: Eight
+          sequence:
+            play_notes:
+              every: Eight
+              duration: Eight
+              channel: 2
+              note: 35
+              velocity: 127
+              auto_notes:
+                transpose:
+                  value: 24
+                  index:
+                    value: 2
+                    register: 0
+              auto_velocity:
+                transpose: 
+                  value: -30
+                  register: 2
+
+      - euclidian:
+          pulses: 5
+          over: 8
+          duration: Eight
+          sequence:
+            play_notes:
+              every: Eight
+              duration: Eight
+              channel: 2
+              note: 35
+              velocity: 127
+              auto_notes:
+                transpose:
+                  value: 12
+                  index:
+                    value: 2
+                    register: 0
+              auto_velocity:
+                transpose: 
+                  value: -30
+                  register: 2
+
+      - euclidian:
+          pulses: 1
+          over: 16
+          duration: Eight
+          sequence:
+            play_notes:
+              every: Eight
+              duration: Eight
+              channel: 2
+              note: 35
+              velocity: 127
+              auto_notes:
+                transpose:
+                  value: 31
+                  index:
+                    value: 2
+                    register: 0
+              auto_velocity:
+                transpose: 
+                  value: -30
+                  register: 2
+
+#############
+# CHANNEL 4 #
+#############
+
+- after:
+    after: 80
+    sequence:
+      combine:
+      - play_note:
+          every: Eight
+          duration: Eight
+          offset: Eight
+          channel: 4
+          note: 40
+          auto_velocity:
+            transpose: 
+              value: -50
+              register: 2
+
+- repeat:
+    every: Eight
+    sequence:
+      lpf_cutoff:
+        channel: 4
+        cycle:
+          - 8000
+          - 7800
+          - 7500
+            
+#############
+# CHANNEL 5 #
+#############
+
+- before:
+    before: 64
+    sequence:
+      after: 
+        after: 63
+        sequence:
+          play_note:
+            every: Thirtysecond
+            duration: Thirtysecond
+            channel: 5
+            note: 40
+            auto_velocity:
+              transpose: 
+                value: -50
+                register: 2
+
+- before:
+    before: 63
+    sequence:
+      after: 
+        after: 62
+        sequence:
+          play_note:
+            every: Sixteenth
+            duration: Sixteenth
+            channel: 5
+            note: 40
+            auto_velocity:
+              transpose: 
+                value: -50
+                register: 2
+
+- before:
+    before: 62
+    sequence:
+      after: 
+        after: 48
+        sequence:
+          play_note:
+            every: Eight
+            duration: Eight
+            channel: 5
+            note: 40
+            auto_velocity:
+              transpose: 
+                value: -50
+                register: 2
+
+- before:
+    before: 48
+    sequence:
+      after: 
+        after: 32
+        sequence:
+          play_note:
+            every: Quarter
+            duration: Quarter
+            channel: 5
+            note: 40
+            auto_velocity:
+              transpose: 
+                value: -50
+                register: 2
+- after: 
+    after: 112
+    sequence:
+      play_note:
+        every: 4
+        duration: 4
+        offset: 2
+        channel: 5
+        note: 40
+        auto_velocity:
+          transpose: 
+            value: -50
+            register: 2
+
+
+#############
+# CHANNEL 6 #
+#############
+
+- after:
+    after: 32
+    sequence:
+      before:
+        before: 64
+        sequence:
+          combine:
+          - play_note:
+              every: 8
+              duration: 8
+              channel: 6
+              note: 40
+              velocity: 127
+          - repeat:
+              every: Sixteenth
+              sequence:
+                combine:
+                - volume:
+                    channel: 6
+                    fade_in:
+                      from: 0
+                      to: 32
+                      change_every: 4
+                - hpf_cutoff:
+                    channel: 6
+                    sweep:
+                      from: 1000
+                      to: 20000
+                      change_every: 4
+                      step: 250
+- after:
+    after: 64
+    sequence:
+      repeat:
+        every: Sixteenth
+        sequence:
+          volume:
+            channel: 6
+            cycle:
+            - 0
+
+#############
+# CHANNEL 7 #
+#############
+
+- before:
+    before: 64
+    sequence:
+      euclidian:
+        pulses: 4
+        over: 17
+        duration: Quarter
+        sequence:
+          play_notes:
+            every: Quarter
+            duration: Quarter
+            channel: 7
+            note: 35
+            velocity: 127
+            auto_notes:
+              transpose:
+                value: 12
+                index:
+                  value: 2
+                  register: 0
+            auto_velocity:
+              transpose: 
+                value: -30
+                register: 2
+
+- after:
+    after: 80
+    sequence:
+      play_notes:
+        every: 16
+        duration: 16
+        channel: 7
+        note: 35
+        velocity: 127
+        auto_notes:
+          transpose:
+            value: 12
+            register: 0
+        auto_velocity:
+          transpose: 
+            value: -30
+            register: 2
+
+#############
+# CHANNEL 8 #
+#############
+- before:
+    before: 32
+    sequence:
+      play_notes:
+        every: Whole
+        duration: Whole
+        channel: 8
+        note: 35
+        velocity: 127
+        auto_notes:
+          transpose:
+            value: 12
+            index:
+              register: 0
+              auto_value:
+                sweep:
+                  from: 0
+                  to: 3
+                  step: 1
+        auto_velocity:
+          transpose: 
+            value: -30
+            register: 2
+
+- after:
+    after: 80
+    sequence:
+      play_notes:
+        every: Eight
+        duration: Eight
+        channel: 8
+        note: 35
+        velocity: 127
+        auto_notes:
+          transpose:
+            value: 24
+            index:
+              register: 0
+              auto_value:
+                sweep:
+                  from: 0
+                  to: 3
+                  step: 1
+        auto_velocity:
+          transpose: 
+            value: -30
+            register: 2
+
+- after:
+    after: 64
+    sequence:
+      play_note:
+        every: Whole
+        duration: Whole
+        channel: 8
+        note: 128
+        velocity: 127
+        auto_velocity:
+          transpose: 
+            value: -30
+            register: 2
