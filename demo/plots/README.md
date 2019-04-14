@@ -19,9 +19,9 @@ func main() {
     g.GetSamples(cfg, 4000)
 }
 
-![Sine wave spectrogram (pitch 440Hz)](./sine_spectrogram.png)
-
 ```
+
+![Sine wave spectrogram 440Hz](./sine_spectrogram.png)
 
 ## Square 
 
@@ -43,9 +43,10 @@ func main() {
     g.GetSamples(cfg, 4000)
 }
 
-![Square wave spectrogram (440Hz)](./square_spectrogram.png)
 
 ```
+
+![Square wave spectrogram 440Hz](./square_spectrogram.png)
 
 ## Triangle 
 
@@ -66,9 +67,9 @@ func main() {
     g.GetSamples(cfg, 4000)
 }
 
-![Triangle wave spectrogram (440Hz)](./triangle_spectrogram.png)
-
 ```
+
+![Triangle wave spectrogram 440Hz](./triangle_spectrogram.png)
 
 ## Saw 
 
@@ -91,6 +92,8 @@ func main() {
 
 ```
 
+![Saw wave spectrogram 440Hz](./saw_spectrogram.png)
+
 ## White noise 
 
 ![White noise](./white_noise.png)
@@ -110,6 +113,8 @@ func main() {
 }
 
 ```
+
+![White noise spectrogram](./white_noise_spectrogram.png)
 
 ## .wav sample (clap.wav)
 
@@ -132,6 +137,8 @@ func main() {
 
 ```
 
+![.wav sample spectrogram](./wav_spectrogram.png)
+
 ## Pulse (25% duty cycle)
 
 ![Pulse wave](./pulse_wave.png)
@@ -152,3 +159,5 @@ func main() {
 }
 
 ```
+
+![Pulse wave spectrogram 440Hz](./pulse_wave_spectrogram.png)
