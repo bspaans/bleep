@@ -19,6 +19,8 @@ func main() {
     g.GetSamples(cfg, 4000)
 }
 
+![Sine wave spectrogram (pitch 440Hz)](./sine_spectrogram.png)
+
 ```
 
 ## Square 
@@ -41,6 +43,8 @@ func main() {
     g.GetSamples(cfg, 4000)
 }
 
+![Square wave spectrogram (440Hz)](./square_spectrogram.png)
+
 ```
 
 ## Triangle 
@@ -61,6 +65,8 @@ func main() {
     g.SetPitch(110.0)
     g.GetSamples(cfg, 4000)
 }
+
+![Triangle wave spectrogram (440Hz)](./triangle_spectrogram.png)
 
 ```
 
