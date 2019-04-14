@@ -139,6 +139,12 @@ func main() {
 
 ![.wav sample spectrogram](./wav_spectrogram.png)
 
+## .wav sample (piano.wav)
+
+![.wav sample](./wav_piano.png)
+
+![.wav sample spectrogram](./wav_piano_spectrogram.png)
+
 ## Pulse (25% duty cycle)
 
 ![Pulse wave](./pulse_wave.png)
@@ -161,3 +167,4 @@ func main() {
 ```
 
 ![Pulse wave spectrogram 440Hz](./pulse_wave_spectrogram.png)
+

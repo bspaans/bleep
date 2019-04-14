@@ -22,6 +22,7 @@ import (
 //
 func DoPlots(cfg *audio.AudioConfig) {
 	wav, _ := generators.NewWavGenerator("examples/clap.wav", 1.0)
+	wav2, _ := generators.NewWavGenerator("examples/piano.wav", 1.0)
 	generators := []generators.Generator{
 		generators.NewSineWaveOscillator(),
 		generators.NewSquareWaveOscillator(),
@@ -30,6 +31,7 @@ func DoPlots(cfg *audio.AudioConfig) {
 		generators.NewWhiteNoiseGenerator(),
 		generators.NewPulseWaveGenerator(0.25, nil, 0.0),
 		wav,
+		wav2,
 	}
 	files := []string{
 		"demo/plots/sine",
@@ -39,6 +41,7 @@ func DoPlots(cfg *audio.AudioConfig) {
 		"demo/plots/white_noise",
 		"demo/plots/pulse_wave",
 		"demo/plots/wav",
+		"demo/plots/wav_piano",
 	}
 	for i, g := range generators {
 		PlotGenerator(cfg, g, files[i]+".png")
