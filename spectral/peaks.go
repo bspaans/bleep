@@ -2,17 +2,27 @@ package spectral
 
 import "math/cmplx"
 
+// A list of peaks found in a spectral frame. To track peaks across frames see
+// the SpectralTrack.
 type SpectralPeaks struct {
 	Peaks []*SpectralPeak
 }
 
-func NewSpectralPeaks(peaks []*SpectralPeak) *SpectralPeaks {
+func newSpectralPeaks(peaks []*SpectralPeak) *SpectralPeaks {
 	return &SpectralPeaks{
 		Peaks: peaks,
 	}
 }
 
-// Returns the peak frequencies present in the frame.
+/*
+
+Returns the peak frequencies present in the frame by repeatedly:
+
+			* selecting the frame with the greatest magnitude
+			* adding it to the result if the magnitude is above the threshold and we've not reached the limit.
+			* zeroing out the bin, so that the next peak will get found in the next round.
+
+*/
 func NewSpectralPeaksFromFrame(s *SpectralFrame, threshold float64, limit int) *SpectralPeaks {
 	frame := make([]complex64, len(s.Frame))
 	for i, c := range s.Frame {
@@ -32,7 +42,7 @@ func NewSpectralPeaksFromFrame(s *SpectralFrame, threshold float64, limit int) *
 		if index == -1 {
 			return nil
 		}
-		result := NewSpectralPeak(index, float64(index)*s.Bandwidth, s.Bandwidth, frame[index])
+		result := newSpectralPeak(index, float64(index)*s.Bandwidth, s.Bandwidth, frame[index])
 		frame[index] = 0
 		return result
 	}
@@ -45,5 +55,5 @@ func NewSpectralPeaksFromFrame(s *SpectralFrame, threshold float64, limit int) *
 		}
 		result = append(result, peak)
 	}
-	return NewSpectralPeaks(result)
+	return newSpectralPeaks(result)
 }

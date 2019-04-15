@@ -10,7 +10,9 @@ import (
 )
 
 // A SpectralFrame contains frequency domain data for a specific time interval.
-// This data can be used for analysis (e.g. spectrograms), filtering, etc.
+// This data can be used for analysis (e.g. spectrograms, peak tracking),
+// phase vocoding (e.g. pitch and time shifting), etc.
+//
 type SpectralFrame struct {
 	Start                  int
 	Length                 int
@@ -20,7 +22,7 @@ type SpectralFrame struct {
 	DurationWithoutOverlap float64
 }
 
-func NewSpectralFrame(sampleRate, start, length int, frame []complex64) *SpectralFrame {
+func newSpectralFrame(sampleRate, start, length int, frame []complex64) *SpectralFrame {
 	return &SpectralFrame{
 		Start:     start,
 		Length:    length,
@@ -31,7 +33,7 @@ func NewSpectralFrame(sampleRate, start, length int, frame []complex64) *Spectra
 }
 
 // Convert a time-domain sample to the frequency domain.
-// If stereo data is passed, only the left channel is used.
+// If stereo data is passed in, only the left channel is used.
 //
 func GetSpectralFrames(cfg *audio.AudioConfig, samples []float64, windowWidth, overlap int) []*SpectralFrame {
 
@@ -61,7 +63,7 @@ func GetSpectralFrames(cfg *audio.AudioConfig, samples []float64, windowWidth, o
 		}
 		plan.Execute()
 
-		frame := NewSpectralFrame(cfg.SampleRate, start, windowWidth, out)
+		frame := newSpectralFrame(cfg.SampleRate, start, windowWidth, out)
 		frame.DurationWithoutOverlap = frame.Duration - (float64(overlap) / float64(cfg.SampleRate))
 		result[i] = frame
 		i++

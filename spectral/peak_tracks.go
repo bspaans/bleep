@@ -5,6 +5,8 @@ import (
 	"sort"
 )
 
+// A list of peak tracks found in the spectral frames. Tracks when
+// what peaks start. For example: when do 440Hz and its harmonics start?
 type SpectralPeakTracks struct {
 	Tracks []*SpectralPeakTrack
 }
@@ -17,12 +19,15 @@ func (s *SpectralPeakTracks) String() string {
 	return result
 }
 
+/*
+Constructs SpectralPeakTracks by tracking active peaks across spectral frames.
+*/
 func NewSpectralPeakTracksFromSpectralFrames(frames []*SpectralFrame) *SpectralPeakTracks {
 	tracks := []*SpectralPeakTrack{}
 	activeTracks := map[int]*SpectralPeakTrack{}
 
 	amplitudeThreshold := 2.0
-	limit := 20
+	limit := 4
 
 	for i, frame := range frames {
 		peaks := NewSpectralPeaksFromFrame(frame, amplitudeThreshold, limit)
@@ -32,7 +37,7 @@ func NewSpectralPeakTracksFromSpectralFrames(frames []*SpectralFrame) *SpectralP
 			ix := peak.Index
 			track, isActive := activeTracks[ix]
 			if !isActive {
-				track = NewSpectralPeakTrack(i, ix, peak.Frequency)
+				track = newSpectralPeakTrack(i, ix, peak.Frequency)
 			}
 			track.Add(peak)
 			activeTracks[ix] = track

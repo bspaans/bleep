@@ -5,18 +5,25 @@ import (
 	"math/cmplx"
 )
 
-// A SpectralPeak denotes a peak within a spectral frame. See GetPeaks() for
-// more information.
+// A SpectralPeak denotes a peak within a spectral frame. It is usually
+// constructed by the NewSpectralPeaksFromFrame function.
 type SpectralPeak struct {
 
 	// The index into the FFT result; i.e. the SpectralFrame.Frame
-	Index     int
+	Index int
+
+	// The low boundary of the frequency bin. To calculate a more accurate
+	// frequency you'll have to use a SpectralPeakTrack.
 	Frequency float64
+
+	// The width of the frequency bin.
 	Bandwidth float64
-	Value     complex64
+
+	// The Fourier series result for this frequency bin
+	Value complex64
 }
 
-func NewSpectralPeak(index int, freq, bandwidth float64, value complex64) *SpectralPeak {
+func newSpectralPeak(index int, freq, bandwidth float64, value complex64) *SpectralPeak {
 	return &SpectralPeak{
 		Index:     index,
 		Frequency: freq,
