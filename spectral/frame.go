@@ -1,4 +1,5 @@
-package filters
+// Spectral analysis tools; analyse and modify audio data in the frequency domain.
+package spectral
 
 import (
 	"fmt"
@@ -8,6 +9,8 @@ import (
 	"github.com/bspaans/bleep/audio"
 )
 
+// A SpectralFrame contains frequency domain data for a specific time interval.
+// This data can be used for analysis (e.g. spectrograms), filtering, etc.
 type SpectralFrame struct {
 	Start                  int
 	Length                 int
@@ -27,10 +30,7 @@ func NewSpectralFrame(sampleRate, start, length int, frame []complex64) *Spectra
 	}
 }
 
-func (s *SpectralFrame) String() string {
-	return fmt.Sprintf("Spectral Frame %d bands of %.2f Hz", s.Length, s.Bandwidth)
-}
-
+// Convert a time-domain sample to the frequency domain.
 // If stereo data is passed, only the left channel is used.
 //
 func GetSpectralFrames(cfg *audio.AudioConfig, samples []float64, windowWidth, overlap int) []*SpectralFrame {
@@ -66,5 +66,11 @@ func GetSpectralFrames(cfg *audio.AudioConfig, samples []float64, windowWidth, o
 		result[i] = frame
 		i++
 	}
+	peakTracks := NewSpectralPeakTracksFromSpectralFrames(result)
+	fmt.Println(peakTracks)
 	return result
+}
+
+func (s *SpectralFrame) String() string {
+	return fmt.Sprintf("Spectral Frame %d bands of %.2f Hz", s.Length, s.Bandwidth)
 }
