@@ -115,3 +115,19 @@ Use `--help` to see the various options and modes.
 ### Change instruments banks for virtual midi device 
 
 `go run main.go --instruments examples/bank.yaml --percussion examples/percussion_bank.yaml --midi`
+
+
+## Known Issues 
+
+### alsa/asoundlib.h: No such file or directory
+
+You're missing the alsa headers needed to compile the codebase. On Ubuntu
+install the `libasound2-dev` library:
+
+`sudo apt-get install libasound2-dev`
+
+### No package 'portaudio-2.0' found
+
+You're missing the portaudio headers. On Ubuntu install `portaudio19-dev`:
+
+`sudo apt-get install portaudio19-dev`
