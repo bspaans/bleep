@@ -1,0 +1,901 @@
+<script>
+
+var example = {
+  "channels": [
+    {
+      "channel_nr": 0,
+      "name": "Kick",
+      "instrument": {
+        "modules": [
+          {
+            "type": "input",
+            "x": 20,
+            "y": 200,
+          },
+          {
+            "type": "output",
+            "x": 700,
+            "y": 200,
+          },
+          {
+            "type": "sine",
+            "x": 190,
+            "y": 10,
+          },
+          {
+            "type": "triangle",
+            "x": 190,
+            "y": 270,
+          },
+          {
+            "type": "low pass filter",
+            "x": 500,
+            "y": 200,
+          },
+        ],
+        "patches": [
+          {
+            "from_module": 0,
+            "to_module": 2,
+            "from_output": 0,
+            "to_input": 0,
+          },
+          {
+            "from_module": 0,
+            "to_module": 3,
+            "from_output": 0,
+            "to_input": 0,
+          },
+          {
+            "from_module": 2,
+            "to_module": 4,
+            "from_output": 0,
+            "to_input": 0,
+          },
+          {
+            "from_module": 3,
+            "to_module": 4,
+            "from_output": 0,
+            "to_input": 0,
+          },
+          {
+            "from_module": 4,
+            "to_module": 1,
+            "from_output": 0,
+            "to_input": 0,
+          },
+        ],
+      },
+      "sequence_tracks": [
+
+      ],
+    },
+    {
+      "channel_nr": 1,
+      "name": "Snare",
+      "instrument": null,
+      "sequence_tracks": [
+
+      ],
+    },
+    {
+      "channel_nr": 2,
+      "name": "Bass",
+      "instrument": null,
+      "sequence_tracks": [
+
+      ],
+    },
+  ],
+};
+
+class Theme {
+  constructor() {
+    this.padding = 10;
+    this.colours = {
+      OutlineColour: '#333',
+      Background: '#444',
+      Foreground: '#eee',
+      SocketBackground: '#999',
+      SocketInside: '#999',
+      SocketOutline: '#777',
+      InstrumentEditorBackground: '#eee',
+      Patch: '#777',
+      ModuleOutline: '#777',
+      ModuleText: '#444',
+      ModuleGenerator: '#fff',
+      ModuleFilter: '#ffd',
+      ModuleOutput: '#dfd',
+      Button: '#ccc',
+      Dial: '#ccc',
+      DialLine: '#444',
+    };
+  }
+}
+
+
+class Range {
+  constructor(start, stop) {
+    this.start = start;
+    this.stop = stop;
+  }
+}
+
+class SequenceTrack {
+  constructor() {
+    this.sequence_def = null;
+    this.ranges = [new Range(0, 4), new Range(9, 12), new Range(14, 25), new Range(30, 34)];
+  }
+  draw(app, x, y, w, h) {
+    var showBars = 4;
+    var pointsInRange = showBars * 4;
+    var scaling = w / pointsInRange;
+    var barWidth = 4 * scaling;
+    for (var r of this.ranges) {
+      var colorOffset = 10;
+      var width = Math.min((r.stop - r.start) * scaling, w - (r.start * scaling))
+      app.ctx.fillStyle = 'rgb(35, 75, ' + (200 - colorOffset) + ', 0.3)';
+      app.ctx.strokeStyle = 'rgb(5, 5, ' + (200 - colorOffset) + ', 0.6)';
+      app.ctx.fillRect(x + r.start * scaling, y, width, h);
+      app.ctx.strokeRect(x + r.start * scaling, y, width, h);
+    }
+    app.ctx.strokeStyle = 'rgb(70, 70, 70, 0.8)';
+    for (var i = 0; i < showBars; i++) {
+      app.ctx.strokeRect(x + i * barWidth, y, barWidth, h);
+    }
+  }
+}
+
+class Channel {
+  constructor(channelNr, openInstrumentEditor) {
+    this.channelNr = channelNr;
+    this.instrument = null;
+    this.sequenceTracks = [new SequenceTrack()];
+    this.name = "Untitled " + this.channelNr;
+    for (var i = 0; i < channelNr; i++) {
+      this.sequenceTracks.push(new SequenceTrack());
+    }
+
+    this.height = 150;
+    this.marginTop = 10;
+    this.offset =  this.channelNr * (this.height + this.marginTop);
+    this.padding = 10;
+    this.channelWidth = 90;
+    this.handleClick = () => openInstrumentEditor(this.instrument);
+  }
+
+  draw(app) {
+    var colorOffset = this.channelNr * 40;
+    var height = this.height;
+    var marginTop = this.marginTop;
+    var offset = this.offset;
+    var padding = this.padding;
+    var channelWidth = this.channelWidth;
+    var trackWidth = app.canvas.width - channelWidth - padding * 2;
+    app.ctx.fillStyle = 'rgb(0, ' + (200 - colorOffset) + ', 0)';
+    app.ctx.strokeStyle = 'rgb(40, 40, 40, 1.0)';
+    app.ctx.fillRect(padding, padding + offset, channelWidth, height);
+    app.ctx.strokeRect(padding, padding + offset, channelWidth, height);
+
+    app.ctx.fillStyle = 'rgb(255, ' + (200 - colorOffset) + ', 0)';
+    app.ctx.fillRect(padding + channelWidth, padding + offset, trackWidth, height);
+    app.ctx.strokeRect(padding + channelWidth, padding + offset, trackWidth, height);
+
+    var trackHeight = height / this.sequenceTracks.length;
+    for (var i = 0; i < this.sequenceTracks.length - 1; i++) {
+      app.ctx.strokeRect(padding + channelWidth, padding + offset + i * trackHeight, trackWidth, trackHeight);
+    }
+    for (var i = 0; i < this.sequenceTracks.length; i++) {
+      var s = this.sequenceTracks[i];
+      s.draw(app, padding + channelWidth, padding + offset + i * trackHeight, trackWidth, trackHeight);
+    }
+
+    app.ctx.fillStyle = 'rgb(255, 255, 255)';
+    app.ctx.font = '10px sans-serif';
+    app.ctx.fillText(this.name, padding + 3, padding + offset + 11);
+    var showBars = 4;
+    var pointsInRange = showBars * 4;
+    var scaling = trackWidth / pointsInRange;
+    var barWidth = 4 * scaling;
+    app.ctx.fillStyle = 'rgb(40, 40, 40)';
+    app.ctx.font = '10px mono';
+    for (var i = 0; i < showBars; i++) {
+      app.ctx.fillText(i * 4, padding + channelWidth + 3 + i * barWidth, padding + offset + height - 3);
+    }
+  }
+
+  handleMouseDown(app, x, y) {
+    var path = new Path2D();
+    var width = app.canvas.width - this.padding * 2;
+    path.rect(this.padding, this.padding + this.offset, width, this.height);
+    if (app.ctx.isPointInPath(path, x, y)) {
+      return this;
+    }
+    return false;
+  }
+}
+
+class TimelineEditor {
+  constructor(channels) {
+    this.channels = channels;
+  }
+  handleMouseDown(app, x, y) {
+    for (var e of this.channels) {
+      var v = e.handleMouseDown(app, x, y);
+      if (v) {
+        return v;
+      }
+    }
+  }
+  draw(app) {
+    for (var e of this.channels) {
+      e.draw(app);
+    }
+  }
+
+}
+
+class Dial {
+  constructor(x, y, label, min, max, current) {
+    this.x = x;
+    this.y = y;
+    this.label = label;
+    this.radius = 15;
+    this.min = min;
+    this.max = max;
+    this.value = current;
+  }
+  draw(app) {
+
+    // Draw dial
+    app.ctx.fillStyle = app.theme.colours.Dial;
+    app.ctx.beginPath();
+    app.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+    app.ctx.fill();
+    app.ctx.closePath();
+
+    var range = this.max - this.min;
+    var tau = 2 * Math.PI
+    var value = tau - (tau * (this.value - this.min) / range)
+    app.ctx.beginPath();
+    var dx = Math.sin(value) * this.radius;
+    var dy = Math.cos(value) * this.radius;
+    app.ctx.strokeStyle = app.theme.colours.DialLine;
+    app.ctx.lineWidth = 2;
+    app.ctx.moveTo(this.x, this.y);
+    app.ctx.lineTo(this.x + dx, this.y + dy);
+    app.ctx.stroke();
+    app.ctx.lineWidth = 1;
+
+    // Draw label
+    app.ctx.fillStyle = app.theme.colours.ModuleText;
+    app.ctx.font = '10px mono';
+    var centerX = this.x;
+    var y = this.y - this.radius - 3;
+    app.ctx.textAlign = "center";
+    app.ctx.fillText(this.label, centerX, y);
+
+    // Draw value
+    app.ctx.fillText(this.value.toFixed(2), centerX, this.y + this.radius + 12);
+  }
+  handleMouseDown(app, x, y) {
+    if (x >= this.x - this.radius && x <= this.x + this.radius && y >= this.y - this.radius && y <= this.radius + this.y) {
+      return this;
+    }
+  }
+  handleDrag(app, dx, dy, x, y) {
+    dx = x - this.x;
+    dy = y - this.y;
+    var sin = dy / Math.sqrt(dy * dy + dx * dx)
+    var scaledCos = 1.0 - (sin + 1) / 2;
+    var range = this.max - this.min;
+    this.value = range * scaledCos + this.min;
+    app.draw();
+  }
+}
+
+class Socket {
+  constructor(x, y, label) {
+    this.x = x;
+    this.y = y;
+    this.label = label;
+    this.radius = 8;
+  }
+  draw(app) {
+    // Draw Octagon
+    var octa_short = 0.29289321881345247559915563789515;;
+    var octa_long = 1 - octa_short;
+    var octagon = {
+      size: 2 * this.radius + 4,
+    }
+    var x = this.x - this.radius - 2;
+    var y = this.y - this.radius - 2;
+    app.ctx.beginPath();
+    app.ctx.fillStyle = app.theme.colours.SocketBackground;
+    app.ctx.strokeStyle = app.theme.colours.SocketOutline;
+    app.ctx.moveTo(x + octagon.size * octa_short, y);
+    app.ctx.lineTo(x, y + octagon.size * octa_short);
+    app.ctx.lineTo(x, y + octagon.size * octa_long);
+    app.ctx.lineTo(x + octagon.size * octa_short, y + octagon.size);
+    app.ctx.lineTo(x + octagon.size * octa_long, y + octagon.size);
+    app.ctx.lineTo(x + octagon.size, y +  octagon.size * octa_long);
+    app.ctx.lineTo(x + octagon.size, y + octagon.size * octa_short);
+    app.ctx.lineTo(x + octagon.size * octa_long, y);
+    app.ctx.lineTo(x + octagon.size * octa_short, y);
+    app.ctx.fill();
+    app.ctx.stroke();
+
+    // Draw hole
+    app.ctx.strokeStyle = app.theme.colours.SocketInside;
+    app.ctx.fillStyle = app.theme.colours.SocketInside;
+    app.ctx.beginPath();
+    app.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+    app.ctx.fill();
+
+    // Draw label
+    app.ctx.fillStyle = app.theme.colours.ModuleText;
+    app.ctx.font = '10px mono';
+    var centerX = this.x;
+    app.ctx.textAlign = "center";
+    app.ctx.fillText(this.label, centerX, y - 3);
+  }
+  handleMouseDown(app, x, y) {
+    if (x >= this.x - this.radius && x <= this.x + this.radius + 4 && y >= this.y - this.radius && y <= this.y + this.radius + 4) {
+      console.log("clicked socket");
+      return this;
+    }
+  }
+}
+class Output extends Socket {
+  constructor(x, y, label) {
+    super(x, y)
+    this.label = label ? label : "OUT";
+  }
+}
+class Input extends Socket {
+  constructor(x, y, label) {
+    super(x, y)
+    this.label = label ? label : "IN";
+  }
+}
+
+class ModuleUnit {
+  constructor(type) {
+    this.type = type;
+    this.w = 150;
+    this.h = 150;
+    this.inputs = [];
+    this.outputs = [new Output(this.w - 29, this.h - 29)]
+    this.dials = {};
+    this.background = "";
+  }
+  addInput(i) {
+    this.inputs.push(i);
+  }
+  addOutput(o) {
+    this.outputs.push(o);
+  }
+  draw(app) {
+    var w = this.w;
+    var h = this.h;
+    app.ctx.fillStyle = app.theme.colours[this.background];
+    app.ctx.strokeStyle = app.theme.colours.ModuleOutline;
+    app.ctx.fillRect(0, 0, w, h);
+    app.ctx.strokeRect(0, 0, w, h);
+    app.ctx.fillStyle = app.theme.colours.ModuleText;
+    app.ctx.font = '14px mono';
+    app.ctx.textAlign = "center";
+    app.ctx.fillText(this.type, w / 2, 14);
+    for (var o of this.outputs) {
+      o.draw(app);
+    }
+    for (var o of this.inputs) {
+      o.draw(app);
+    }
+    for (var o of Object.keys(this.dials)) {
+      this.dials[o].draw(app);
+    }
+  }
+  handleMouseDown(app, x, y) {
+    for (var o of this.inputs) {
+      var v = o.handleMouseDown(app, x, y);
+      if (v) {
+        return v;
+      }
+    }
+    for (var o of this.outputs) {
+      var v = o.handleMouseDown(app, x, y);
+      if (v) {
+        return v;
+      }
+    }
+    for (var o of Object.keys(this.dials)) {
+      var v = this.dials[o].handleMouseDown(app, x, y);
+      if (v) {
+        return v;
+      }
+    }
+    var path = new Path2D();
+    path.rect(0, 0, this.w, this.h);
+    if (app.ctx.isPointInPath(path, x, y)) {
+      return this;
+    }
+  }
+}
+
+class SampleGenerator extends ModuleUnit {
+  constructor(type) {
+    super(type);
+    this.background = 'ModuleGenerator';
+    this.w = 220;
+    this.h = 250;
+    this.inputs = [
+      new Input(29, this.h - 29, "FREQ")
+    ];
+    this.outputs = [
+      new Output(this.w - 29, this.h - 29)
+    ]
+    this.dials = {
+      "pitch": new Dial(29, 49, "FREQ", 0.0, 22000.0, 0.0),
+      "attack": new Dial(29, 120, "ATTACK", 0.0, 10.0, 0.1),
+      "decay": new Dial(79, 120, "DECAY", 0.0, 10.0, 0.1),
+      "sustain": new Dial(129, 120, "SUSTAIN", 0.0, 1.0, 0.8),
+      "release": new Dial(179, 120, "RELEASE", 0.0, 10, 0.1),
+    }
+  }
+}
+
+class Filter extends ModuleUnit {
+  constructor(type) {
+    super(type);
+    this.addInput(new Input(29, this.h - 29));
+    this.background = 'ModuleFilter';
+    this.dials = {
+      "cutoff": new Dial(29, 59, "CUTOFF", 1.0, 22000.0, 5000.0),
+    }
+  }
+}
+class ChannelInput extends ModuleUnit {
+  constructor(type) {
+    super(type);
+    this.outputs = [new Output(this.w - 29, this.h - 29, "FREQ")];
+    this.background = 'ModuleOutput';
+  }
+}
+class ChannelOutput extends ModuleUnit {
+  constructor(type) {
+    super(type);
+    this.addInput(new Input(29, this.h - 29));
+    this.outputs = [];
+    this.background = 'ModuleOutput';
+  }
+}
+
+class Module {
+  constructor(x, y, unit) {
+    this.x = x;
+    this.y = y;
+    this.unit = unit;
+    this.selected = null;
+  }
+  draw(app) {
+    app.ctx.translate(this.x, this.y);
+    this.unit.draw(app);
+  }
+  handleMouseDown(app, x, y) {
+    this.selected = null;
+    var v = this.unit.handleMouseDown(app, x - this.x, y - this.y);
+    if (!v) {
+      return false;
+    }
+    this.selected = v;
+    return this;
+  }
+  handleDrag(app, dx, dy, x, y) {
+    var v = this.selected;
+    if (v instanceof Socket) {
+    } else if (v instanceof Dial) {
+      v.handleDrag(app, dx, dy, x - this.x, y - this.y);
+    } else {
+      this.x += dx;
+      this.y += dy;
+    }
+  }
+}
+
+class Patch {
+  constructor(fromModule, toModule, fromInput, toInput, fromOutput, toOutput) {
+    this.from = fromModule;
+    this.to = toModule;
+    this.fromInput = fromInput;
+    this.fromOutput = fromOutput;
+    this.toInput = toInput;
+    this.toOutput = toOutput;
+  }
+  getFromSocket(mod) {
+    if (this.fromInput !== false && this.fromInput !== undefined) {
+      return mod.unit.inputs[this.fromInput];
+    }
+    return mod.unit.outputs[this.fromOutput];
+  }
+  getToSocket(mod) {
+    if (this.toInput !== false && this.toInput !== undefined) {
+      return mod.unit.inputs[this.toInput];
+    }
+    return mod.unit.outputs[this.toOutput];
+  }
+}
+
+class Instrument {
+  constructor(modules, patches) {
+    this.modules = modules;
+    this.patches = patches;
+  }
+  compile() {
+    var output = null;
+    for (var i = 0; i < this.modules.length; i++) {
+      var m = this.modules[i];
+      if (m.unit.type == "output") {
+        output = i;
+      }
+    }
+    if (!output) {
+      return null;
+    }
+
+    var queue = [output];
+    var seen = {};
+    var dependencies = [output];
+    while (queue.length > 0) {
+      var q = queue[0];
+      var queue = queue.splice(1);
+      for (var p of this.patches) {
+        if (p.to === q && (p.toOutput !== false || t.toOutput !== undefined)) {
+          if (!seen[p.from]) {
+            dependencies.push(p.from);
+            queue.push(p.from);
+            seen[p.from] = true;
+          }
+        }
+      }
+      seen[q] = true;
+    }
+    var generators = {};
+    for (var i = dependencies.length - 1; i >= 0; i--) {
+      var ix = dependencies[i];
+      var unit = this.modules[ix].unit;
+      var g = null;
+      if (unit.type == "input") {
+        g = null;
+      } else if (unit.type == "triangle" || unit.type == "sine") {
+        g = {};
+        g[unit.type] = {
+          "attack": unit.dials["attack"].value,
+          "decay": unit.dials["decay"].value,
+          "sustain": unit.dials["sustain"].value,
+          "release": unit.dials["release"].value,
+        };
+        var pitchFound = false;
+        for (var p of this.patches) {
+          if (p.to === ix && p.toInput === 0) {
+            pitchFound = true;
+            var pg = generators[p.from];
+            if (pg) {
+              g[unit.type]["auto_pitch"] = pg;
+            }
+          }
+        }
+        if (!pitchFound) {
+          g[unit.type]["pitch"] = unit.dials["pitch"].value;
+        }
+      } else if (unit.type == "low pass filter") {
+        g = {};
+        g["filter"] = {"lpf": {"cutoff": unit.dials["cutoff"].value}}
+        var on = this.compileGenerators(generators, ix, 0);
+        Object.keys(on).map((k) => {
+          g["filter"][k] = on[k];
+        });
+      } else if (unit.type == "output") {
+        return this.compileGenerators(generators, ix, 0);
+      }
+      generators[ix] = g;
+    }
+    return dependencies;
+  }
+
+  compileGenerators(generators, ix, input) {
+    var gs = [];
+    for (var p of this.patches) {
+      if (p.to === ix && p.toInput === input) {
+        gs.push(generators[p.from])
+      } else if (p.from == ix && p.fromInput === input) {
+        gs.push(generators[p.to])
+      }
+    }
+    if (gs.length === 0) {
+      return null;
+    } else if (gs.length === 1) {
+      return gs[0];
+    } else {
+      return {"combined": gs}
+    }
+  }
+}
+
+class InstrumentEditor {
+  constructor(app, instrument, handleClose) {
+    this.app = app;
+    this.padding = app.theme.padding;
+    this.showCompile = true;
+    if (!instrument) {
+      var modules = [
+        new Module(10, 10, new ChannelInput('input')), 
+        new Module(10, 300, new ChannelOutput('output')),
+      ];
+      instrument = new Instrument(modules, []);
+    }
+    this.instrument = instrument;
+    this.buttons = [
+      new CloseButton(10, 10, handleClose),
+      new Button(10, 10, this.handleShowCompile.bind(this)),
+      new Button(10, 10, (() => this.handleAddGenerator("sine")).bind(this)),
+    ];
+  }
+  handleAddGenerator(type) {
+    var g = new SampleGenerator("sine")
+    this.instrument.modules.push(new Module(20, 20, g));
+    this.app.draw();
+  }
+  handleShowCompile() {
+    this.showCompile = !this.showCompile;
+    this.app.draw();
+  }
+  handleMouseDown(app, x, y) {
+    for (var b of this.buttons) {
+      var v = b.handleMouseDown(app, x, y);
+      if (v) {
+        return v;
+      }
+    }
+    for (var m of this.instrument.modules) {
+      var v = m.handleMouseDown(app, x - this.padding, y - this.padding);
+      if (v) {
+        return v;
+      }
+    }
+  }
+  draw(app) {
+    var w = app.canvas.width - 2 * this.padding;
+    var h = app.canvas.height - 2 * this.padding;
+    this.buttons[0].x = w - 15;
+    this.buttons[0].y = this.padding;
+    this.buttons[1].x = w - 15;
+    this.buttons[1].y = this.padding + 25;
+    app.ctx.lineWidth = 1;
+    
+    // Draw the background
+    app.ctx.fillStyle = app.theme.colours.InstrumentEditorBackground;
+    app.ctx.strokeStyle = app.theme.colours.OutlineColour;
+    app.ctx.fillRect(this.padding, this.padding, w, h);
+    app.ctx.strokeRect(this.padding, this.padding, w, h);
+
+    // Draw the modules
+    for (var m of this.instrument.modules) {
+      app.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translate
+      app.ctx.translate(this.padding, this.padding);
+      m.draw(app);
+    }
+    app.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translate
+
+    app.ctx.fillStyle = app.theme.colours.Patch;
+    app.ctx.strokeStyle = app.theme.colours.Patch;
+    // Draw the patches
+    for (var p of this.instrument.patches) {
+      var fromMod = this.instrument.modules[p.from];
+      var toMod = this.instrument.modules[p.to];
+      var fromSocket = p.getFromSocket(fromMod);
+      var toSocket = p.getToSocket(toMod);
+      var fromX = this.padding + fromMod.x + fromSocket.x;
+      var fromY = this.padding + fromMod.y + fromSocket.y;
+      var toX = this.padding + toMod.x + toSocket.x;
+      var toY = this.padding + toMod.y + toSocket.y;
+      var pointOffset = 70;
+      app.ctx.lineWidth = 4;
+      app.ctx.beginPath();
+      app.ctx.moveTo(fromX, fromY);
+      app.ctx.bezierCurveTo(
+        fromX, 
+        fromY + pointOffset, 
+        toX, 
+        toY + pointOffset, 
+        toX, 
+        toY);
+      app.ctx.stroke();
+    }
+
+    // Draw the buttons 
+    for (var b of this.buttons) {
+      b.draw(app);
+    }
+
+    // Compiled generator
+    if (this.showCompile) {
+      var txt = JSON.stringify(this.instrument.compile(), null, 2);
+      var lineNr = 0;
+      app.ctx.fillStyle = app.theme.colours.ModuleText;
+      app.ctx.textAlign = "start";
+      for (var line of txt.split("\n")) {
+        app.ctx.fillText(line, w - 300, 90 + lineNr * 12);
+        lineNr++;
+      }
+    }
+  }
+}
+
+class Button {
+  constructor(x, y, onClick) {
+    this.x = x;
+    this.y = y;
+    this.w = 25;
+    this.h = 25;
+    this.handleClick = onClick;
+  }
+  draw(app) {
+    var w = this.w;
+    var h = this.h;
+    app.ctx.fillStyle = app.theme.colours.Button;
+    app.ctx.strokeStyle = app.theme.colours.OutlineColour;
+    app.ctx.lineWidth = 1;
+    app.ctx.fillRect(this.x, this.y, w, h);
+    app.ctx.strokeRect(this.x, this.y, w, h);
+  }
+  handleMouseDown(app, x, y) {
+    if (x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h) {
+      return this;
+    }
+  }
+}
+class CloseButton extends Button {
+}
+
+class Bleep {
+  constructor() {
+    this.canvas = document.getElementById('main');
+    this.theme = new Theme();
+    this.ctx = this.canvas.getContext('2d');
+    this.canvas.onmousedown = this.handleMouseDown.bind(this)
+    this.canvas.onmouseup = this.handleMouseUp.bind(this)
+    this.canvas.onmousemove = this.handleMouseMove.bind(this)
+    this.selectedElem = null;
+    this.selectedPos = {};
+    this.load(example);
+    //this.openTimelineEditor();
+    this.openInstrumentEditor(this.channels[0].instrument);
+    this.draw();
+  }
+
+  load(data) {
+    this.channels = [];
+    for (var ch of data.channels) {
+      var channel = new Channel(ch.channel_nr, this.openInstrumentEditor.bind(this));
+      channel.name = ch.name;
+      channel.sequence_tracks = ch.sequence_tracks;
+      if (ch.instrument) {
+        var modules = [];
+        for (var m of ch.instrument.modules) {
+          var g = null;
+          if (m.type == "input") {
+            g = new ChannelInput(m.type);
+          } else if (m.type == "output") {
+            g = new ChannelOutput(m.type);
+          } else if (m.type == "low pass filter") {
+            g = new Filter(m.type);
+          } else if (m.type == "sine" || m.type == "triangle") {
+            g = new SampleGenerator(m.type);
+          }
+          if (g) {
+            var mod = new Module(m.x, m.y, g);
+            modules.push(mod);
+          }
+        }
+        var patches = [];
+        for (var p of ch.instrument.patches) {
+          var patch = new Patch(p.from_module, p.to_module, p.from_input, p.from_output, p.to_input, p.to_output);
+          patches.push(patch);
+        }
+        channel.instrument = new Instrument(modules, patches);
+        console.log(JSON.stringify(channel.instrument.compile()));
+      }
+      this.channels.push(channel);
+    }
+  }
+
+  openInstrumentEditor(instr) {
+    this.active = new InstrumentEditor(this, instr, this.openTimelineEditor.bind(this));
+    this.draw()
+  }
+  openTimelineEditor() {
+    this.active = new TimelineEditor(this.channels);
+    this.draw();
+  }
+
+  handleMouseDown(e) {
+    var bound = this.canvas.getBoundingClientRect()
+    var x = e.clientX - bound.left; 
+    var y = e.clientY - bound.top;
+    this.selectedElem = null;
+    this.selectedPos = {};
+    if (this.active.handleMouseDown) {
+      var elem = this.active.handleMouseDown(this, x, y);
+      if (elem) {
+        this.selectedElem = elem;
+        this.selectedPos = {x, y};
+      }
+    }
+  }
+
+  handleMouseUp(e) {
+    var bound = this.canvas.getBoundingClientRect()
+    var x = e.clientX - bound.left; 
+    var y = e.clientY - bound.top;
+    if (this.selectedElem) {
+      var elem = this.selectedElem;
+      var sx = this.selectedPos.x;
+      var sy = this.selectedPos.y;
+      if (sx >= x -5 && sx <= x + 5 && sy >= y - 5 && sy <= y + 5) {
+        if (elem.handleClick) {
+          elem.handleClick(this, x, y);
+        }
+      } else {
+        if (elem.handleDrag) {
+          elem.handleDrag(this, x - sx, y - sy, x, y, sx, sy);
+          this.draw();
+        }
+      }
+      this.selectedElem = null;
+    }
+  }
+
+  handleMouseMove(e) {
+    var bound = this.canvas.getBoundingClientRect()
+    var x = e.clientX - bound.left; 
+    var y = e.clientY - bound.top;
+    if (this.selectedElem) {
+      var elem = this.selectedElem;
+      var sx = this.selectedPos.x;
+      var sy = this.selectedPos.y;
+      if (sx >= x -5 && sx <= x + 5 && sy >= y - 5 && sy <= y + 5) {
+      } else {
+        if (elem.handleDrag) {
+          elem.handleDrag(this, x - sx, y - sy, x, y, sx, sy);
+          this.selectedPos = {x, y};
+          this.draw();
+        }
+      }
+    }
+  }
+
+  draw() {
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+    var bound = this.canvas.getBoundingClientRect()
+    this.canvas.width = windowWidth;
+    this.canvas.height = windowHeight - bound.top;
+    var body = document.getElementsByTagName('body')[0];
+    body.style.background = this.theme.colours.Background;
+    body.style.color = this.theme.colours.Foreground;
+    this.active.draw(this);
+  }
+}
+</script>
+
+<body style='width: 100%; height: 100vh; margin: 0; font-family: sans-serif; text-align: center;'>
+
+<canvas id="main" height="600px" width="100%">
+  Your browser does not support the canvas element. Please reconsider.
+</canvas>
+
+<script>
+window.onload = () => new Bleep();
+</script>
+</body>
