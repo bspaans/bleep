@@ -19,13 +19,23 @@ export class Instrument {
         to = i;
       }
     }
-    console.log(from, to)
     if (from === null || to === null || (from === to && fromSocket === toSocket)) {
       return
     }
     var patch = new Patch(from, to, fromSocket, toSocket);
-    this.patches.push(patch);
-    console.log(patch);
+    var remove = null;
+    for (var i = 0; i < this.patches.length; i++) {
+      var p = this.patches[i];
+      if (p.isIsomorphic(patch)) {
+        remove = i;
+        break;
+      }
+    }
+    if (remove === null) {
+      this.patches.push(patch);
+    } else {
+      this.patches.splice(remove, 1);
+    }
   }
   load(instrDef) {
     var modules = [];
