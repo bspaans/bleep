@@ -120,6 +120,7 @@ window.onload = () => {
   try { 
   new Bleep();
   } catch(e) {
+    console.log(e);
     alert(e);
   }
 }

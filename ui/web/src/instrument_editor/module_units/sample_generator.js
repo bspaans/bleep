@@ -8,12 +8,10 @@ export class SampleGenerator extends ModuleUnit {
     this.background = 'ModuleGenerator';
     this.w = 220;
     this.h = 250;
-    this.inputs = [
-      new Input(29, this.h - 29, "FREQ")
-    ];
-    this.outputs = [
-      new Output(this.w - 29, this.h - 29)
-    ]
+    this.sockets = {
+      "FREQ": new Input(29, this.h - 29, "FREQ"),
+      "OUT": new Output(this.w - 29, this.h - 29),
+    }
     this.dials = {
       "pitch": new Dial(29, 49, "FREQ", 0.0, 22000.0, 0.0),
       "attack": new Dial(29, 120, "ATTACK", 0.0, 10.0, 0.1),

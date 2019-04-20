@@ -21,13 +21,13 @@ export class Instrument {
         g = new SampleGenerator(m.type);
       }
       if (g) {
-        var mod = new Module(m.x, m.y, g);
+        var mod = new Module(this, m.x, m.y, g);
         modules.push(mod);
       }
     }
     var patches = [];
     for (var p of instrDef.patches) {
-      var patch = new Patch(p.from_module, p.to_module, p.from_input, p.from_output, p.to_input, p.to_output);
+      var patch = new Patch(p.from_module, p.to_module, p.from_socket, p.to_socket);
       patches.push(patch);
     }
     this.modules = modules;
@@ -53,7 +53,7 @@ export class Instrument {
       var q = queue[0];
       var queue = queue.splice(1);
       for (var p of this.patches) {
-        if (p.to === q && (p.toOutput !== false || t.toOutput !== undefined)) {
+        if (p.to === q && (p.toSocket == "IN" || p.toSocket == "FREQ")) {
           if (!seen[p.from]) {
             dependencies.push(p.from);
             queue.push(p.from);
@@ -80,7 +80,7 @@ export class Instrument {
         };
         var pitchFound = false;
         for (var p of this.patches) {
-          if (p.to === ix && p.toInput === 0) {
+          if (p.to === ix && p.toSocket == "FREQ") {
             pitchFound = true;
             var pg = generators[p.from];
             if (pg) {
@@ -94,12 +94,12 @@ export class Instrument {
       } else if (unit.type == "low pass filter") {
         g = {};
         g["filter"] = {"lpf": {"cutoff": unit.dials["cutoff"].value}}
-        var on = this.compileGenerators(generators, ix, 0);
+        var on = this.compileGenerators(generators, ix, "IN");
         Object.keys(on).map((k) => {
           g["filter"][k] = on[k];
         });
       } else if (unit.type == "output") {
-        return this.compileGenerators(generators, ix, 0);
+        return this.compileGenerators(generators, ix, "IN");
       }
       generators[ix] = g;
     }
@@ -109,9 +109,9 @@ export class Instrument {
   compileGenerators(generators, ix, input) {
     var gs = [];
     for (var p of this.patches) {
-      if (p.to === ix && p.toInput === input) {
+      if (p.to === ix && p.toSocket === input) {
         gs.push(generators[p.from])
-      } else if (p.from == ix && p.fromInput === input) {
+      } else if (p.from == ix && p.fromSocket === input) {
         gs.push(generators[p.to])
       }
     }

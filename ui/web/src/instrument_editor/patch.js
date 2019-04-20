@@ -1,24 +1,16 @@
 
 export class Patch {
-  constructor(fromModule, toModule, fromInput, toInput, fromOutput, toOutput) {
+  constructor(fromModule, toModule, fromSocket, toSocket) {
     this.from = fromModule;
     this.to = toModule;
-    this.fromInput = fromInput;
-    this.fromOutput = fromOutput;
-    this.toInput = toInput;
-    this.toOutput = toOutput;
+    this.fromSocket = fromSocket;
+    this.toSocket = toSocket;
   }
   getFromSocket(mod) {
-    if (this.fromInput !== false && this.fromInput !== undefined) {
-      return mod.unit.inputs[this.fromInput];
-    }
-    return mod.unit.outputs[this.fromOutput];
+    return mod.unit.sockets[this.fromSocket];
   }
   getToSocket(mod) {
-    if (this.toInput !== false && this.toInput !== undefined) {
-      return mod.unit.inputs[this.toInput];
-    }
-    return mod.unit.outputs[this.toOutput];
+    return mod.unit.sockets[this.toSocket];
   }
 }
 

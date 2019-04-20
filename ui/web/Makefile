@@ -1,0 +1,4 @@
+start:
+	npm run start
+
+

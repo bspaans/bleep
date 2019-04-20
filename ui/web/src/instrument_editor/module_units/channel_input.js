@@ -4,7 +4,9 @@ import { Output } from './sockets.js';
 export class ChannelInput extends ModuleUnit {
   constructor(type) {
     super(type);
-    this.outputs = [new Output(this.w - 29, this.h - 29, "FREQ")];
+    this.sockets = {
+      "FREQ": new Output(this.w - 29, this.h - 29, "FREQ"),
+    }
     this.background = 'ModuleOutput';
   }
 }

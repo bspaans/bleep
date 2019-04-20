@@ -1,7 +1,8 @@
 import { Socket, Dial } from '../components/';
 
 export class Module {
-  constructor(x, y, unit) {
+  constructor(instrument, x, y, unit) {
+    this.instrument = instrument;
     this.x = x;
     this.y = y;
     this.unit = unit;
@@ -35,6 +36,12 @@ export class Module {
   handleDrop(app, x, y) {
     var v = this.selected;
     if (v instanceof Socket) {
+      for (var module of this.instrument.modules) {
+        for (var key of Object.keys(module.unit.sockets)) {
+          var s = module.unit.sockets[key];
+          console.log(s);
+        }
+      }
       console.log("dropping a socket", x, y);
     }
     this.selected = null;

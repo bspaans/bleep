@@ -11,10 +11,10 @@ export class InstrumentEditor {
     this.showCompile = true;
     if (!instrument) {
       var modules = [
-        new Module(10, 10, new ChannelInput('input')), 
-        new Module(10, 300, new ChannelOutput('output')),
+        new Module(instrument, 10, 10, new ChannelInput('input')), 
+        new Module(instrument, 10, 300, new ChannelOutput('output')),
       ];
-      instrument = new Instrument(modules, []);
+      instrument.modules = modules;
     }
     this.instrument = instrument;
     this.buttons = [
@@ -25,7 +25,7 @@ export class InstrumentEditor {
   }
   handleAddGenerator(type) {
     var g = new SampleGenerator("sine")
-    this.instrument.modules.push(new Module(20, 20, g));
+    this.instrument.modules.push(new Module(this.instrument, 20, 20, g));
     this.app.draw();
   }
   handleShowCompile() {
