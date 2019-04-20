@@ -33,6 +33,7 @@ export class Instrument {
     this.modules = modules;
     this.patches = patches;
   }
+
   compile() {
     var output = null;
     for (var i = 0; i < this.modules.length; i++) {

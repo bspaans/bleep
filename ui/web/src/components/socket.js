@@ -46,8 +46,12 @@ export class Socket {
   }
   handleMouseDown(app, x, y) {
     if (x >= this.x - this.radius && x <= this.x + this.radius + 4 && y >= this.y - this.radius && y <= this.y + this.radius + 4) {
-      console.log("clicked socket");
       return this;
+    }
+  }
+  handleDrag(app, dx, dy, x, y) {
+    if (this.onDrag) {
+      this.onDrag(app, this, dx, dy, x, y);
     }
   }
 }

@@ -11,6 +11,7 @@ export class Bleep {
     this.canvas.onmouseup = this.handleMouseUp.bind(this)
     this.canvas.onmousemove = this.handleMouseMove.bind(this)
     this.selectedElem = null;
+    this.startSelectedPos = {};
     this.selectedPos = {};
     this.load(example);
     //this.openTimelineEditor();
@@ -51,6 +52,7 @@ export class Bleep {
       var elem = this.active.handleMouseDown(this, x, y);
       if (elem) {
         this.selectedElem = elem;
+        this.startSelectedPos = {x, y};
         this.selectedPos = {x, y};
       }
     }
@@ -62,8 +64,8 @@ export class Bleep {
     var y = e.clientY - bound.top;
     if (this.selectedElem) {
       var elem = this.selectedElem;
-      var sx = this.selectedPos.x;
-      var sy = this.selectedPos.y;
+      var sx = this.startSelectedPos.x;
+      var sy = this.startSelectedPos.y;
       if (sx >= x -5 && sx <= x + 5 && sy >= y - 5 && sy <= y + 5) {
         if (elem.handleClick) {
           elem.handleClick(this, x, y);
@@ -71,6 +73,10 @@ export class Bleep {
       } else {
         if (elem.handleDrag) {
           elem.handleDrag(this, x - sx, y - sy, x, y, sx, sy);
+          this.draw();
+        }
+        if (elem.handleDrop) {
+          elem.handleDrop(this, x, y);
           this.draw();
         }
       }

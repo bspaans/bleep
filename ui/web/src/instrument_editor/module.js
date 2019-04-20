@@ -23,11 +23,20 @@ export class Module {
   handleDrag(app, dx, dy, x, y) {
     var v = this.selected;
     if (v instanceof Socket) {
+      console.log("dragging a socket");
+      v.handleDrag(app, dx, dy, x, y);
     } else if (v instanceof Dial) {
       v.handleDrag(app, dx, dy, x - this.x, y - this.y);
     } else {
       this.x += dx;
       this.y += dy;
     }
+  }
+  handleDrop(app, x, y) {
+    var v = this.selected;
+    if (v instanceof Socket) {
+      console.log("dropping a socket", x, y);
+    }
+    this.selected = null;
   }
 }
