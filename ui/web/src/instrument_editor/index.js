@@ -9,6 +9,7 @@ export class InstrumentEditor {
     this.app = app;
     this.padding = app.theme.padding;
     this.showCompile = true;
+    this.selected = null;
     if (!instrument) {
       var modules = [
         new Module(instrument, 10, 10, new ChannelInput('input')), 
@@ -33,6 +34,7 @@ export class InstrumentEditor {
     this.app.draw();
   }
   handleMouseDown(app, x, y) {
+    this.selected = null;
     for (var b of this.buttons) {
       var v = b.handleMouseDown(app, x, y);
       if (v) {
@@ -42,8 +44,19 @@ export class InstrumentEditor {
     for (var m of this.instrument.modules) {
       var v = m.handleMouseDown(app, x - this.padding, y - this.padding);
       if (v) {
-        return v;
+        this.selected = v;
+        return this;
       }
+    }
+  }
+  handleDrag(app, dx, dy, x, y) {
+    if (this.selected) {
+      this.selected.handleDrag(app, dx, dy, x, y);
+    }
+  }
+  handleDrop(app, x, y) {
+    if (this.selected) {
+      this.selected.handleDrop(app, x - this.padding, y - this.padding);
     }
   }
   draw(app) {

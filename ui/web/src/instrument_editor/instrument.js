@@ -7,6 +7,26 @@ export class Instrument {
     this.modules = modules;
     this.patches = patches;
   }
+  addPatch(fromMod, toMod, fromSocket, toSocket) {
+    var from = null;
+    var to = null;
+    for (var i = 0; i < this.modules.length; i++) {
+      var m = this.modules[i];
+      if (m === fromMod) {
+        from = i;
+      }
+      if (m === toMod) {
+        to = i;
+      }
+    }
+    console.log(from, to)
+    if (from === null || to === null || (from === to && fromSocket === toSocket)) {
+      return
+    }
+    var patch = new Patch(from, to, fromSocket, toSocket);
+    this.patches.push(patch);
+    console.log(patch);
+  }
   load(instrDef) {
     var modules = [];
     for (var m of instrDef.modules) {

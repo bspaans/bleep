@@ -39,10 +39,17 @@ export class Module {
       for (var module of this.instrument.modules) {
         for (var key of Object.keys(module.unit.sockets)) {
           var s = module.unit.sockets[key];
-          console.log(s);
+          var sx = x - module.x;
+          var sy = y - module.y;
+          var result = s.handleMouseDown(app, sx, sy);
+          if (result) {
+            console.log("patching to socket", v.label, "->", result.label);
+            this.instrument.addPatch(this, module, v.label, result.label);
+            app.draw();
+            return;
+          }
         }
       }
-      console.log("dropping a socket", x, y);
     }
     this.selected = null;
   }

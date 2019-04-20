@@ -71,10 +71,6 @@ export class Bleep {
           elem.handleClick(this, x, y);
         }
       } else {
-        if (elem.handleDrag) {
-          elem.handleDrag(this, x - sx, y - sy, x, y, sx, sy);
-          this.draw();
-        }
         if (elem.handleDrop) {
           elem.handleDrop(this, x, y);
           this.draw();
