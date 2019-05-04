@@ -98,6 +98,8 @@ export class Instrument {
       this.modules.push(m);
       this.patches.push(p);
       return this.modules.length - 1;
+    } else {
+      throw 'Unknown instrument def ' + instrDef;
     }
   }
   load(instrDef) {

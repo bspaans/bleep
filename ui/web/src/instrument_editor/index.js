@@ -60,11 +60,11 @@ export class InstrumentEditor {
     }
   }
   handleZoomIn() {
-    this.scale *= 2;
+    this.scale += .1
     this.app.draw();
   }
   handleZoomOut() {
-    this.scale /= 2;
+    this.scale -= .1;
     this.app.draw();
   }
   handleAddFilter(type) {
@@ -127,14 +127,20 @@ export class InstrumentEditor {
     app.ctx.fillRect(this.padding, this.padding, w, h);
     app.ctx.strokeRect(this.padding, this.padding, w, h);
 
-    app.ctx.scale(this.scale, this.scale);
+    // Draw the buttons 
+    for (var b of this.buttons) {
+      b.draw(app);
+    }
+
     // Draw the modules
     for (var m of this.instrument.modules) {
       app.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translate
+      app.ctx.scale(this.scale, this.scale);
       app.ctx.translate(this.padding, this.padding);
       m.draw(app);
     }
     app.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translate
+    app.ctx.scale(this.scale, this.scale);
 
     app.ctx.fillStyle = app.theme.colours.Patch;
     app.ctx.strokeStyle = app.theme.colours.Patch;
@@ -162,10 +168,6 @@ export class InstrumentEditor {
       app.ctx.stroke();
     }
 
-    // Draw the buttons 
-    for (var b of this.buttons) {
-      b.draw(app);
-    }
 
     // Compiled generator
     if (this.showCompile) {

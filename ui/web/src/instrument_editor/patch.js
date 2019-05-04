@@ -1,10 +1,15 @@
 
+export const AUDIO_PATCH = 1;
+export const FREQUENCY_PATCH = 2;
+
+
 export class Patch {
   constructor(fromModule, toModule, fromSocket, toSocket) {
     this.from = fromModule;
     this.to = toModule;
     this.fromSocket = fromSocket;
     this.toSocket = toSocket;
+    this.type = AUDIO_PATCH;
   }
   getFromSocket(mod) {
     return mod.unit.sockets[this.fromSocket];
