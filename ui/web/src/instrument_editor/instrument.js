@@ -37,6 +37,69 @@ export class Instrument {
       this.patches.splice(remove, 1);
     }
   }
+  loadFromDefinition(instrDef) {
+    var modules = [
+      new Module(this, 10, 40, new ChannelInput('input')), 
+      new Module(this, 700, 40, new ChannelOutput('output')),
+    ];
+    var patches = [
+
+    ];
+    this.modules = modules;
+    this.patches = patches;
+    var ix = this.loadGenerator(instrDef, 0, 1);
+    if (ix) {
+      var p = new Patch(ix, 0, "FREQ", "FREQ");
+      this.patches.push(p);
+    }
+  }
+  loadGenerator(instrDef, input, output) {
+    if (instrDef["combined"]) {
+      for (var iDef of instrDef["combined"]) {
+        var ix = this.loadGenerator(iDef, input, output);
+        if (ix) {
+          var p = new Patch(input, ix, "FREQ", "FREQ");
+          this.patches.push(p);
+        }
+      }
+    } else if (instrDef["panning"]) {
+      var g = this.loadGenerator(instrDef["panning"], input, output);
+      // TODO: add a PANNING generator block
+      return g;
+    } else if (instrDef["transpose"]) {
+      var g = this.loadGenerator(instrDef["transpose"], input, output);
+      // TODO: add a TRANSPOSE generator block
+      return g;
+    } else if (instrDef["wav"]) {
+      var m = new Module(this, 300, 40, new SampleGenerator("wav"));
+      var p = new Patch(this.modules.length, output, "OUT", "IN");
+      this.modules.push(m);
+      this.patches.push(p);
+      return this.modules.length - 1;
+    } else if (instrDef["triangle"] || instrDef["square"] || instrDef["sawtooth"]) {
+      var typ = "triangle";
+      var instr = null;
+      if (instrDef["triangle"]) {
+        instr = instrDef["triangle"];
+      } else if (instrDef["square"]) {
+        instr = instrDef["square"];
+        typ = "square";
+      } else if (instrDef["sawtooth"]) {
+        instr = instrDef["sawtooth"];
+        typ = "saw";
+      }
+      var g = new SampleGenerator(typ);
+      g.dials["attack"].value = instr["attack"] || 0.0;
+      g.dials["decay"].value = instr["decay"] || 0.0;
+      g.dials["sustain"].value = instr["sustain"] || 0.0;
+      g.dials["release"].value = instr["release"] || 0.0;
+      var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600 + 20, g);
+      var p = new Patch(this.modules.length, output, "OUT", "IN");
+      this.modules.push(m);
+      this.patches.push(p);
+      return this.modules.length - 1;
+    }
+  }
   load(instrDef) {
     var modules = [];
     for (var m of instrDef.modules) {
@@ -89,6 +152,12 @@ export class Instrument {
             queue.push(p.from);
             seen[p.from] = true;
           }
+        } else if (p.from === q && (p.fromSocket == "IN" || p.fromSocket == "FREQ")){
+          if (!seen[p.to]) {
+            dependencies.push(p.to);
+            queue.push(p.to);
+            seen[p.to] = true;
+          }
         }
       }
       seen[q] = true;
@@ -100,7 +169,7 @@ export class Instrument {
       var g = null;
       if (unit.type == "input") {
         g = null;
-      } else if (unit.type == "triangle" || unit.type == "sine") {
+      } else if (unit.type == "triangle" || unit.type == "sine" || unit.type == "saw" || unit.type == "square" || unit.type == "white_noise") {
         g = {};
         g[unit.type] = {
           "attack": unit.dials["attack"].value,
@@ -124,6 +193,13 @@ export class Instrument {
       } else if (unit.type == "low pass filter") {
         g = {};
         g["filter"] = {"lpf": {"cutoff": unit.dials["cutoff"].value}}
+        var on = this.compileGenerators(generators, ix, "IN");
+        Object.keys(on).map((k) => {
+          g["filter"][k] = on[k];
+        });
+      } else if (unit.type == "high pass filter") {
+        g = {};
+        g["filter"] = {"hpf": {"cutoff": unit.dials["cutoff"].value}}
         var on = this.compileGenerators(generators, ix, "IN");
         Object.keys(on).map((k) => {
           g["filter"][k] = on[k];

@@ -13,10 +13,19 @@ export class Bleep {
     this.selectedElem = null;
     this.startSelectedPos = {};
     this.selectedPos = {};
-    this.load(example);
+    var i = this.loadInstrumentBank(instrumentBank);
+    //this.load(example);
     //this.openTimelineEditor();
-    this.openInstrumentEditor(this.channels[0].instrument);
+    this.openInstrumentEditor(i);
     this.draw();
+  }
+
+  loadInstrumentBank(bank) {
+    for (var instrDef of bank) {
+      var instr = new Instrument();
+      instr.loadFromDefinition(instrDef);
+    }
+    return instr;
   }
 
   load(data) {

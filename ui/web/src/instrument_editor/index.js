@@ -8,6 +8,7 @@ export class InstrumentEditor {
   constructor(app, instrument, handleClose) {
     this.app = app;
     this.padding = app.theme.padding;
+    this.scale = 1.0
     this.showCompile = true;
     this.selected = null;
     if (!instrument) {
@@ -19,14 +20,61 @@ export class InstrumentEditor {
     }
     this.instrument = instrument;
     this.buttons = [
-      new CloseButton(10, 10, handleClose),
-      new Button(10, 10, this.handleShowCompile.bind(this)),
-      new Button(10, 10, (() => this.handleAddGenerator("sine")).bind(this)),
+      new CloseButton(10, 10, handleClose, "X"),
+      new Button(10, 10, this.handleShowCompile.bind(this), "JSON"),
+      new Button(10, 10, this.handleZoomIn.bind(this), "+"),
+      new Button(10, 10, this.handleZoomOut.bind(this), "-"),
     ];
+    var buttonDefs = [
+        {label: "SIN", onclick: () => this.handleAddGenerator("sine")},
+        {label: "SQU", onclick: () => this.handleAddGenerator("square")},
+        {label: "SAW", onclick: () => this.handleAddGenerator("saw")},
+        {label: "TRI", onclick: () => this.handleAddGenerator("triangle")},
+        {label: "PWM", onclick: () => this.handleAddGenerator("pulse")},
+        {label: "WAV", onclick: () => this.handleAddGenerator("wav")},
+        {label: "NOI", onclick: () => this.handleAddGenerator("white_noise")},
+        {label: "GRA", onclick: () => this.handleAddGenerator("grain")},
+        {label: "VOC", onclick: () => this.handleAddGenerator("vocoder")},
+    ];
+    var filterDefs = [
+      {label: "LPF", onclick: () => this.handleAddFilter("low pass filter")},
+      {label: "HPF", onclick: () => this.handleAddFilter("high pass filter")},
+      {label: "DLY", onclick: () => this.handleAddFilter("delay")},
+      {label: "FLA", onclick: () => this.handleAddFilter("flanger")},
+      {label: "DIS", onclick: () => this.handleAddFilter("distortion")},
+      {label: "OVR", onclick: () => this.handleAddFilter("overdrive")},
+      {label: "TRE", onclick: () => this.handleAddFilter("tremelo")},
+    ];
+    var x = 10;
+    for (var def of buttonDefs) {
+      var b = new Button(x, 0, def.onclick.bind(this), def.label);
+      b.colour = app.theme.colours.ModuleGenerator;
+      this.buttons.push(b);
+      x += b.w + 3;
+    }
+    for (var def of filterDefs) {
+      var b = new Button(x, 0, def.onclick.bind(this), def.label);
+      b.colour = app.theme.colours.ModuleFilter;
+      this.buttons.push(b);
+      x += b.w + 3;
+    }
+  }
+  handleZoomIn() {
+    this.scale *= 2;
+    this.app.draw();
+  }
+  handleZoomOut() {
+    this.scale /= 2;
+    this.app.draw();
+  }
+  handleAddFilter(type) {
+    var g = new Filter(type)
+    this.instrument.modules.push(new Module(this.instrument, 120, 120, g));
+    this.app.draw();
   }
   handleAddGenerator(type) {
-    var g = new SampleGenerator("sine")
-    this.instrument.modules.push(new Module(this.instrument, 20, 20, g));
+    var g = new SampleGenerator(type)
+    this.instrument.modules.push(new Module(this.instrument, 120, 120, g));
     this.app.draw();
   }
   handleShowCompile() {
@@ -62,10 +110,15 @@ export class InstrumentEditor {
   draw(app) {
     var w = app.canvas.width - 2 * this.padding;
     var h = app.canvas.height - 2 * this.padding;
-    this.buttons[0].x = w - 15;
+    this.buttons[0].x = w - 20;
     this.buttons[0].y = this.padding;
-    this.buttons[1].x = w - 15;
+    this.buttons[1].x = w - 20;
     this.buttons[1].y = this.padding + 25;
+    this.buttons[2].x = w - 20;
+    this.buttons[2].y = this.padding + 50;
+    this.buttons[3].x = w - 20;
+    this.buttons[3].y = this.padding + 75;
+    app.ctx.save();
     app.ctx.lineWidth = 1;
     
     // Draw the background
@@ -74,6 +127,7 @@ export class InstrumentEditor {
     app.ctx.fillRect(this.padding, this.padding, w, h);
     app.ctx.strokeRect(this.padding, this.padding, w, h);
 
+    app.ctx.scale(this.scale, this.scale);
     // Draw the modules
     for (var m of this.instrument.modules) {
       app.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translate
@@ -123,7 +177,9 @@ export class InstrumentEditor {
         app.ctx.fillText(line, w - 300, 90 + lineNr * 12);
         lineNr++;
       }
+      app.ctx.fillText(this.scale, w - 300, 90 + lineNr * 12);
     }
+    app.ctx.restore();
   }
 }
 

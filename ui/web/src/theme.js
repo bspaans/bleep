@@ -17,6 +17,7 @@ export class Theme {
       ModuleFilter: '#ffd',
       ModuleOutput: '#dfd',
       Button: '#ccc',
+      ButtonText: '#333',
       Dial: '#ccc',
       DialLine: '#444',
     };
