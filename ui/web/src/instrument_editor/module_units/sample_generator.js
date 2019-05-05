@@ -1,4 +1,4 @@
-import { Input, Output } from './sockets.js';
+import { Socket } from '../../components/';
 import { ModuleUnit } from './module_unit.js';
 import { Dial } from '../../components/';
 
@@ -9,8 +9,8 @@ export class SampleGenerator extends ModuleUnit {
     this.w = 220;
     this.h = 250;
     this.sockets = {
-      "FREQ": new Input(29, this.h - 29, "FREQ"),
-      "OUT": new Output(this.w - 29, this.h - 29),
+      "FREQ": new Socket(29, this.h - 29, "FREQ"),
+      "OUT": new Socket(this.w - 29, this.h - 29, "OUT"),
     }
     this.dials = {
       "pitch": new Dial(29, 49, "FREQ", 0.0, 22000.0, 0.0),

@@ -1,4 +1,4 @@
-import { ChannelInput, ChannelOutput, Filter, SampleGenerator } from './module_units';
+import { ChannelInput, ChannelOutput, Filter, SampleGenerator, Transpose } from './module_units';
 import { Module } from './module.js';
 import { Patch } from './patch.js';
 
@@ -49,8 +49,20 @@ export class Instrument {
     this.patches = patches;
     var ix = this.loadGenerator(instrDef, 0, 1);
     if (ix) {
-      var p = new Patch(ix, 0, "FREQ", "FREQ");
-      this.patches.push(p);
+      console.log(ix);
+      console.log(this.modules);
+      var s = this.modules[ix].instrument.sockets;
+      var candidate = null;
+      if (s) {
+        for (var key of Object.keys(s)) {
+          if (s[key].type === "FREQ") {
+            candidate = key;
+          }
+        }
+        console.log("patching to", candidate);
+        var p = new Patch(ix, 0, "FREQ", key);
+        this.patches.push(p);
+      }
     }
   }
   loadGenerator(instrDef, input, output) {
@@ -63,13 +75,22 @@ export class Instrument {
         }
       }
     } else if (instrDef["panning"]) {
-      var g = this.loadGenerator(instrDef["panning"], input, output);
+      var ix = this.loadGenerator(instrDef["panning"], input, output);
       // TODO: add a PANNING generator block
-      return g;
+      return ix;
     } else if (instrDef["transpose"]) {
-      var g = this.loadGenerator(instrDef["transpose"], input, output);
-      // TODO: add a TRANSPOSE generator block
-      return g;
+      var g = new Transpose("transpose");
+      g.dials["semitones"].value = instrDef["transpose"]["semitones"] || 0;
+      g.dials["gain"].value = instrDef["transpose"]["gain"] || 1.0;
+      var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, g);
+      this.modules.push(m);
+      var tIx = this.modules.length - 1;
+
+      var ix = this.loadGenerator(instrDef["transpose"], tIx, output);
+      var p = new Patch(tIx, ix, "FREQ", "FREQ");
+      this.patches.push(p);
+      var p = new Patch(input, tIx, "FREQ", "FREQ IN");
+      this.patches.push(p);
     } else if (instrDef["wav"]) {
       var m = new Module(this, 300, 40, new SampleGenerator("wav"));
       var p = new Patch(this.modules.length, output, "OUT", "IN");
@@ -143,30 +164,33 @@ export class Instrument {
 
     var queue = [output];
     var seen = {};
-    var dependencies = [output];
+    var dependencies = [];
+    console.log(this.modules);
     while (queue.length > 0) {
       var q = queue[0];
       var queue = queue.splice(1);
+      if (seen[q]) {
+        continue
+      }
+      dependencies.push(q);
       for (var p of this.patches) {
-        if (p.to === q && (p.toSocket == "IN" || p.toSocket == "FREQ")) {
+        if (p.to === q && (p.toSocket == "IN" || p.toSocket == "FREQ" || p.toSocket == "FREQ IN")) {
           if (!seen[p.from]) {
-            dependencies.push(p.from);
             queue.push(p.from);
-            seen[p.from] = true;
           }
-        } else if (p.from === q && (p.fromSocket == "IN" || p.fromSocket == "FREQ")){
+        } else if (p.from === q && (p.fromSocket == "IN" || p.fromSocket == "FREQ" || p.fromSocket == "FREQ IN")){
           if (!seen[p.to]) {
-            dependencies.push(p.to);
             queue.push(p.to);
-            seen[p.to] = true;
           }
         }
       }
       seen[q] = true;
     }
+        console.log(dependencies);
     var generators = {};
     for (var i = dependencies.length - 1; i >= 0; i--) {
       var ix = dependencies[i];
+      console.log(ix);
       var unit = this.modules[ix].unit;
       var g = null;
       if (unit.type == "input") {
@@ -208,6 +232,19 @@ export class Instrument {
         });
       } else if (unit.type == "output") {
         return this.compileGenerators(generators, ix, "IN");
+      } else if (unit.type == "transpose") {
+        g = {"transpose": {
+          "gain": unit.dials["gain"].value,
+          "semitones": unit.dials["semitones"].value,
+        }}
+        var on = this.compileGenerators(generators, ix, "FREQ IN");
+        if (on) {
+          Object.keys(g).map((k) => {
+            // TODO: this is a hack
+            on["transpose"][k] = g[k]
+          });
+          g = on;
+        }
       }
       generators[ix] = g;
     }

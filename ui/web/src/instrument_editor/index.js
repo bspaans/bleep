@@ -1,8 +1,9 @@
 export { Instrument } from './instrument.js';
 import { Instrument } from './instrument.js';
 import { Module } from './module.js';
-import { ChannelInput, ChannelOutput, SampleGenerator, Filter } from './module_units';
+import { ChannelInput, ChannelOutput, SampleGenerator, Filter, Transpose } from './module_units';
 import { CloseButton, Button } from '../components/';
+import { AUDIO_PATCH, FREQUENCY_PATCH } from './patch.js';
 
 export class InstrumentEditor {
   constructor(app, instrument, handleClose) {
@@ -45,6 +46,9 @@ export class InstrumentEditor {
       {label: "OVR", onclick: () => this.handleAddFilter("overdrive")},
       {label: "TRE", onclick: () => this.handleAddFilter("tremelo")},
     ];
+    var derivedDefs = [
+      {label: "TRA", onclick: () => this.handleAddUnit(() => new Transpose("transpose"))},
+    ];
     var x = 10;
     for (var def of buttonDefs) {
       var b = new Button(x, 0, def.onclick.bind(this), def.label);
@@ -58,6 +62,12 @@ export class InstrumentEditor {
       this.buttons.push(b);
       x += b.w + 3;
     }
+    for (var def of derivedDefs) {
+      var b = new Button(x, 0, def.onclick.bind(this), def.label);
+      b.colour = app.theme.colours.ModuleDerived;
+      this.buttons.push(b);
+      x += b.w + 3;
+    }
   }
   handleZoomIn() {
     this.scale += .1
@@ -65,6 +75,11 @@ export class InstrumentEditor {
   }
   handleZoomOut() {
     this.scale -= .1;
+    this.app.draw();
+  }
+  handleAddUnit(constructor) {
+    var g = constructor()
+    this.instrument.modules.push(new Module(this.instrument, 120, 120, g));
     this.app.draw();
   }
   handleAddFilter(type) {
@@ -132,6 +147,18 @@ export class InstrumentEditor {
       b.draw(app);
     }
 
+    // Draw the compiled generator JSON
+    if (this.showCompile) {
+      var txt = JSON.stringify(this.instrument.compile(), null, 2);
+      var lineNr = 0;
+      app.ctx.fillStyle = app.theme.colours.ModuleText;
+      app.ctx.textAlign = "start";
+      for (var line of txt.split("\n")) {
+        app.ctx.fillText(line, w - 300, 90 + lineNr * 12);
+        lineNr++;
+      }
+    }
+
     // Draw the modules
     for (var m of this.instrument.modules) {
       app.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translate
@@ -142,8 +169,10 @@ export class InstrumentEditor {
     app.ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translate
     app.ctx.scale(this.scale, this.scale);
 
+
     app.ctx.fillStyle = app.theme.colours.Patch;
     app.ctx.strokeStyle = app.theme.colours.Patch;
+
     // Draw the patches
     for (var p of this.instrument.patches) {
       var fromMod = this.instrument.modules[p.from];
@@ -155,6 +184,12 @@ export class InstrumentEditor {
       var toX = this.padding + toMod.x + toSocket.x;
       var toY = this.padding + toMod.y + toSocket.y;
       var pointOffset = 70;
+
+      if (p.type === AUDIO_PATCH) { 
+        app.ctx.strokeStyle = app.theme.colours.Patch;
+      } else if (p.type === FREQUENCY_PATCH) {
+        app.ctx.strokeStyle = app.theme.colours.FreqPatch;
+      }
       app.ctx.lineWidth = 4;
       app.ctx.beginPath();
       app.ctx.moveTo(fromX, fromY);
@@ -169,18 +204,6 @@ export class InstrumentEditor {
     }
 
 
-    // Compiled generator
-    if (this.showCompile) {
-      var txt = JSON.stringify(this.instrument.compile(), null, 2);
-      var lineNr = 0;
-      app.ctx.fillStyle = app.theme.colours.ModuleText;
-      app.ctx.textAlign = "start";
-      for (var line of txt.split("\n")) {
-        app.ctx.fillText(line, w - 300, 90 + lineNr * 12);
-        lineNr++;
-      }
-      app.ctx.fillText(this.scale, w - 300, 90 + lineNr * 12);
-    }
     app.ctx.restore();
   }
 }

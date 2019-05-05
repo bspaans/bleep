@@ -1,13 +1,13 @@
 import { ModuleUnit } from './module_unit.js';
-import { Input, Output } from './sockets.js';
+import { Socket } from '../../components/';
 import { Dial } from '../../components/';
 
 export class Filter extends ModuleUnit {
   constructor(type) {
     super(type);
     this.sockets = {
-      "IN": new Input(29, this.h - 29),
-      "OUT": new Output(this.w - 29, this.h - 29),
+      "IN": new Socket(29, this.h - 29, "IN"),
+      "OUT": new Socket(this.w - 29, this.h - 29, "OUT"),
     }
     this.background = 'ModuleFilter';
     this.dials = { }

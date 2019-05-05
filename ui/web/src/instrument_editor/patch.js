@@ -10,6 +10,9 @@ export class Patch {
     this.fromSocket = fromSocket;
     this.toSocket = toSocket;
     this.type = AUDIO_PATCH;
+    if (fromSocket == "FREQ") {
+      this.type = FREQUENCY_PATCH;
+    }
   }
   getFromSocket(mod) {
     return mod.unit.sockets[this.fromSocket];

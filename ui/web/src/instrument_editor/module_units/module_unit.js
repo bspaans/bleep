@@ -1,13 +1,9 @@
-import { Output } from './sockets.js';
-
 export class ModuleUnit {
   constructor(type) {
     this.type = type;
     this.w = 150;
     this.h = 150;
-    this.sockets = {
-
-    };
+    this.sockets = {};
     this.dials = {};
     this.background = "";
   }
