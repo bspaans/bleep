@@ -1,5 +1,5 @@
 import { Theme } from './theme.js';
-import { InstrumentEditor, Instrument } from './instrument_editor/';
+import { InstrumentEditor, Instrument, Bank } from './instrument_editor/';
 import { TimelineEditor, Channel } from './timeline_editor/';
 
 export class Bleep {
@@ -13,20 +13,16 @@ export class Bleep {
     this.selectedElem = null;
     this.startSelectedPos = {};
     this.selectedPos = {};
-    var i = this.loadInstrumentBank(instrumentBank);
+    this.channels = [new Channel(1, this.openInstrumentEditor.bind(this))];
+    var bank = this.loadInstrumentBank(instrumentBank);
     //this.load(example);
     //this.openTimelineEditor();
-    this.openInstrumentEditor(i);
+    this.openInstrumentEditor(bank.instruments[0]);
     this.draw();
   }
 
   loadInstrumentBank(bank) {
-    for (var instrDef of bank) {
-      var instr = new Instrument();
-      instr.loadFromDefinition(instrDef);
-      return instr;
-    }
-    return instr;
+    return new Bank().loadFromDefinition(bank);
   }
 
   load(data) {

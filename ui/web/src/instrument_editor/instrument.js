@@ -52,13 +52,11 @@ export class Instrument {
     if (instrDef.name) {
       this.name = instrDef.name;
     }
-    if (instrDef.index) {
+    if (instrDef.index !== undefined) {
       this.instrumentBankIndex = instrDef.index;
     }
     var ix = this.loadGenerator(instrDef, 0, 1);
     if (ix) {
-      console.log(ix);
-      console.log(this.modules);
       var s = this.modules[ix].instrument.sockets;
       var candidate = null;
       if (s) {
@@ -67,7 +65,6 @@ export class Instrument {
             candidate = key;
           }
         }
-        console.log("patching to", candidate);
         var p = new Patch(ix, 0, "FREQ", key);
         this.patches.push(p);
       }

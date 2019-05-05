@@ -1,6 +1,7 @@
+export { Bank } from './bank.js';
 export { Instrument } from './instrument.js';
-import { Instrument } from './instrument.js';
 import { Module } from './module.js';
+import { Instrument } from './instrument.js';
 import { ChannelInput, ChannelOutput, SampleGenerator, Filter, Transpose, Panning } from './module_units';
 import { CloseButton, Button } from '../components/';
 import { AUDIO_PATCH, FREQUENCY_PATCH, PANNING_PATCH} from './patch.js';
@@ -13,9 +14,10 @@ export class InstrumentEditor {
     this.showCompile = true;
     this.selected = null;
     if (!instrument) {
+      instrument = new Instrument([], []);
       var modules = [
-        new Module(instrument, 10, 10, new ChannelInput('input')), 
-        new Module(instrument, 10, 300, new ChannelOutput('output')),
+        new Module(instrument, 30, 30, new ChannelInput('input')), 
+        new Module(instrument, 800, 30, new ChannelOutput('output')),
       ];
       instrument.modules = modules;
     }
