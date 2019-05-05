@@ -6,7 +6,7 @@ export class Transpose extends ModuleUnit {
   constructor(type) {
     super(type);
     this.background = 'ModuleDerived';
-    this.w = 220;
+    this.w = 120;
     this.h = 150;
     this.sockets = {
       "FREQ IN": new Socket(29, this.h - 29, "FREQ IN", FREQUENCY_SOCKET),
@@ -14,7 +14,6 @@ export class Transpose extends ModuleUnit {
     }
     this.dials = {
       "semitones": new Dial(29, 49, "SEMITONES", -24, 24, 0.0),
-      "gain": new Dial(79, 49, "GAIN", 0.0, 2.0, 1.0),
     }
   }
 }

@@ -1,9 +1,9 @@
 export { Instrument } from './instrument.js';
 import { Instrument } from './instrument.js';
 import { Module } from './module.js';
-import { ChannelInput, ChannelOutput, SampleGenerator, Filter, Transpose } from './module_units';
+import { ChannelInput, ChannelOutput, SampleGenerator, Filter, Transpose, Panning } from './module_units';
 import { CloseButton, Button } from '../components/';
-import { AUDIO_PATCH, FREQUENCY_PATCH } from './patch.js';
+import { AUDIO_PATCH, FREQUENCY_PATCH, PANNING_PATCH} from './patch.js';
 
 export class InstrumentEditor {
   constructor(app, instrument, handleClose) {
@@ -48,6 +48,7 @@ export class InstrumentEditor {
     ];
     var derivedDefs = [
       {label: "TRA", onclick: () => this.handleAddUnit(() => new Transpose("transpose"))},
+      {label: "PAN", onclick: () => this.handleAddUnit(() => new Panning("panning"))},
     ];
     var x = 10;
     for (var def of buttonDefs) {
@@ -189,6 +190,8 @@ export class InstrumentEditor {
         app.ctx.strokeStyle = app.theme.colours.Patch;
       } else if (p.type === FREQUENCY_PATCH) {
         app.ctx.strokeStyle = app.theme.colours.FreqPatch;
+      } else if (p.type === PANNING_PATCH) {
+        app.ctx.strokeStyle = app.theme.colours.PanningPatch;
       }
       app.ctx.lineWidth = 4;
       app.ctx.beginPath();

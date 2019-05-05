@@ -24,6 +24,7 @@ export class Bleep {
     for (var instrDef of bank) {
       var instr = new Instrument();
       instr.loadFromDefinition(instrDef);
+      return instr;
     }
     return instr;
   }

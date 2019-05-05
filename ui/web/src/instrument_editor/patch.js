@@ -1,6 +1,7 @@
 
 export const AUDIO_PATCH = 1;
 export const FREQUENCY_PATCH = 2;
+export const PANNING_PATCH = 3;
 
 
 export class Patch {
@@ -12,6 +13,8 @@ export class Patch {
     this.type = AUDIO_PATCH;
     if (fromSocket == "FREQ") {
       this.type = FREQUENCY_PATCH;
+    } else if (fromSocket == "PAN") {
+      this.type = PANNING_PATCH;
     }
   }
   getFromSocket(mod) {
@@ -30,6 +33,16 @@ export class Patch {
         && this.from == p.to 
         && this.fromSocket == p.toSocket 
         && this.toSocket == p.fromSocket);
+  }
+  doesPatchConnectTo(module, socket) {
+    return (this.from == module && this.fromSocket == socket) ||
+      (this.to == module && this.toSocket == socket)
+  }
+  connectsTo(module, socket) {
+    if (this.from == module && this.fromSocket == socket) {
+      return {module: this.to, socket: this.toSocket}
+    }
+    return {module: this.from, socket: this.fromSocket}
   }
 }
 
