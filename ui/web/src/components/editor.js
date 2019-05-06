@@ -62,13 +62,13 @@ export class Editor {
   draw(app) {
     var w = app.canvas.width - 2 * this.padding;
     var h = app.canvas.height - 2 * this.padding;
-    this.buttons[0].x = w - 20;
+    this.buttons[0].x = w - this.buttons[0].w + this.padding;
     this.buttons[0].y = this.padding;
-    this.buttons[1].x = w - 20;
+    this.buttons[1].x = w - this.buttons[1].w + this.padding;
     this.buttons[1].y = this.padding + 25;
-    this.buttons[2].x = w - 20;
+    this.buttons[2].x = w - this.buttons[2].w + this.padding;
     this.buttons[2].y = this.padding + 50;
-    this.buttons[3].x = w - 20;
+    this.buttons[3].x = w - this.buttons[3].w + this.padding;
     this.buttons[3].y = this.padding + 75;
     app.ctx.save();
     app.ctx.lineWidth = 1;
@@ -77,7 +77,6 @@ export class Editor {
     app.ctx.fillStyle = app.theme.colours.InstrumentEditorBackground;
     app.ctx.strokeStyle = app.theme.colours.OutlineColour;
     app.ctx.fillRect(this.padding, this.padding, w, h);
-    app.ctx.strokeRect(this.padding, this.padding, w, h);
 
     // Draw the buttons 
     for (var b of this.buttons) {

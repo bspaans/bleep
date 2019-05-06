@@ -43,42 +43,21 @@ export class Sequence extends Patchable {
     for (var i = dependencies.length - 1; i >= 0; i--) {
       var ix = dependencies[i];
       var unit = this.modules[ix].unit;
-      var g = null;
-      if (unit.type == "input") {
-        g = null;
-      } else if (unit.type == "pulse") {
-        var e = {"every": unit.dials["every"].value};
-        g = ((e) => ((t) => {
-          for (var o of Object.keys(t)) {
-            e[o] = t[o];
-          }
-          var result = {"repeat": e};
-          return result
-        }))(e)
-      } else if (unit.type == "play_note") {
-        g = {"play_note": {
-          "duration": unit.dials["duration"].value,
-          "channel": this.channelNr,
-        }};
-        var on = this.getConnectedSequences(sequences, ix, "NOTE");
-        for (var o of on) {
-        }
-        if (on.length === 0) {
-          g["play_note"]["note"] = unit.dials["note"].value;
-        }
-        var on = this.getConnectedSequences(sequences, ix, "VEL");
-        for (var o of on) {
-        }
-        if (on.length === 0) {
-          g["play_note"]["velocity"] = unit.dials["velocity"].value;
-        }
 
-        var on = this.getConnectedSequences(sequences, ix, "TRIG");
-        for (var o of on) {
-          result.push(o(g));
+      var connections = {};
+      for (var socketId of Object.keys(unit.sockets)) {
+        if (unit.sockets[socketId].isInput) {
+          connections[socketId] = this.getConnectedSequences(sequences, ix, socketId);
         }
       }
-      sequences[ix] = g;
+      if (unit.type == "play_note") {
+        for (var o of unit.compile(connections)) {
+          result.push(o);
+        }
+      } else {
+        var g = unit.compile(connections);
+        sequences[ix] = g;
+      }
     }
     return result;
   }

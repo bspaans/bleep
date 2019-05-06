@@ -14,4 +14,15 @@ export class Pulse extends ModuleUnit {
     this.dials.every.value = every || 1;
     this.background = 'ModulePulse';
   }
+
+  compile(connections) {
+    var e = {"every": this.dials["every"].value};
+    return ((e) => ((t) => {
+      for (var o of Object.keys(t)) {
+        e[o] = t[o];
+      }
+      var result = {"repeat": e};
+      return result
+    }))(e)
+  }
 }

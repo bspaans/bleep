@@ -44,5 +44,12 @@ export class ModuleUnit {
       return this;
     }
   }
+
+  // connections is a {} mapping this unit's input socket IDs 
+  // to a list of connected units.
+  //
+  compile(connections) {
+    return null;
+  }
 }
 

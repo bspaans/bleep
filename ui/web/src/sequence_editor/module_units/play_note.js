@@ -16,4 +16,30 @@ export class PlayNote extends ModuleUnit {
     }
     this.background = 'ModuleOutput';
   }
+
+  compile(connections) {
+    var g = {"play_note": {
+      "duration": this.dials["duration"].value,
+      "channel": this.channelNr,
+    }};
+    var on = connections["NOTE"];
+    if (on.length === 0) {
+      g["play_note"]["note"] = this.dials["note"].value;
+    } else {
+      g["play_note"]["auto_note"] = on[0];
+    }
+    var on = connections["VEL"];
+    if (on.length === 0) {
+      g["play_note"]["velocity"] = this.dials["velocity"].value;
+    } else {
+      g["play_note"]["auto_velocity"] = on[0];
+    }
+
+    var result = []
+    var on = connections["TRIG"];
+    for (var o of on) {
+      result.push(o(g));
+    }
+    return result;
+  }
 }

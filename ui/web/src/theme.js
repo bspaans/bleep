@@ -2,7 +2,7 @@ import { AUDIO_TYPE, FREQUENCY_TYPE, PANNING_TYPE, CLOCK_TYPE, TRIGGER_TYPE, INT
 
 export class Theme {
   constructor() {
-    this.padding = 10;
+    this.padding = 0;
     var socketColours = {};
     var patchColours = {}
     socketColours[AUDIO_TYPE] = 'rgb(140, 255, 255)';
@@ -32,7 +32,7 @@ export class Theme {
       ModuleFilter: '#ffd',
       ModuleDerived: '#ddf',
       ModuleOutput: '#dfd',
-      ModuleMidi: '#eee',
+      ModuleInt: '#ff9',
       ModulePulse: '#ddf',
 
       Button: '#ccc',

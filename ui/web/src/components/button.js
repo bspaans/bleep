@@ -9,7 +9,7 @@ export class Button {
     this.label = label;
     this.colour = null;
     if (this.label) {
-      this.w = 30;
+      this.w = 35;
     }
   }
   draw(app) {
