@@ -1,5 +1,5 @@
 export { Dial } from './dial.js';
-export { Socket } from './socket.js';
+export { Socket, InputSocket, OutputSocket } from './socket.js';
 export { Button, CloseButton } from './button.js';
 export { Patch } from './patch.js';
 export { Module } from './module.js';

@@ -156,11 +156,12 @@ export class Instrument extends Patchable {
       }
       dependencies.push(q);
       for (var p of this.patches) {
-        if (p.to === q && (p.toSocket == "IN" || p.toSocket == "FREQ" || p.toSocket == "FREQ IN")) {
+        var modSockets = this.modules[q].unit.sockets;
+        if (p.to === q && modSockets[p.toSocket].isInput) {
           if (!seen[p.from]) {
             queue.push(p.from);
           }
-        } else if (p.from === q && (p.fromSocket == "IN" || p.fromSocket == "FREQ" || p.fromSocket == "FREQ IN")){
+        } else if (p.from === q && modSockets[p.fromSocket].isInput) {
           if (!seen[p.to]) {
             queue.push(p.to);
           }

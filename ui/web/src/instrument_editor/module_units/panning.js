@@ -1,4 +1,4 @@
-import { Socket, Dial, ModuleUnit } from '../../components/';
+import { InputSocket, OutputSocket, Dial, ModuleUnit } from '../../components/';
 import { FREQUENCY_TYPE, PANNING_TYPE } from '../../model/';
 
 export class Panning extends ModuleUnit {
@@ -8,8 +8,8 @@ export class Panning extends ModuleUnit {
     this.w = 120;
     this.h = 150;
     this.sockets = {
-      "FREQ": new Socket(29, this.h - 29, "FREQ", FREQUENCY_TYPE),
-      "PAN": new Socket(this.w - 29, this.h - 29, "PAN", PANNING_TYPE),
+      "FREQ": new InputSocket(29, this.h - 29, "FREQ", FREQUENCY_TYPE),
+      "PAN": new OutputSocket(this.w - 29, this.h - 29, "PAN", PANNING_TYPE),
     }
     this.dials = {
     }

@@ -1,13 +1,16 @@
 export class Socket {
-  constructor(x, y, label, type) {
+  constructor(x, y, label, type, isInput) {
     this.x = x;
     this.y = y;
     this.label = label;
     this.radius = 8;
-    if (type) {
-      this.type = type;
-    } else {
-      throw 'Missing Socket type';
+    this.type = type;
+    this.isInput = isInput;
+    if (!type) {
+      throw 'Missing Socket type for Socket with label: ' + label;
+    }
+    if (isInput === undefined) {
+      throw 'Missing Socket isInput for Socket with label: ' + label;
     }
   }
   draw(app) {
@@ -60,5 +63,17 @@ export class Socket {
     if (this.onDrag) {
       this.onDrag(app, this, dx, dy, x, y);
     }
+  }
+}
+
+export class InputSocket extends Socket {
+  constructor(x, y, label, type) {
+    super(x, y, label, type, true);
+  }
+}
+
+export class OutputSocket extends Socket {
+  constructor(x, y, label, type) {
+    super(x, y, label, type, false);
   }
 }
