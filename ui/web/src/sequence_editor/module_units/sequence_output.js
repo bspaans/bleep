@@ -2,7 +2,7 @@ import { ModuleUnit, Socket } from '../../components/';
 import { AUDIO_TYPE } from '../../model/';
 
 
-export class ChannelOutput extends ModuleUnit {
+export class SequenceOutput extends ModuleUnit {
   constructor(type) {
     super(type);
     this.sockets = {

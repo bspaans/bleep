@@ -1,43 +1,12 @@
 import { ChannelInput, ChannelOutput, Filter, SampleGenerator, Transpose, Panning } from './module_units';
-import { Module } from './module.js';
-import { Patch } from './patch.js';
+import { Patch, Module } from '../components/';
+import { Patchable, AUDIO_TYPE, FREQUENCY_TYPE, PANNING_TYPE } from '../model/';
 
-export class Instrument {
+export class Instrument extends Patchable {
   constructor(modules, patches) {
-    this.modules = modules;
-    this.patches = patches;
+    super(modules, patches);
     this.name = null;
     this.instrumentBankIndex = null;
-  }
-  addPatch(fromMod, toMod, fromSocket, toSocket) {
-    var from = null;
-    var to = null;
-    for (var i = 0; i < this.modules.length; i++) {
-      var m = this.modules[i];
-      if (m === fromMod) {
-        from = i;
-      }
-      if (m === toMod) {
-        to = i;
-      }
-    }
-    if (from === null || to === null || (from === to && fromSocket === toSocket)) {
-      return
-    }
-    var patch = new Patch(from, to, fromSocket, toSocket);
-    var remove = null;
-    for (var i = 0; i < this.patches.length; i++) {
-      var p = this.patches[i];
-      if (p.isIsomorphic(patch)) {
-        remove = i;
-        break;
-      }
-    }
-    if (remove === null) {
-      this.patches.push(patch);
-    } else {
-      this.patches.splice(remove, 1);
-    }
   }
   loadFromDefinition(instrDef) {
     var modules = [
@@ -65,7 +34,7 @@ export class Instrument {
             candidate = key;
           }
         }
-        var p = new Patch(ix, 0, "FREQ", key);
+        var p = new Patch(ix, 0, "FREQ", key, FREQUENCY_TYPE);
         this.patches.push(p);
       }
     }
@@ -75,7 +44,7 @@ export class Instrument {
       for (var iDef of instrDef["combined"]) {
         var ix = this.loadGenerator(iDef, input, output);
         if (ix) {
-          var p = new Patch(input, ix, "FREQ", "FREQ");
+          var p = new Patch(input, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
           this.patches.push(p);
         }
       }
@@ -86,11 +55,11 @@ export class Instrument {
       var tIx = this.modules.length - 1;
 
       var ix = this.loadGenerator(instrDef["panning"], input, output);
-      var p = new Patch(tIx, ix, "PAN", "PAN");
+      var p = new Patch(tIx, ix, "PAN", "PAN", PANNING_TYPE);
       this.patches.push(p);
-      var p = new Patch(input, tIx, "FREQ", "FREQ");
+      var p = new Patch(input, tIx, "FREQ", "FREQ", FREQUENCY_TYPE);
       this.patches.push(p);
-      var p = new Patch(input, ix, "FREQ", "FREQ");
+      var p = new Patch(input, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
       this.patches.push(p);
 
     } else if (instrDef["transpose"]) {
@@ -101,13 +70,13 @@ export class Instrument {
 
       var tIx = this.modules.length - 1;
       var ix = this.loadGenerator(instrDef["transpose"], tIx, output);
-      var p = new Patch(tIx, ix, "FREQ", "FREQ");
+      var p = new Patch(tIx, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
       this.patches.push(p);
-      var p = new Patch(input, tIx, "FREQ", "FREQ IN");
+      var p = new Patch(input, tIx, "FREQ", "FREQ IN", FREQUENCY_TYPE);
       this.patches.push(p);
     } else if (instrDef["wav"]) {
       var m = new Module(this, 300, 40, new SampleGenerator("wav"));
-      var p = new Patch(this.modules.length, output, "OUT", "IN");
+      var p = new Patch(this.modules.length, output, "OUT", "IN", AUDIO_TYPE);
       this.modules.push(m);
       this.patches.push(p);
       return this.modules.length - 1;
@@ -130,7 +99,7 @@ export class Instrument {
       g.dials["release"].value = instr["release"] || 0.0;
       g.dials["gain"].value = instr["gain"] || 1.0;
       var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600 + 20, g);
-      var p = new Patch(this.modules.length, output, "OUT", "IN");
+      var p = new Patch(this.modules.length, output, "OUT", "IN", AUDIO_TYPE);
       this.modules.push(m);
       this.patches.push(p);
       return this.modules.length - 1;
@@ -158,8 +127,7 @@ export class Instrument {
     }
     var patches = [];
     for (var p of instrDef.patches) {
-      var patch = new Patch(p.from_module, p.to_module, p.from_socket, p.to_socket);
-      patches.push(patch);
+      this.addPatch(p.from_module, p.to_module, p.from_socket, p.to_socket);
     }
     this.modules = modules;
     this.patches = patches;

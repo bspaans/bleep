@@ -1,7 +1,3 @@
-export const AUDIO_SOCKET = 1;
-export const FREQUENCY_SOCKET = 2;
-export const PANNING_SOCKET = 3;
-
 export class Socket {
   constructor(x, y, label, type) {
     this.x = x;
@@ -11,12 +7,7 @@ export class Socket {
     if (type) {
       this.type = type;
     } else {
-      this.type = AUDIO_SOCKET;
-      if (label == "FREQ") {
-        this.type = FREQUENCY_SOCKET;
-      } else if (label == "PAN") {
-        this.type = PANNING_SOCKET;
-      }
+      throw 'Missing Socket type';
     }
   }
   draw(app) {
@@ -30,12 +21,8 @@ export class Socket {
     var y = this.y - this.radius - 2;
     app.ctx.beginPath();
     app.ctx.fillStyle = app.theme.colours.SocketBackground;
-    if (this.type === AUDIO_SOCKET) { 
-      app.ctx.fillStyle = app.theme.colours.SocketBackground;
-    } else if (this.type === FREQUENCY_SOCKET) {
-      app.ctx.fillStyle = app.theme.colours.FreqSocketBackground;
-    } else if (this.type === PANNING_SOCKET) {
-      app.ctx.fillStyle = app.theme.colours.PanSocketBackground;
+    if (app.theme.colours.Sockets[this.type]) { 
+      app.ctx.fillStyle = app.theme.colours.Sockets[this.type];
     }
     app.ctx.strokeStyle = app.theme.colours.SocketOutline;
     app.ctx.moveTo(x + octagon.size * octa_short, y);

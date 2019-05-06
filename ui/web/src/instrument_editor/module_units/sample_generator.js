@@ -1,6 +1,5 @@
-import { Socket, FREQUENCY_SOCKET, AUDIO_SOCKET, PANNING_SOCKET } from '../../components/';
-import { ModuleUnit } from './module_unit.js';
-import { Dial } from '../../components/';
+import { Socket, Dial, ModuleUnit } from '../../components/';
+import { FREQUENCY_TYPE, AUDIO_TYPE, PANNING_TYPE } from '../../model/';
 
 export class SampleGenerator extends ModuleUnit {
   constructor(type) {
@@ -9,9 +8,9 @@ export class SampleGenerator extends ModuleUnit {
     this.w = 220;
     this.h = 250;
     this.sockets = {
-      "FREQ": new Socket(29, this.h - 29, "FREQ", FREQUENCY_SOCKET),
-      "PAN": new Socket(79, this.h - 29, "PAN", PANNING_SOCKET),
-      "OUT": new Socket(this.w - 29, this.h - 29, "OUT", AUDIO_SOCKET),
+      "FREQ": new Socket(29, this.h - 29, "FREQ", FREQUENCY_TYPE),
+      "PAN": new Socket(79, this.h - 29, "PAN", PANNING_TYPE),
+      "OUT": new Socket(this.w - 29, this.h - 29, "OUT", AUDIO_TYPE),
     }
     this.dials = {
       "pitch": new Dial(29, 49, "FREQ", 0.0, 22000.0, 0.0),

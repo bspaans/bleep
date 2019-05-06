@@ -1,6 +1,7 @@
 import { Theme } from './theme.js';
 import { InstrumentEditor, Instrument, Bank } from './instrument_editor/';
 import { TimelineEditor, Channel } from './timeline_editor/';
+import { SequenceEditor } from './sequence_editor/';
 
 export class Bleep {
   constructor() {
@@ -17,7 +18,8 @@ export class Bleep {
     var bank = this.loadInstrumentBank(instrumentBank);
     //this.load(example);
     //this.openTimelineEditor();
-    this.openInstrumentEditor(bank.instruments[0]);
+    //this.openInstrumentEditor(bank.instruments[0]);
+    this.openSequenceEditor(null, 1);
     this.draw();
   }
 
@@ -45,6 +47,10 @@ export class Bleep {
   }
   openTimelineEditor() {
     this.active = new TimelineEditor(this.channels);
+    this.draw();
+  }
+  openSequenceEditor(sequence, channelNr) {
+    this.active = new SequenceEditor(this, sequence, channelNr, this.openTimelineEditor.bind(this))
     this.draw();
   }
 

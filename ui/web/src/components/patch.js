@@ -1,21 +1,13 @@
-
-export const AUDIO_PATCH = 1;
-export const FREQUENCY_PATCH = 2;
-export const PANNING_PATCH = 3;
-
-
 export class Patch {
-  constructor(fromModule, toModule, fromSocket, toSocket) {
+  constructor(fromModule, toModule, fromSocket, toSocket, type) {
     this.from = fromModule;
     this.to = toModule;
     this.fromSocket = fromSocket;
     this.toSocket = toSocket;
-    this.type = AUDIO_PATCH;
-    if (fromSocket == "FREQ") {
-      this.type = FREQUENCY_PATCH;
-    } else if (fromSocket == "PAN") {
-      this.type = PANNING_PATCH;
+    if (!type) {
+      throw 'Missing type in Patch';
     }
+    this.type = type;
   }
   getFromSocket(mod) {
     return mod.unit.sockets[this.fromSocket];
@@ -43,6 +35,12 @@ export class Patch {
       return {module: this.to, socket: this.toSocket}
     }
     return {module: this.from, socket: this.fromSocket}
+  }
+  getColor(theme) {
+    if (theme.colours.Patches[this.type]) {
+      return theme.colours.Patches[this.type];
+    }
+    return theme.colours.Patch;
   }
 }
 

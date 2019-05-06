@@ -1,8 +1,9 @@
-import { Socket, Dial } from '../components/';
+import { Socket } from './socket.js';
+import { Dial } from './dial.js';
 
 export class Module {
-  constructor(instrument, x, y, unit) {
-    this.instrument = instrument;
+  constructor(target, x, y, unit) {
+    this.target = target;
     this.x = x;
     this.y = y;
     this.unit = unit;
@@ -24,7 +25,6 @@ export class Module {
   handleDrag(app, dx, dy, x, y) {
     var v = this.selected;
     if (v instanceof Socket) {
-      console.log("dragging a socket");
       v.handleDrag(app, dx, dy, x, y);
     } else if (v instanceof Dial) {
       v.handleDrag(app, dx, dy, x - this.x, y - this.y);
@@ -36,15 +36,14 @@ export class Module {
   handleDrop(app, x, y) {
     var v = this.selected;
     if (v instanceof Socket) {
-      for (var module of this.instrument.modules) {
+      for (var module of this.target.modules) {
         for (var key of Object.keys(module.unit.sockets)) {
           var s = module.unit.sockets[key];
           var sx = x - module.x;
           var sy = y - module.y;
           var result = s.handleMouseDown(app, sx, sy);
           if (result) {
-            console.log("patching to socket", v.label, "->", result.label);
-            this.instrument.addPatch(this, module, v.label, result.label);
+            this.target.addPatch(this, module, v.label, result.label);
             app.draw();
             return;
           }

@@ -1,14 +1,12 @@
 import { ModuleUnit, Socket } from '../../components/';
-import { AUDIO_TYPE } from '../../model/';
+import { CLOCK_TYPE } from '../../model/';
 
-
-export class ChannelOutput extends ModuleUnit {
+export class SequenceInput extends ModuleUnit {
   constructor(type) {
     super(type);
     this.sockets = {
-      "IN": new Socket(29, this.h - 29, "IN", AUDIO_TYPE),
+      "CLOCK": new Socket(this.w - 29, this.h - 29, "CLOCK", CLOCK_TYPE),
     }
     this.background = 'ModuleOutput';
   }
 }
-
