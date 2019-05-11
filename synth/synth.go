@@ -23,7 +23,7 @@ type Synth struct {
 }
 
 func NewSynth(cfg *audio.AudioConfig) *Synth {
-	return &Synth{
+	s := &Synth{
 		Config:  cfg,
 		Mixer:   NewMixer(),
 		Sinks:   []sinks.Sink{},
@@ -31,6 +31,7 @@ func NewSynth(cfg *audio.AudioConfig) *Synth {
 		Outputs: make(chan *ui.UIEvent, 128),
 		Debug:   cfg.Debug,
 	}
+	return s
 }
 
 func (s *Synth) EnablePortAudioSink() error {

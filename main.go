@@ -11,6 +11,7 @@ import (
 	"github.com/bspaans/bleep/controller"
 	"github.com/bspaans/bleep/plot"
 	"github.com/bspaans/bleep/termbox"
+	"github.com/bspaans/bleep/ui/server"
 )
 
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
@@ -22,6 +23,7 @@ var record = flag.String("record", "", "Record .wav output")
 var instruments = flag.String("instruments", "examples/bank.yaml", "The instruments bank to load")
 var percussion = flag.String("percussion", "examples/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
 var enableUI = flag.Bool("ui", false, "Enable terminal UI (experimental)")
+var enableWS = flag.Bool("ws", false, "Enable web socket endpoint (experimental)")
 
 func QuitWithError(err error) {
 	fmt.Println("Oh no:", err.Error())
@@ -82,6 +84,9 @@ func main() {
 	}
 	if *enableUI {
 		ctrl.UI = termbox.NewTermBox().Start(ctrl)
+	}
+	if *enableWS {
+		ctrl.UI = server.NewServer().Start(ctrl)
 	}
 	ctrl.StartSynth()
 }

@@ -14,13 +14,33 @@ export class Bleep {
     this.selectedElem = null;
     this.startSelectedPos = {};
     this.selectedPos = {};
+    this.socket = null;
     this.channels = [new Channel(1, this.openInstrumentEditor.bind(this))];
     var bank = this.loadInstrumentBank(instrumentBank);
+    this.startWebSocket();
     //this.load(example);
     //this.openTimelineEditor();
     //this.openInstrumentEditor(bank.instruments[0]);
     this.openSequenceEditor(null, 1);
     this.draw();
+  }
+
+  startWebSocket() {
+    var socket = new WebSocket("ws://localhost:10000/ws", "bleep");
+    socket.onopen = ((e) => {
+      this.socket = socket;
+      this.socket.send(JSON.stringify({"type": "channels", "data": "Test"}));
+    }).bind(this)
+    socket.onmessage = this.handleMessageReceived;
+  }
+
+  handleMessageReceived(message) {
+    console.log(message)
+  }
+  sendMessage(message) {
+    if (this.socket) {
+      this.socket.send(message);
+    }
   }
 
   loadInstrumentBank(bank) {
