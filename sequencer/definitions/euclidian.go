@@ -6,10 +6,10 @@ import (
 )
 
 type EuclidianDef struct {
-	Pulses   int
-	Over     int
-	Duration interface{}
-	Sequence *SequenceDef
+	Pulses   int          `json:"pulses" yaml:"pulses"`
+	Over     int          `json:"over" yaml:"over"`
+	Duration interface{}  `json:"duration" yaml:"duration"`
+	Sequence *SequenceDef `json:"sequence" yaml:"sequence"`
 }
 
 func (e *EuclidianDef) GetSequence(granularity int) (Sequence, error) {

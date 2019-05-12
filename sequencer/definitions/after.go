@@ -6,8 +6,8 @@ import (
 )
 
 type AfterDef struct {
-	After    interface{} `yaml:"after"`
-	Sequence SequenceDef `yaml:"sequence"`
+	After    interface{} `json:"after" yaml:"after"`
+	Sequence SequenceDef `json:"sequence" yaml:"sequence"`
 }
 
 func (e *AfterDef) GetSequence(granularity int) (sequences.Sequence, error) {

@@ -9,10 +9,13 @@ export class Range {
 export class SequenceTrack {
   constructor() {
     this.sequence_def = null;
-    this.ranges = [new Range(0, 4), new Range(9, 12), new Range(14, 25), new Range(30, 34)];
+    this.ranges = [];
+  }
+  addRange(start, stop) {
+    this.ranges.push(new Range(start ? start : 0, stop ? stop : 1000000));
   }
   draw(app, x, y, w, h) {
-    var showBars = 4;
+    var showBars = 64;
     var pointsInRange = showBars * 4;
     var scaling = w / pointsInRange;
     var barWidth = 4 * scaling;

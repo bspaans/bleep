@@ -20,9 +20,9 @@ export class Bleep {
     this.channels = [new Channel(1, this.openInstrumentEditor.bind(this))];
     var bank = this.loadInstrumentBank(instrumentBank);
     //this.load(example);
-    //this.openTimelineEditor();
     //this.openInstrumentEditor(bank.instruments[0]);
-    this.openSequenceEditor(null, 1);
+    //this.openSequenceEditor(null, 1);
+    this.openTimelineEditor();
     this.draw();
   }
 
@@ -38,6 +38,86 @@ export class Bleep {
       }
       console.log("New channel", def);
     }
+    this.api.requestSequencerDef();
+    this.openTimelineEditor();
+  }
+  
+  initialiseSequenceTracks(sequences) {
+    var channelSequences = {};
+    for (var ch of this.channels) {
+      channelSequences[ch.channelNr] = [];
+    }
+    for (var seq of sequences) {
+      var defs = this.sequenceDefByChannel(seq);
+      for (var ch of this.channels) {
+        for (var s of defs[ch.channelNr]) {
+          channelSequences[ch.channelNr].push(s);
+        }
+      }
+    }
+    console.log(channelSequences);
+    for (var ch of this.channels) {
+      ch.initialiseSequenceTracks(channelSequences[ch.channelNr]);
+    }
+    this.openTimelineEditor();
+  }
+
+  sequenceDefByChannel(seq) {
+    var channelSequences = {};
+    for (var ch of this.channels) {
+      channelSequences[ch.channelNr] = [];
+    }
+    var leaves = ["play_note", "play_notes", "volume",
+                  "lpf_cutoff", "hpf_cutoff", "panning"];
+    for (var leaf of leaves) {
+      if (seq[leaf]) {
+        var s = seq[leaf];
+        if (channelSequences[s.channel]) {
+          channelSequences[s.channel].push(seq);
+        } else {
+          console.log("Missing channel", s);
+        }
+        return channelSequences;
+      }
+    }
+
+    var wrappedSequences = ["repeat", "after", "before", "euclidian", "offset"];
+    for (var wrapped of wrappedSequences) {
+      if (seq[wrapped]) {
+        if (!seq[wrapped].sequence) {
+          console.log("Missing sequence", seq);
+        }
+        var ch = this.sequenceDefByChannel(seq[wrapped].sequence)
+        for (var channelNr of Object.keys(ch)) {
+          var seqs = ch[channelNr];
+          if (seqs.length == 0) {
+            continue;
+          } 
+          for (var defSeq of seqs) {
+            var result = {};
+            for (var key of Object.keys(seq)) {
+              result[key] = seq[key];
+            }
+            result.sequence = defSeq;
+            channelSequences[channelNr].push(result);
+          }
+        }
+        return channelSequences;
+      }
+    }
+    if (seq.combine) {
+      for (var seq of seq.combine) {
+        var defs = this.sequenceDefByChannel(seq);
+        for (var ch of this.channels) {
+          for (var s of defs[ch.channelNr]) {
+            channelSequences[ch.channelNr].push(s);
+          }
+        }
+      }
+    } else {
+      console.log("unknown def", seq);
+    }
+    return channelSequences;
   }
 
   loadInstrumentBank(bank) {

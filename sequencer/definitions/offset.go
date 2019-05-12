@@ -6,8 +6,8 @@ import (
 )
 
 type OffsetDef struct {
-	Offset   interface{} `yaml:"offset"`
-	Sequence SequenceDef `yaml:"sequence"`
+	Offset   interface{} `json:"offset" yaml:"offset"`
+	Sequence SequenceDef `json:"sequence" yaml:"sequence"`
 }
 
 func (e *OffsetDef) GetSequence(granularity int) (Sequence, error) {

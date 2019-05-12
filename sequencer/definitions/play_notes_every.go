@@ -7,11 +7,11 @@ import (
 )
 
 type PlayNotesEveryDef struct {
-	Notes              []int                  `yaml:"notes"`
-	NotesAutomation    *IntArrayAutomationDef `yaml:"auto_notes"`
-	Channel            int                    `yaml:"channel"`
-	Velocity           int                    `yaml:"velocity"`
-	VelocityAutomation *AutomationDef         `yaml:"auto_velocity"`
+	Notes              []int                  `json:"notes,omitempty" yaml:"notes"`
+	NotesAutomation    *IntArrayAutomationDef `json:"auto_notes,omitempty" yaml:"auto_notes"`
+	Channel            int                    `json:"channel" yaml:"channel"`
+	Velocity           int                    `json:"velocity,omitempty" yaml:"velocity"`
+	VelocityAutomation *AutomationDef         `json:"auto_velocity,omitempty" yaml:"auto_velocity"`
 	Duration           interface{}            `yaml:"duration"`
 	Every              interface{}            `yaml:"every"`
 	Offset             interface{}            `yaml:"offset"`

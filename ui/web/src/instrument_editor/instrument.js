@@ -1,4 +1,4 @@
-import { ChannelInput, ChannelOutput, Filter, SampleGenerator, Transpose, Panning } from './module_units';
+import { ChannelInput, ChannelOutput, Filter, SampleGenerator, Transpose, Panning, Factory } from './module_units';
 import { Patch, Module } from '../components/';
 import { Patchable, AUDIO_TYPE, FREQUENCY_TYPE, PANNING_TYPE } from '../model/';
 
@@ -25,114 +25,95 @@ export class Instrument extends Patchable {
       this.instrumentBankIndex = instrDef.index;
     }
     var ix = this.loadGenerator(instrDef, 0, 1);
+    this.patchInput(ix);
+  }
+  patchInput(ix) {
     if (ix) {
+      if (Array.isArray(ix)) {
+        for (var i of ix) {
+          this.patchInput(i);
+        }
+        return;
+      }
       var s = this.modules[ix].unit.sockets;
       var candidate = null;
       if (s) {
         for (var key of Object.keys(s)) {
-          if (s[key].type === "FREQ") {
+          if (s[key].type === FREQUENCY_TYPE) {
             candidate = key;
+            break;
           }
         }
-        var p = new Patch(ix, 0, "FREQ", key, FREQUENCY_TYPE);
-        this.patches.push(p);
+        this.addPatch(ix, 0, "FREQ", candidate, FREQUENCY_TYPE);
       }
     }
   }
   loadGenerator(instrDef, input, output) {
     if (instrDef["combined"]) {
+      var gs = [];
       for (var iDef of instrDef["combined"]) {
         var ix = this.loadGenerator(iDef, input, output);
         if (ix) {
-          var p = new Patch(input, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
-          this.patches.push(p);
+          gs.push(ix);
         }
       }
-      // TODO add combiner module, because this breaks generators that wrap combined generators (e.g. panning)
+      return gs;
     } else if (instrDef["panning"]) {
       var g = new Panning("panning");
-      var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, g);
-      this.modules.push(m);
-      var tIx = this.modules.length - 1;
-
+      var tIx = this.addModule(g);
       var ix = this.loadGenerator(instrDef["panning"], input, output);
-      var p = new Patch(tIx, ix, "PAN", "PAN", PANNING_TYPE);
-      this.patches.push(p);
-      var p = new Patch(input, tIx, "FREQ", "FREQ", FREQUENCY_TYPE);
-      this.patches.push(p);
-      var p = new Patch(input, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
-      this.patches.push(p);
-
+      this.addPatch(tIx, ix, "PAN", "PAN", PANNING_TYPE);
+      this.addPatch(input, tIx, "FREQ", "FREQ", FREQUENCY_TYPE);
+      return ix;
     } else if (instrDef["transpose"]) {
       var g = new Transpose("transpose");
       g.dials["semitones"].value = instrDef["transpose"]["semitones"] || 0;
-      var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, g);
-      this.modules.push(m);
-
-      var tIx = this.modules.length - 1;
+      var tIx = this.addModule(g);
       var ix = this.loadGenerator(instrDef["transpose"], tIx, output);
-      var p = new Patch(tIx, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
-      this.patches.push(p);
-      var p = new Patch(input, tIx, "FREQ", "FREQ IN", FREQUENCY_TYPE);
-      this.patches.push(p);
-    } else if (instrDef["wav"]) {
-      var m = new Module(this, 300, 40, new SampleGenerator("wav"));
-      var p = new Patch(this.modules.length, output, "OUT", "IN", AUDIO_TYPE);
-      this.modules.push(m);
-      this.patches.push(p);
-      return this.modules.length - 1;
-    } else if (instrDef["sine"] || instrDef["triangle"] || instrDef["square"] || instrDef["sawtooth"] || instrDef["white_noise"]) {
-      var typ = "triangle";
-      var instr = null;
-      if (instrDef["triangle"]) {
-        instr = instrDef["triangle"];
-      } else if (instrDef["sine"]) {
-        instr = instrDef["sine"];
-        typ = "sine";
-      } else if (instrDef["square"]) {
-        instr = instrDef["square"];
-        typ = "square";
-      } else if (instrDef["sawtooth"]) {
-        instr = instrDef["sawtooth"];
-        typ = "saw";
-      } else if (instrDef["white_noise"]) {
-        instr = instrDef["white_noise"];
-        typ = "white_noise";
-      }
-      var g = new SampleGenerator(typ);
-      g.dials["attack"].value = instr["attack"] || 0.0;
-      g.dials["decay"].value = instr["decay"] || 0.0;
-      g.dials["sustain"].value = instr["sustain"] || 0.0;
-      g.dials["release"].value = instr["release"] || 0.0;
-      g.dials["gain"].value = instr["gain"] || 1.0;
-      var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600 + 20, g);
-      var p = new Patch(this.modules.length, output, "OUT", "IN", AUDIO_TYPE);
-      this.modules.push(m);
-      this.patches.push(p);
-      return this.modules.length - 1;
-    } else if (instrDef["pulse"]) {
-      // TODO pulse
+      this.addPatch(tIx, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
+      this.addPatch(input, tIx, "FREQ", "FREQ IN", FREQUENCY_TYPE);
+      return ix;
+    } else if (instrDef["sine"] 
+      || instrDef["triangle"] 
+      || instrDef["square"] 
+      || instrDef["sawtooth"] 
+      || instrDef["white_noise"]
+      || instrDef["pulse"]
+      || instrDef["wav"]) {
+      var g = new Factory().generatorFromDefinition(instrDef);
+      var ix = this.addModule(g);
+      this.addPatch(ix, output, "OUT", "IN", AUDIO_TYPE);
+      return ix;
+    } else if (instrDef["vocoder"]) {
+      var source = new Factory().generatorFromDefinition(instrDef["vocoder"]["source"])
+      var vocoder = new Factory().generatorFromDefinition(instrDef["vocoder"]["vocoder"])
+      return [];
     } else if (instrDef["filter"]) {
-      var g = this.loadFilter(instrDef["filter"])
-      var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, g);
-      this.modules.push(m);
-
-      var tIx = this.modules.length - 1;
-      var ix = this.loadGenerator(instrDef["filter"], tIx, output);
-
+      var g = new Factory().filterFromDefinition(instrDef["filter"])
+      var tIx = this.addModule(g);
+      var ix = this.loadGenerator(instrDef["filter"], input, tIx);
+      this.addPatch(tIx, output, "OUT", "IN", AUDIO_TYPE);
+      return ix;
     } else {
       console.log(instrDef);
       throw 'Unknown instrument def';
     }
   }
-  loadFilter(filterDef) {
-    if (filterDef["lpf"]) {
-      var g = new Filter("low pass filter")
-      return g;
-    } else {
-      console.log(filterDef);
-      throw 'Unknown filter def';
+  addModule(generator) {
+    var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, generator);
+    this.modules.push(m);
+    return this.modules.length - 1;
+  }
+  addPatch(fromModule, toModule, fromSocket, toSocket, type) {
+    console.log("ADding patch", fromModule, toModule, fromSocket, toSocket);
+    if (Array.isArray(toModule)) {
+      for (var to of toModule) {
+        this.addPatch(fromModule, to, fromSocket, toSocket, type);
+      }
+      return;
     }
+    var p = new Patch(fromModule, toModule, fromSocket, toSocket, type);
+    this.patches.push(p);
   }
   load(instrDef) {
     var modules = [];
@@ -183,12 +164,16 @@ export class Instrument extends Patchable {
       }
       dependencies.push(q);
       for (var p of this.patches) {
+        if (!this.modules[q]) {
+          console.log("Big troubles: trying to reach non existent module:", ix);
+          continue
+        }
         var modSockets = this.modules[q].unit.sockets;
-        if (p.to === q && modSockets[p.toSocket].isInput) {
+        if (p.to === q && modSockets[p.toSocket] && modSockets[p.toSocket].isInput) {
           if (!seen[p.from]) {
             queue.push(p.from);
           }
-        } else if (p.from === q && modSockets[p.fromSocket].isInput) {
+        } else if (p.from === q && modSockets[p.fromSocket] && modSockets[p.fromSocket].isInput) {
           if (!seen[p.to]) {
             queue.push(p.to);
           }
@@ -199,6 +184,10 @@ export class Instrument extends Patchable {
     var generators = {};
     for (var i = dependencies.length - 1; i >= 0; i--) {
       var ix = dependencies[i];
+      if (!this.modules[ix]) {
+        console.log("Big troubles: trying to reach non existent module:", ix);
+        continue
+      }
       var unit = this.modules[ix].unit;
       var g = null;
       if (unit.type == "input") {

@@ -2,6 +2,7 @@
 const TestMessage = "test";
 const StatusMessage = "status";
 const ChannelDefMessage = "channel_def";
+const SequencerDefMessage = "sequencer_def";
 
 export class API {
 
@@ -24,7 +25,12 @@ export class API {
     var msg = JSON.parse(message.data);
     if (msg.type === ChannelDefMessage) {
       this.app.initialiseChannels(msg.data);
+    } else if (msg.type === SequencerDefMessage) {
+      this.app.initialiseSequenceTracks(msg.data);
     }
+  }
+  requestSequencerDef() {
+    this.sendData(SequencerDefMessage, null);
   }
 
   sendData(type, data) {

@@ -12,10 +12,32 @@ export class Channel {
 
     this.height = 75;
     this.marginTop = 10;
-    this.offset =  (this.channelNr - 1) * (this.height + this.marginTop);
+    this.offset =  this.channelNr * (this.height + this.marginTop);
     this.padding = 10;
     this.channelWidth = 90;
     this.handleClick = () => openInstrumentEditor(this.instrument);
+  }
+
+  initialiseSequenceTracks(sequences) {
+    this.sequenceTracks = [];
+    for (var s of sequences) {
+      var segment = {};
+      if (s.after) {
+        segment.after = s.after.after;
+        if (s.after.sequence.before) {
+          segment.before = s.after.sequence.before.before;
+        }
+      } else if (s.before) {
+        segment.before = s.before.before;
+        if (s.before.sequence.after) {
+          segment.after = s.before.sequence.after.after;
+        }
+      }
+      var track = new SequenceTrack();
+      track.addRange(segment.after, segment.before);
+      this.sequenceTracks.push(track);
+    }
+
   }
 
   draw(app) {

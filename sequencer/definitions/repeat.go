@@ -6,8 +6,8 @@ import (
 )
 
 type RepeatDef struct {
-	Every    interface{}
-	Sequence *SequenceDef
+	Every    interface{}  `json:"every" yaml:"every"`
+	Sequence *SequenceDef `json:"sequence" yaml:"sequence"`
 }
 
 func (e *RepeatDef) GetSequence(granularity int) (Sequence, error) {

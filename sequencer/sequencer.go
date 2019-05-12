@@ -15,6 +15,7 @@ import (
 type Sequencer struct {
 	status.Status
 	Sequences           []sequences.Sequence
+	SequencerDef        *definitions.SequencerDef
 	Inputs              chan *SequencerEvent
 	Time                uint
 	FromFile            string
@@ -36,6 +37,7 @@ func NewSequencerFromFile(file string) (*Sequencer, error) {
 		return nil, util.WrapError("sequencer", err)
 	}
 	seq := NewSequencer(s.BPM, s.Granularity)
+	seq.SequencerDef = s
 	seqs, err := s.GetSequences()
 	if err != nil {
 		return nil, util.WrapError("sequencer", err)
@@ -157,6 +159,7 @@ func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 				fmt.Println("Failed to reload sequencer:", err.Error())
 				return
 			}
+			seq.SequencerDef = s
 			seq.BPM = s.BPM
 			seq.Granularity = s.Granularity
 			seq.InitialChannelSetup = s.Channels.Channels

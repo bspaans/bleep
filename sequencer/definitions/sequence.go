@@ -8,29 +8,29 @@ import (
 )
 
 type SequenceDef struct {
-	Every          *RepeatDef                 `yaml:"repeat"`
-	Euclidian      *EuclidianDef              `yaml:"euclidian"`
-	PlayNoteEvery  *PlayNoteEveryDef          `yaml:"play_note"`
-	PlayNotesEvery *PlayNotesEveryDef         `yaml:"play_notes"`
-	Panning        *ChannelAutomationDef      `yaml:"panning"`
-	Reverb         *ChannelAutomationDef      `yaml:"reverb"`
-	ReverbTime     *FloatChannelAutomationDef `yaml:"reverb_time"`
-	Tremelo        *ChannelAutomationDef      `yaml:"tremelo"`
-	LPF_Cutoff     *ChannelAutomationDef      `yaml:"lpf_cutoff"`
-	HPF_Cutoff     *ChannelAutomationDef      `yaml:"hpf_cutoff"`
-	Volume         *ChannelAutomationDef      `yaml:"volume"`
-	GrainSize      *FloatChannelAutomationDef `yaml:"grain_size"`
-	GrainBirthRate *FloatChannelAutomationDef `yaml:"grain_birth_rate"`
-	GrainSpread    *FloatChannelAutomationDef `yaml:"grain_spread"`
-	GrainSpeed     *FloatChannelAutomationDef `yaml:"grain_speed"`
-	After          *AfterDef                  `yaml:"after"`
-	Before         *BeforeDef                 `yaml:"before"`
-	Offset         *OffsetDef                 `yaml:"offset"`
-	Register       *RegisterDef               `yaml:"register"`
-	FloatRegister  *FloatRegisterDef          `yaml:"float_register"`
-	ArrayRegister  *IntArrayRegisterDef       `yaml:"array_register"`
-	MIDI           *MIDISequencesDef          `yaml:"midi"`
-	Combine        []*SequenceDef             `yaml:"combine"`
+	Every          *RepeatDef                 `json:"repeat,omitempty" yaml:"repeat"`
+	Euclidian      *EuclidianDef              `json:"euclidian,omitempty" yaml:"euclidian"`
+	PlayNoteEvery  *PlayNoteEveryDef          `json:"play_note,omitempty" yaml:"play_note"`
+	PlayNotesEvery *PlayNotesEveryDef         `json:"play_notes,omitempty" yaml:"play_notes"`
+	Panning        *ChannelAutomationDef      `json:"panning,omitempty" yaml:"panning"`
+	Reverb         *ChannelAutomationDef      `json:"reverb,omitempty" yaml:"reverb"`
+	ReverbTime     *FloatChannelAutomationDef `json:"reverb_time,omitempty" yaml:"reverb_time"`
+	Tremelo        *ChannelAutomationDef      `json:"tremelo,omitempty" yaml:"tremelo"`
+	LPF_Cutoff     *ChannelAutomationDef      `json:"lpf_cutoff,omitempty" yaml:"lpf_cutoff"`
+	HPF_Cutoff     *ChannelAutomationDef      `json:"hpf_cutoff,omitempty" yaml:"hpf_cutoff"`
+	Volume         *ChannelAutomationDef      `json:"volume,omitempty" yaml:"volume"`
+	GrainSize      *FloatChannelAutomationDef `json:"grain_size,omitempty" yaml:"grain_size"`
+	GrainBirthRate *FloatChannelAutomationDef `json:"grain_birth_rate,omitempty" yaml:"grain_birth_rate"`
+	GrainSpread    *FloatChannelAutomationDef `json:"grain_spread,omitempty" yaml:"grain_spread"`
+	GrainSpeed     *FloatChannelAutomationDef `json:"grain_speed,omitempty" yaml:"grain_speed"`
+	After          *AfterDef                  `json:"after,omitempty" yaml:"after"`
+	Before         *BeforeDef                 `json:"before,omitempty" yaml:"before"`
+	Offset         *OffsetDef                 `json:"offset,omitempty" yaml:"offset"`
+	Register       *RegisterDef               `json:"register,omitempty" yaml:"register"`
+	FloatRegister  *FloatRegisterDef          `json:"float_register,omitempty" yaml:"float_register"`
+	ArrayRegister  *IntArrayRegisterDef       `json:"array_register,omitempty" yaml:"array_register"`
+	MIDI           *MIDISequencesDef          `json:"midi,omitempty" yaml:"midi"`
+	Combine        []*SequenceDef             `json:"combine,omitempty" yaml:"combine"`
 }
 
 type SequenceGenerator interface {

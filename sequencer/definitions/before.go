@@ -6,8 +6,8 @@ import (
 )
 
 type BeforeDef struct {
-	Before   interface{} `yaml:"before"`
-	Sequence SequenceDef `yaml:"sequence"`
+	Before   interface{} `json:"before" yaml:"before"`
+	Sequence SequenceDef `json:"sequence" yaml:"sequence"`
 }
 
 func (e *BeforeDef) GetSequence(granularity int) (sequences.Sequence, error) {

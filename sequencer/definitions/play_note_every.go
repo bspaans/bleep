@@ -9,14 +9,14 @@ import (
 )
 
 type PlayNoteEveryDef struct {
-	Note               int            `yaml:"note"`
-	NoteAutomation     *AutomationDef `yaml:"auto_note"`
-	Channel            int            `yaml:"channel"`
-	Velocity           int            `yaml:"velocity"`
-	VelocityAutomation *AutomationDef `yaml:"auto_velocity"`
-	Duration           interface{}    `yaml:"duration"`
-	Every              interface{}    `yaml:"every"`
-	Offset             interface{}    `yaml:"offset"`
+	Note               int            `json:"note,omitempty" yaml:"note"`
+	NoteAutomation     *AutomationDef `json:"auto_note,omitempty" yaml:"auto_note"`
+	Channel            int            `json:"channel" yaml:"channel"`
+	Velocity           int            `json:"velocity,omitempty" yaml:"velocity"`
+	VelocityAutomation *AutomationDef `json:"auto_velocity,omitempty" yaml:"auto_velocity"`
+	Duration           interface{}    `json:"duration" yaml:"duration"`
+	Every              interface{}    `json:"every" yaml:"every"`
+	Offset             interface{}    `json:"offset" yaml:"offset"`
 }
 
 func (e *PlayNoteEveryDef) GetSequence(granularity int) (Sequence, error) {

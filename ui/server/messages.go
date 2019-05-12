@@ -2,10 +2,8 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
-	"github.com/bspaans/bleep/channels"
 	"github.com/bspaans/bleep/controller"
 	"github.com/gorilla/websocket"
 )
@@ -13,9 +11,10 @@ import (
 type MessageType string
 
 const (
-	Test       MessageType = "test"
-	Status     MessageType = "status"
-	ChannelDef MessageType = "channel_def"
+	Test         MessageType = "test"
+	Status       MessageType = "status"
+	ChannelDef   MessageType = "channel_def"
+	SequencerDef MessageType = "sequencer_def"
 )
 
 type Message struct {
@@ -48,12 +47,12 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		})
 	} else if m.Type == ChannelDef {
 		m.send(conn, m.Type, ctrl.Sequencer.InitialChannelSetup)
+	} else if m.Type == SequencerDef {
+		m.send(conn, m.Type, ctrl.Sequencer.SequencerDef.Sequences)
 	}
 }
 
 func (m *Message) send(conn *websocket.Conn, typ MessageType, v interface{}) {
-	mem, _ := json.Marshal(v.([]*channels.ChannelDef))
-	fmt.Println(string(mem))
 	msg, err := json.Marshal(&ResponseMessage{
 		Type: typ,
 		Data: v,
