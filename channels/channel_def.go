@@ -11,19 +11,19 @@ type ChannelsDef struct {
 }
 
 type ChannelDef struct {
-	Channel        int
-	Instrument     int
-	Bank           int
-	Reverb         int
-	ReverbTime     interface{} `yaml:"reverb_time"`
-	ReverbFeedback float64     `yaml:"reverb_feedback"`
-	Tremelo        int
-	Volume         int
-	Panning        int
-	LPF_Cutoff     int `yaml:"lpf_cuttoff"`
-	HPF_Cutoff     int `yaml:"hpf_cuttoff"`
-	Grain          *instruments.GrainsOptionsDef
-	Generator      *instruments.GeneratorDef
+	Channel        int                           `json:"channel" yaml:"channel"`
+	Instrument     int                           `json:"instrument" yaml:"instrument"`
+	Bank           int                           `json:"bank" yaml:"bank"`
+	Reverb         int                           `json:"reverb" yaml:"reverb"`
+	ReverbTime     interface{}                   `json:"reverb_time" yaml:"reverb_time"`
+	ReverbFeedback float64                       `json:"reverb_feedback" yaml:"reverb_feedback"`
+	Tremelo        int                           `json:"tremelo" yaml:"tremelo"`
+	Volume         int                           `json:"volume" yaml:"volume"`
+	Panning        int                           `json:"panning" yaml:"panning"`
+	LPF_Cutoff     int                           `json:"lpf_cuttoff" yaml:"lpf_cuttoff"`
+	HPF_Cutoff     int                           `json:"hpf_cuttoff" yaml:"hpf_cuttoff"`
+	Grain          *instruments.GrainsOptionsDef `json:"grain" yaml:"grain"`
+	Generator      *instruments.GeneratorDef     `json:"generator" yaml:"generator"`
 }
 
 func ParseDuration(d interface{}, bpm float64) (float64, error) {

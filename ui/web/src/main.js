@@ -2,6 +2,7 @@ import { Theme } from './theme.js';
 import { InstrumentEditor, Instrument, Bank } from './instrument_editor/';
 import { TimelineEditor, Channel } from './timeline_editor/';
 import { SequenceEditor } from './sequence_editor/';
+import { API } from './api/';
 
 export class Bleep {
   constructor() {
@@ -14,10 +15,10 @@ export class Bleep {
     this.selectedElem = null;
     this.startSelectedPos = {};
     this.selectedPos = {};
-    this.socket = null;
+    this.api = new API(this);
+    this.api.start();
     this.channels = [new Channel(1, this.openInstrumentEditor.bind(this))];
     var bank = this.loadInstrumentBank(instrumentBank);
-    this.startWebSocket();
     //this.load(example);
     //this.openTimelineEditor();
     //this.openInstrumentEditor(bank.instruments[0]);
@@ -25,21 +26,17 @@ export class Bleep {
     this.draw();
   }
 
-  startWebSocket() {
-    var socket = new WebSocket("ws://localhost:10000/ws", "bleep");
-    socket.onopen = ((e) => {
-      this.socket = socket;
-      this.socket.send(JSON.stringify({"type": "channels", "data": "Test"}));
-    }).bind(this)
-    socket.onmessage = this.handleMessageReceived;
-  }
-
-  handleMessageReceived(message) {
-    console.log(message)
-  }
-  sendMessage(message) {
-    if (this.socket) {
-      this.socket.send(message);
+  initialiseChannels(channelDefs) {
+    this.channels = [];
+    for (var def of channelDefs) {
+      var ch = new Channel(def.channel, this.openInstrumentEditor.bind(this));
+      this.channels.push(ch);
+      ch.instrument = new Instrument();
+      if (def.generator) {
+        console.log("Loading channel generator", def.generator);
+        ch.instrument.loadFromDefinition(def.generator);
+      }
+      console.log("New channel", def);
     }
   }
 

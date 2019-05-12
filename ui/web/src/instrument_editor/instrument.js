@@ -26,7 +26,7 @@ export class Instrument extends Patchable {
     }
     var ix = this.loadGenerator(instrDef, 0, 1);
     if (ix) {
-      var s = this.modules[ix].instrument.sockets;
+      var s = this.modules[ix].unit.sockets;
       var candidate = null;
       if (s) {
         for (var key of Object.keys(s)) {
@@ -48,6 +48,7 @@ export class Instrument extends Patchable {
           this.patches.push(p);
         }
       }
+      // TODO add combiner module, because this breaks generators that wrap combined generators (e.g. panning)
     } else if (instrDef["panning"]) {
       var g = new Panning("panning");
       var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, g);
@@ -80,17 +81,23 @@ export class Instrument extends Patchable {
       this.modules.push(m);
       this.patches.push(p);
       return this.modules.length - 1;
-    } else if (instrDef["triangle"] || instrDef["square"] || instrDef["sawtooth"]) {
+    } else if (instrDef["sine"] || instrDef["triangle"] || instrDef["square"] || instrDef["sawtooth"] || instrDef["white_noise"]) {
       var typ = "triangle";
       var instr = null;
       if (instrDef["triangle"]) {
         instr = instrDef["triangle"];
+      } else if (instrDef["sine"]) {
+        instr = instrDef["sine"];
+        typ = "sine";
       } else if (instrDef["square"]) {
         instr = instrDef["square"];
         typ = "square";
       } else if (instrDef["sawtooth"]) {
         instr = instrDef["sawtooth"];
         typ = "saw";
+      } else if (instrDef["white_noise"]) {
+        instr = instrDef["white_noise"];
+        typ = "white_noise";
       }
       var g = new SampleGenerator(typ);
       g.dials["attack"].value = instr["attack"] || 0.0;
@@ -103,8 +110,28 @@ export class Instrument extends Patchable {
       this.modules.push(m);
       this.patches.push(p);
       return this.modules.length - 1;
+    } else if (instrDef["pulse"]) {
+      // TODO pulse
+    } else if (instrDef["filter"]) {
+      var g = this.loadFilter(instrDef["filter"])
+      var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, g);
+      this.modules.push(m);
+
+      var tIx = this.modules.length - 1;
+      var ix = this.loadGenerator(instrDef["filter"], tIx, output);
+
     } else {
-      throw 'Unknown instrument def ' + instrDef;
+      console.log(instrDef);
+      throw 'Unknown instrument def';
+    }
+  }
+  loadFilter(filterDef) {
+    if (filterDef["lpf"]) {
+      var g = new Filter("low pass filter")
+      return g;
+    } else {
+      console.log(filterDef);
+      throw 'Unknown filter def';
     }
   }
   load(instrDef) {

@@ -130,17 +130,17 @@ func (f *BandOptionsDef) Validate() error {
 }
 
 type FilterOptionsDef struct {
-	Delay       *DelayOptionsDef       `json:"delay" yaml:"delay"`
-	Overdrive   *OverdriveOptionsDef   `json:"overdrive" yaml:"overdrive"`
-	Distortion  *DistortionOptionsDef  `json:"distortion" yaml:"distortion"`
-	Flanger     *FlangerOptionsDef     `json:"flanger" yaml:"flanger"`
-	Tremelo     *TremeloOptionsDef     `json:"tremelo" yaml:"tremelo"`
-	Convolution *ConvolutionOptionsDef `json:"convolution" yaml:"convolution"`
-	LPF         *LPFOptionsDef         `json:"lpf" yaml:"lpf"`
-	HPF         *LPFOptionsDef         `json:"hpf" yaml:"hpf"`
-	BPF         *BandOptionsDef        `json:"bpf" yaml:"bpf"`
-	Sum         []*FilterOptionsDef    `json:"sum" yaml:"sum"`
-	Average     []*FilterOptionsDef    `json:"average" yaml:"average"`
+	Delay       *DelayOptionsDef       `json:"delay,omitempty" yaml:"delay"`
+	Overdrive   *OverdriveOptionsDef   `json:"overdrive,omitempty" yaml:"overdrive"`
+	Distortion  *DistortionOptionsDef  `json:"distortion,omitempty" yaml:"distortion"`
+	Flanger     *FlangerOptionsDef     `json:"flanger,omitempty" yaml:"flanger"`
+	Tremelo     *TremeloOptionsDef     `json:"tremelo,omitempty" yaml:"tremelo"`
+	Convolution *ConvolutionOptionsDef `json:"convolution,omitempty" yaml:"convolution"`
+	LPF         *LPFOptionsDef         `json:"lpf,omitempty" yaml:"lpf"`
+	HPF         *LPFOptionsDef         `json:"hpf,omitempty" yaml:"hpf"`
+	BPF         *BandOptionsDef        `json:"bpf,omitempty" yaml:"bpf"`
+	Sum         []*FilterOptionsDef    `json:"sum,omitempty" yaml:"sum"`
+	Average     []*FilterOptionsDef    `json:"average,omitempty" yaml:"average"`
 }
 
 func (f *FilterOptionsDef) Filter() filters.Filter {
@@ -219,24 +219,24 @@ func (f *FilterOptionsDef) Validate() error {
 }
 
 type FilterDef struct {
-	Filter FilterOptionsDef `json:",inline" yaml:",inline"`
-	On     GeneratorDef     `json:",inline" yaml:",inline"`
+	FilterOptionsDef `json:",inline" yaml:",inline"`
+	GeneratorDef     `json:",inline" yaml:",inline"`
 }
 
 func (f *FilterDef) Generator(cfg *audio.AudioConfig) generators.Generator {
-	return derived.NewFilteredGenerator(f.On.Generator(cfg), f.Filter.Filter())
+	return derived.NewFilteredGenerator(f.GeneratorDef.Generator(cfg), f.FilterOptionsDef.Filter())
 }
 
 func (f *FilterDef) Validate() error {
-	if f.Filter.Validate() != nil {
-		return f.Filter.Validate()
+	if f.FilterOptionsDef.Validate() != nil {
+		return f.FilterOptionsDef.Validate()
 	}
-	return f.On.Validate()
+	return f.GeneratorDef.Validate()
 }
 
 type ConstantPitchDef struct {
-	Pitch        float64      `json:"pitch" yaml:"pitch"`
-	GeneratorDef GeneratorDef `json:",inline" yaml:",inline"`
+	Pitch        float64 `json:"pitch" yaml:"pitch"`
+	GeneratorDef `json:",inline" yaml:",inline"`
 }
 
 func (t *ConstantPitchDef) Generator(cfg *audio.AudioConfig) generators.Generator {
@@ -254,9 +254,9 @@ func (t *ConstantPitchDef) Validate() error {
 }
 
 type TransposeDef struct {
-	Semitones    float64      `json:"semitones" yaml:"semitones"`
-	Gain         float64      `json:"gain" yaml:"gain"`
-	GeneratorDef GeneratorDef `json:",inline" yaml:",inline"`
+	Semitones    float64 `json:"semitones" yaml:"semitones"`
+	Gain         float64 `json:"gain" yaml:"gain"`
+	GeneratorDef `json:",inline" yaml:",inline"`
 }
 
 func (t *TransposeDef) Generator(cfg *audio.AudioConfig) generators.Generator {
@@ -303,11 +303,11 @@ func (w *GrainsOptionsDef) Validate() error {
 }
 
 type WavOptionsDef struct {
-	File      string              `json:"file" yaml:"file"`
-	Gain      float64             `json:"gain" yaml:"gain"`
-	Pitched   bool                `json:"pitched" yaml:"pitched"`
-	BasePitch interface{}         `json:"base_pitch" yaml:"base_pitch"`
-	Options   GeneratorOptionsDef `json:",inline" yaml:",inline"`
+	File                string      `json:"file" yaml:"file"`
+	Gain                float64     `json:"gain" yaml:"gain"`
+	Pitched             bool        `json:"pitched" yaml:"pitched"`
+	BasePitch           interface{} `json:"base_pitch" yaml:"base_pitch"`
+	GeneratorOptionsDef `json:",inline" yaml:",inline"`
 }
 
 func (w *WavOptionsDef) Generator() generators.Generator {
@@ -342,20 +342,20 @@ func (w *WavOptionsDef) Validate() error {
 	if w.Gain == 0.0 {
 		return fmt.Errorf("Missing 'gain' for wav generator")
 	}
-	return w.Options.Validate()
+	return w.GeneratorOptionsDef.Validate()
 }
 
 type PitchedPanningDef struct {
-	Source GeneratorDef `json:",inline" yaml:",inline"`
+	GeneratorDef `json:",inline" yaml:",inline"`
 }
 
 func (w *PitchedPanningDef) Generator(cfg *audio.AudioConfig) generators.Generator {
-	g := w.Source.Generator(cfg)
+	g := w.GeneratorDef.Generator(cfg)
 	return derived.NewPitchControlledPanningGenerator(g)
 }
 
 func (w *PitchedPanningDef) Validate() error {
-	return w.Source.Validate()
+	return w.GeneratorDef.Validate()
 }
 
 type VocoderDef struct {
@@ -385,10 +385,10 @@ func (w *VocoderDef) Validate() error {
 }
 
 type PulseWaveDef struct {
-	DutyCycle          float64             `json:"duty_cycle" yaml:"duty_cycle"`
-	DutyCycleDepth     float64             `json:"duty_cycle_depth" yaml:"duty_cycle_depth"`
-	DutyCycleModulator *GeneratorDef       `json:"duty_cycle_modulator" yaml:"duty_cycle_modulator"`
-	Options            GeneratorOptionsDef `json:",inline" yaml:",inline"`
+	DutyCycle           float64       `json:"duty_cycle" yaml:"duty_cycle"`
+	DutyCycleDepth      float64       `json:"duty_cycle_depth" yaml:"duty_cycle_depth"`
+	DutyCycleModulator  *GeneratorDef `json:"duty_cycle_modulator" yaml:"duty_cycle_modulator"`
+	GeneratorOptionsDef `json:",inline" yaml:",inline"`
 }
 
 func (p *PulseWaveDef) Generator(cfg *audio.AudioConfig) generators.Generator {
@@ -397,7 +397,7 @@ func (p *PulseWaveDef) Generator(cfg *audio.AudioConfig) generators.Generator {
 		mod = p.DutyCycleModulator.Generator(cfg)
 	}
 	g := generators.NewPulseWaveGenerator(p.DutyCycle, mod, p.DutyCycleDepth)
-	return p.Options.Generator(g)
+	return p.GeneratorOptionsDef.Generator(g)
 }
 
 func (g *PulseWaveDef) Validate() error {
@@ -406,7 +406,7 @@ func (g *PulseWaveDef) Validate() error {
 			return WrapError("pulse > duty_cycle_modulator", err)
 		}
 	}
-	return g.Options.Validate()
+	return g.GeneratorOptionsDef.Validate()
 }
 
 type GeneratorOptionsDef struct {
@@ -445,20 +445,20 @@ func (g *GeneratorOptionsDef) Validate() error {
 }
 
 type GeneratorDef struct {
-	Filter        *FilterDef           `json:"filter" yaml:"filter"`
-	Transpose     *TransposeDef        `json:"transpose" yaml:"transpose"`
-	ConstantPitch *ConstantPitchDef    `json:"constant_pitch" yaml:"constant_pitch"`
-	Sine          *GeneratorOptionsDef `json:"sine" yaml:"sine"`
-	Square        *GeneratorOptionsDef `json:"square" yaml:"square"`
-	Sawtooth      *GeneratorOptionsDef `json:"sawtooth" yaml:"sawtooth"`
-	Triangle      *GeneratorOptionsDef `json:"triangle" yaml:"triangle"`
-	WhiteNoise    *GeneratorOptionsDef `json:"white_noise" yaml:"white_noise"`
-	Pulse         *PulseWaveDef        `json:"pulse" yaml:"pulse"`
-	Wav           *WavOptionsDef       `json:"wav" yaml:"wav"`
-	Grains        *GrainsOptionsDef    `json:"grains" yaml:"grains"`
-	Combined      []*GeneratorDef      `json:"combined" yaml:"combined"`
-	Vocoder       *VocoderDef          `json:"vocoder" yaml:"vocoder"`
-	Panning       *PitchedPanningDef   `json:"panning" yaml:"panning"`
+	Filter        *FilterDef           `json:"filter,omitempty" yaml:"filter"`
+	Transpose     *TransposeDef        `json:"transpose,omitempty" yaml:"transpose"`
+	ConstantPitch *ConstantPitchDef    `json:"constant_pitch,omitempty" yaml:"constant_pitch"`
+	Sine          *GeneratorOptionsDef `json:"sine,omitempty" yaml:"sine"`
+	Square        *GeneratorOptionsDef `json:"square,omitempty" yaml:"square"`
+	Sawtooth      *GeneratorOptionsDef `json:"sawtooth,omitempty" yaml:"sawtooth"`
+	Triangle      *GeneratorOptionsDef `json:"triangle,omitempty" yaml:"triangle"`
+	WhiteNoise    *GeneratorOptionsDef `json:"white_noise,omitempty" yaml:"white_noise"`
+	Pulse         *PulseWaveDef        `json:"pulse,omitempty" yaml:"pulse"`
+	Wav           *WavOptionsDef       `json:"wav,omitempty" yaml:"wav"`
+	Grains        *GrainsOptionsDef    `json:"grains,omitempty" yaml:"grains"`
+	Combined      []*GeneratorDef      `json:"combined,omitempty" yaml:"combined"`
+	Vocoder       *VocoderDef          `json:"vocoder,omitempty" yaml:"vocoder"`
+	Panning       *PitchedPanningDef   `json:"panning,omitempty" yaml:"panning"`
 }
 
 func (d *GeneratorDef) Generator(cfg *audio.AudioConfig) generators.Generator {
@@ -545,9 +545,9 @@ func (d *GeneratorDef) Validate() error {
 }
 
 type InstrumentDef struct {
-	Index        int          `json:"index" yaml:"index"`
-	Name         string       `json:"name" yaml:"name"`
-	GeneratorDef GeneratorDef `json:",inline" yaml:",inline"`
+	Index        int    `json:"index" yaml:"index"`
+	Name         string `json:"name" yaml:"name"`
+	GeneratorDef `json:",inline" yaml:",inline"`
 }
 
 func (i *InstrumentDef) Generator(cfg *audio.AudioConfig) generators.Generator {

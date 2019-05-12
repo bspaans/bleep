@@ -10,9 +10,9 @@ export class Channel {
       this.sequenceTracks.push(new SequenceTrack());
     }
 
-    this.height = 150;
+    this.height = 75;
     this.marginTop = 10;
-    this.offset =  this.channelNr * (this.height + this.marginTop);
+    this.offset =  (this.channelNr - 1) * (this.height + this.marginTop);
     this.padding = 10;
     this.channelWidth = 90;
     this.handleClick = () => openInstrumentEditor(this.instrument);
