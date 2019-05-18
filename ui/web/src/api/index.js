@@ -12,7 +12,7 @@ export class API {
   }
 
   start() {
-    var socket = new WebSocket("ws://localhost:10000/ws", "bleep");
+    var socket = new WebSocket("ws://localhost:10000/ws");
     socket.onopen = ((e) => {
       this.socket = socket;
       this.sendData(ChannelDefMessage, "test");
