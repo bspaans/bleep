@@ -14,6 +14,12 @@ export class SequenceTrack {
   addRange(start, stop) {
     this.ranges.push(new Range(start ? start : 0, stop ? stop : 1000000));
   }
+  compile() {
+    if (this.sequence_def) {
+      return this.sequence_def;
+    }
+    return null;
+  }
   draw(app, x, y, w, h) {
     var showBars = 64;
     var pointsInRange = showBars * 4;

@@ -60,6 +60,30 @@ export class Bleep {
       ch.initialiseSequenceTracks(channelSequences[ch.channelNr]);
     }
     this.openTimelineEditor();
+    this.uploadSequencerDef();
+  }
+
+  compile() {
+    var result = {
+      "bpm": 120,
+      "channels": [],
+      "sequences": [],
+    };
+    for (var ch of this.channels) {
+      var channelResult = ch.compile();
+      if (channelResult.channel) {
+        result.channels.push(channelResult.channel);
+      }
+      for (var s of channelResult.sequences) {
+        result.sequences.push(s);
+      }
+    }
+    console.log(result);
+    return result;
+  }
+
+  uploadSequencerDef() {
+    this.api.setSequencerDef(this.compile());
   }
 
   sequenceDefByChannel(seq) {

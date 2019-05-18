@@ -3,6 +3,7 @@ const TestMessage = "test";
 const StatusMessage = "status";
 const ChannelDefMessage = "channel_def";
 const SequencerDefMessage = "sequencer_def";
+const SetSequencerDefMessage = "set_sequencer_def";
 
 export class API {
 
@@ -31,6 +32,9 @@ export class API {
   }
   requestSequencerDef() {
     this.sendData(SequencerDefMessage, null);
+  }
+  setSequencerDef(def) {
+    this.sendData(SetSequencerDefMessage, JSON.stringify(def));
   }
 
   sendData(type, data) {

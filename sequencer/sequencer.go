@@ -90,7 +90,6 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 				canRead = false
 			}
 		}
-
 		millisecondsPerBeat := 60000.0 / seq.BPM
 		millisecondsPerTick := time.Duration(millisecondsPerBeat / float64(seq.Granularity) * 1000000)
 

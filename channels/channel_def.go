@@ -7,7 +7,7 @@ import (
 )
 
 type ChannelsDef struct {
-	Channels []*ChannelDef
+	Channels []*ChannelDef `json:"channels" yaml:"channels"`
 }
 
 type ChannelDef struct {

@@ -18,6 +18,24 @@ export class Channel {
     this.handleClick = () => openInstrumentEditor(this.instrument);
   }
 
+  compile() {
+    var channel = {
+      "channel": this.channelNr,
+      "generator": this.instrument.compile(),
+    };
+    var sequences = [];
+    for (var tr of this.sequenceTracks) {
+      var trResult = tr.compile();
+      if (trResult) {
+        sequences.push(trResult);
+      }
+    }
+    return {
+      "channel": channel,
+      "sequences": sequences,
+    };
+  }
+
   initialiseSequenceTracks(sequences) {
     this.sequenceTracks = [];
     for (var s of sequences) {
@@ -34,10 +52,10 @@ export class Channel {
         }
       }
       var track = new SequenceTrack();
+      track.sequence_def = s;
       track.addRange(segment.after, segment.before);
       this.sequenceTracks.push(track);
     }
-
   }
 
   draw(app) {
