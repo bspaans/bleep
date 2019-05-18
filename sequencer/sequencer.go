@@ -85,7 +85,7 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 					fmt.Println("Quitting sequencer")
 					return
 				}
-				seq.dispatchEvent(ev)
+				seq.handleEvent(ev)
 			default:
 				canRead = false
 			}
@@ -147,7 +147,20 @@ func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
 	}
 }
 
-func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
+func (seq *Sequencer) instantiateFromSequencerDef(s *definitions.SequencerDef) {
+	seq.SequencerDef = s
+	seq.BPM = s.BPM
+	seq.Granularity = s.Granularity
+	seq.InitialChannelSetup = s.Channels.Channels
+	seqs, err := s.GetSequences()
+	if err != nil {
+		fmt.Println("Failed to instantiate sequencer definition:", err.Error())
+		return
+	}
+	seq.Sequences = seqs
+}
+
+func (seq *Sequencer) handleEvent(ev *SequencerEvent) {
 	if ev.Type == RestartSequencer {
 		seq.Time = 0
 	} else if ev.Type == ReloadSequencer {
@@ -159,17 +172,13 @@ func (seq *Sequencer) dispatchEvent(ev *SequencerEvent) {
 				fmt.Println("Failed to reload sequencer:", err.Error())
 				return
 			}
-			seq.SequencerDef = s
-			seq.BPM = s.BPM
-			seq.Granularity = s.Granularity
-			seq.InitialChannelSetup = s.Channels.Channels
-			seqs, err := s.GetSequences()
-			if err != nil {
-				fmt.Println("Failed to reload sequencer:", err.Error())
-				return
-			}
-			seq.Sequences = seqs
+			seq.instantiateFromSequencerDef(s)
+		} else if seq.SequencerDef != nil {
+			seq.instantiateFromSequencerDef(seq.SequencerDef)
 		}
+	} else if ev.Type == SetSequencerDef {
+		seq.Time = 0 // ? should maybe be a separate event?
+		seq.instantiateFromSequencerDef(ev.SequencerDef)
 	} else if ev.Type == ForwardSequencer {
 		seq.Time += uint(seq.Granularity) * 16
 		fmt.Println("t =", seq.Time)
@@ -215,4 +224,9 @@ func (seq *Sequencer) DecreaseBPM() {
 }
 func (seq *Sequencer) Quit() {
 	seq.Inputs <- NewSequencerEvent(QuitSequencer)
+}
+func (seq *Sequencer) SetSequencerDef(def *definitions.SequencerDef) {
+	ev := NewSequencerEvent(SetSequencerDef)
+	ev.SequencerDef = def
+	seq.Inputs <- ev
 }
