@@ -37,7 +37,7 @@ export class Channel {
   compile() {
     var channel = {
       "channel": this.channelNr,
-      "generator": this.instrument.compile(),
+      "generator": this.instrument ? this.instrument.compile() : null,
       "bank": this.bank,
       "instrument": this.bankIndex,
       "reverb": this.reverb,

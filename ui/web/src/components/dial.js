@@ -53,6 +53,7 @@ export class Dial {
     var scaledCos = 1.0 - (sin + 1) / 2;
     var range = this.max - this.min;
     this.value = range * scaledCos + this.min;
+    app.uploadSequencerDef();
     app.draw();
   }
 }

@@ -85,7 +85,7 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 					fmt.Println("Quitting sequencer")
 					return
 				}
-				seq.handleEvent(ev)
+				seq.handleEvent(ev, s)
 			default:
 				canRead = false
 			}
@@ -159,7 +159,7 @@ func (seq *Sequencer) instantiateFromSequencerDef(s *definitions.SequencerDef) {
 	seq.Sequences = seqs
 }
 
-func (seq *Sequencer) handleEvent(ev *SequencerEvent) {
+func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 	if ev.Type == RestartSequencer {
 		seq.Time = 0
 	} else if ev.Type == ReloadSequencer {
@@ -176,8 +176,9 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent) {
 			seq.instantiateFromSequencerDef(seq.SequencerDef)
 		}
 	} else if ev.Type == SetSequencerDef {
-		seq.Time = 0 // ? should maybe be a separate event?
 		seq.instantiateFromSequencerDef(ev.SequencerDef)
+		s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)
+		seq.loadInstruments(s)
 	} else if ev.Type == ForwardSequencer {
 		seq.Time += uint(seq.Granularity) * 16
 		fmt.Println("t =", seq.Time)

@@ -27,16 +27,24 @@ export class Bleep {
 
   initialiseChannels(channelDefs) {
     this.channels = [];
+    var seenPercussionChannel = false;
     for (var def of channelDefs) {
-      var ch = new Channel(def.channel, this.openInstrumentEditor.bind(this));
+      var ch = new Channel(def.channel || 0, this.openInstrumentEditor.bind(this));
       ch.loadFromDefinition(def);
       this.channels.push(ch);
+      if (ch.channelNr == 9) {
+        seenPercussionChannel = true;
+      }
       ch.instrument = new Instrument();
       if (def.generator) {
         console.log("Loading channel generator", def.generator);
         ch.instrument.loadFromDefinition(def.generator);
       }
       console.log("New channel", def);
+    }
+    if (!seenPercussionChannel) {
+      var ch = new Channel(9, this.openInstrumentEditor.bind(this));
+      this.channels.push(ch);
     }
     this.api.requestSequencerDef();
     this.openTimelineEditor();
@@ -97,7 +105,7 @@ export class Bleep {
     for (var leaf of leaves) {
       if (seq[leaf]) {
         var s = seq[leaf];
-        if (channelSequences[s.channel]) {
+        if (channelSequences[s.channel] !== undefined) {
           channelSequences[s.channel].push(seq);
         } else {
           console.log("Missing channel", s);

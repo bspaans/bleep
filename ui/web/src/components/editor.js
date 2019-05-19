@@ -14,6 +14,7 @@ export class Editor {
       new Button(10, 10, this.handleShowCompile.bind(this), "JSON"),
       new Button(10, 10, this.handleZoomIn.bind(this), "+"),
       new Button(10, 10, this.handleZoomOut.bind(this), "-"),
+      new Button(10, 10, this.handleUpload.bind(this), ">>>"),
     ];
   }
   handleAddUnit(constructor) {
@@ -43,6 +44,9 @@ export class Editor {
     this.showCompile = !this.showCompile;
     this.app.draw();
   }
+  handleUpload() {
+    this.app.uploadSequencerDef();
+  }
   handleMouseDown(app, x, y) {
     this.selected = null;
     for (var b of this.buttons) {
@@ -70,6 +74,8 @@ export class Editor {
     this.buttons[2].y = this.padding + 50;
     this.buttons[3].x = w - this.buttons[3].w + this.padding;
     this.buttons[3].y = this.padding + 75;
+    this.buttons[4].x = w - this.buttons[4].w + this.padding;
+    this.buttons[4].y = this.padding + 100;
     app.ctx.save();
     app.ctx.lineWidth = 1;
     

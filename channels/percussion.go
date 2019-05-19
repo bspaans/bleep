@@ -33,6 +33,9 @@ func (c *PercussionChannel) LoadInstrumentsFromBank(cfg *audio.AudioConfig) {
 }
 
 func (c *PercussionChannel) getInstrument(note int) generators.Generator {
+	if note < 0 || note >= len(c.Instruments) {
+		return nil
+	}
 	return c.Instruments[note]
 }
 
