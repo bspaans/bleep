@@ -11,19 +11,19 @@ type ChannelsDef struct {
 }
 
 type ChannelDef struct {
-	Channel        int                           `json:"channel" yaml:"channel"`
-	Instrument     int                           `json:"instrument" yaml:"instrument"`
-	Bank           int                           `json:"bank" yaml:"bank"`
-	Reverb         int                           `json:"reverb" yaml:"reverb"`
-	ReverbTime     interface{}                   `json:"reverb_time" yaml:"reverb_time"`
-	ReverbFeedback float64                       `json:"reverb_feedback" yaml:"reverb_feedback"`
-	Tremelo        int                           `json:"tremelo" yaml:"tremelo"`
-	Volume         int                           `json:"volume" yaml:"volume"`
-	Panning        int                           `json:"panning" yaml:"panning"`
-	LPF_Cutoff     int                           `json:"lpf_cuttoff" yaml:"lpf_cuttoff"`
-	HPF_Cutoff     int                           `json:"hpf_cuttoff" yaml:"hpf_cuttoff"`
-	Grain          *instruments.GrainsOptionsDef `json:"grain" yaml:"grain"`
-	Generator      *instruments.GeneratorDef     `json:"generator" yaml:"generator"`
+	Channel        int                           `json:"channel,omitempty" yaml:"channel,omitempty"`
+	Instrument     int                           `json:"instrument,omitempty" yaml:"instrument,omitempty"`
+	Bank           int                           `json:"bank,omitempty" yaml:"bank,omitempty"`
+	Reverb         int                           `json:"reverb,omitempty" yaml:"reverb,omitempty"`
+	ReverbTime     interface{}                   `json:"reverb_time,omitempty" yaml:"reverb_time,omitempty"`
+	ReverbFeedback float64                       `json:"reverb_feedback,omitempty" yaml:"reverb_feedback,omitempty"`
+	Tremelo        int                           `json:"tremelo,omitempty" yaml:"tremelo,omitempty"`
+	Volume         int                           `json:"volume,omitempty" yaml:"volume,omitempty"`
+	Panning        int                           `json:"panning,omitempty" yaml:"panning,omitempty"`
+	LPF_Cutoff     int                           `json:"lpf_cuttoff,omitempty" yaml:"lpf_cuttoff,omitempty"`
+	HPF_Cutoff     int                           `json:"hpf_cuttoff,omitempty" yaml:"hpf_cuttoff,omitempty"`
+	Grain          *instruments.GrainsOptionsDef `json:"grain,omitempty" yaml:"grain,omitempty"`
+	Generator      *instruments.GeneratorDef     `json:"generator,omitempty" yaml:"generator,omitempty"`
 }
 
 func ParseDuration(d interface{}, bpm float64) (float64, error) {

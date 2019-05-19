@@ -194,7 +194,8 @@ export class Instrument extends Patchable {
         g = null;
       } else if (unit.type == "wav") {
         g = {"wav": {
-          "file": "",
+          "file": unit.file,
+          "gain": unit.dials["gain"].value,
         }};
       } else if (unit.type == "triangle" 
         || unit.type == "sine" 

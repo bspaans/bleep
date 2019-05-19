@@ -31,6 +31,7 @@ export class WavGenerator extends ModuleUnit {
     this.background = 'ModuleGenerator';
     this.w = 220;
     this.h = 250;
+    this.file = "";
     // TODO: file input and is_pitched boolean
     this.sockets = {
       "FREQ": new InputSocket(29, this.h - 29, "FREQ", FREQUENCY_TYPE),

@@ -445,20 +445,20 @@ func (g *GeneratorOptionsDef) Validate() error {
 }
 
 type GeneratorDef struct {
-	Filter        *FilterDef           `json:"filter,omitempty" yaml:"filter"`
-	Transpose     *TransposeDef        `json:"transpose,omitempty" yaml:"transpose"`
-	ConstantPitch *ConstantPitchDef    `json:"constant_pitch,omitempty" yaml:"constant_pitch"`
-	Sine          *GeneratorOptionsDef `json:"sine,omitempty" yaml:"sine"`
-	Square        *GeneratorOptionsDef `json:"square,omitempty" yaml:"square"`
-	Sawtooth      *GeneratorOptionsDef `json:"sawtooth,omitempty" yaml:"sawtooth"`
-	Triangle      *GeneratorOptionsDef `json:"triangle,omitempty" yaml:"triangle"`
-	WhiteNoise    *GeneratorOptionsDef `json:"white_noise,omitempty" yaml:"white_noise"`
-	Pulse         *PulseWaveDef        `json:"pulse,omitempty" yaml:"pulse"`
-	Wav           *WavOptionsDef       `json:"wav,omitempty" yaml:"wav"`
-	Grains        *GrainsOptionsDef    `json:"grains,omitempty" yaml:"grains"`
-	Combined      []*GeneratorDef      `json:"combined,omitempty" yaml:"combined"`
-	Vocoder       *VocoderDef          `json:"vocoder,omitempty" yaml:"vocoder"`
-	Panning       *PitchedPanningDef   `json:"panning,omitempty" yaml:"panning"`
+	Filter        *FilterDef           `json:"filter,omitempty" yaml:"filter,omitempty"`
+	Transpose     *TransposeDef        `json:"transpose,omitempty" yaml:"transpose,omitempty"`
+	ConstantPitch *ConstantPitchDef    `json:"constant_pitch,omitempty" yaml:"constant_pitch,omitempty"`
+	Sine          *GeneratorOptionsDef `json:"sine,omitempty" yaml:"sine,omitempty"`
+	Square        *GeneratorOptionsDef `json:"square,omitempty" yaml:"square,omitempty"`
+	Sawtooth      *GeneratorOptionsDef `json:"sawtooth,omitempty" yaml:"sawtooth,omitempty"`
+	Triangle      *GeneratorOptionsDef `json:"triangle,omitempty" yaml:"triangle,omitempty"`
+	WhiteNoise    *GeneratorOptionsDef `json:"white_noise,omitempty" yaml:"white_noise,omitempty"`
+	Pulse         *PulseWaveDef        `json:"pulse,omitempty" yaml:"pulse,omitempty"`
+	Wav           *WavOptionsDef       `json:"wav,omitempty" yaml:"wav,omitempty"`
+	Grains        *GrainsOptionsDef    `json:"grains,omitempty" yaml:"grains,omitempty"`
+	Combined      []*GeneratorDef      `json:"combined,omitempty" yaml:"combined,omitempty"`
+	Vocoder       *VocoderDef          `json:"vocoder,omitempty" yaml:"vocoder,omitempty"`
+	Panning       *PitchedPanningDef   `json:"panning,omitempty" yaml:"panning,omitempty"`
 }
 
 func (d *GeneratorDef) Generator(cfg *audio.AudioConfig) generators.Generator {

@@ -38,6 +38,7 @@ export class Factory {
     } else if (instrDef["wav"]) {
       var g = new WavGenerator();
       var instr = instrDef["wav"];
+      g.file = instr["file"] || "";
       g.dials["attack"].value = instr["attack"] || 0.0;
       g.dials["decay"].value = instr["decay"] || 0.0;
       g.dials["sustain"].value = instr["sustain"] || 0.0;

@@ -21,6 +21,8 @@ export class Channel {
   compile() {
     var channel = {
       "channel": this.channelNr,
+      "volume": 120,
+      "panning": 64,
       "generator": this.instrument.compile(),
     };
     var sequences = [];
