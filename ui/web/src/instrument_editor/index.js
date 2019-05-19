@@ -1,4 +1,3 @@
-export { Bank } from './bank.js';
 export { Instrument } from './instrument.js';
 import { Instrument } from './instrument.js';
 import { ChannelInput, ChannelOutput, SampleGenerator, Filter, Transpose, Panning} from './module_units';

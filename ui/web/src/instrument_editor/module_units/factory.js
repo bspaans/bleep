@@ -39,6 +39,8 @@ export class Factory {
       var g = new WavGenerator();
       var instr = instrDef["wav"];
       g.file = instr["file"] || "";
+      g.is_pitched = instr["pitched"] || false;
+      g.base_pitch = instr["base_pitch"] || 440.0;
       g.dials["attack"].value = instr["attack"] || 0.0;
       g.dials["decay"].value = instr["decay"] || 0.0;
       g.dials["sustain"].value = instr["sustain"] || 0.0;

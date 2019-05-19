@@ -20,8 +20,8 @@ type ChannelDef struct {
 	Tremelo        int                           `json:"tremelo,omitempty" yaml:"tremelo,omitempty"`
 	Volume         int                           `json:"volume,omitempty" yaml:"volume,omitempty"`
 	Panning        int                           `json:"panning,omitempty" yaml:"panning,omitempty"`
-	LPF_Cutoff     int                           `json:"lpf_cuttoff,omitempty" yaml:"lpf_cuttoff,omitempty"`
-	HPF_Cutoff     int                           `json:"hpf_cuttoff,omitempty" yaml:"hpf_cuttoff,omitempty"`
+	LPF_Cutoff     int                           `json:"lpf_cutoff,omitempty" yaml:"lpf_cutoff,omitempty"`
+	HPF_Cutoff     int                           `json:"hpf_cutoff,omitempty" yaml:"hpf_cutoff,omitempty"`
 	Grain          *instruments.GrainsOptionsDef `json:"grain,omitempty" yaml:"grain,omitempty"`
 	Generator      *instruments.GeneratorDef     `json:"generator,omitempty" yaml:"generator,omitempty"`
 }

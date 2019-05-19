@@ -1,5 +1,5 @@
 import { Theme } from './theme.js';
-import { InstrumentEditor, Instrument, Bank } from './instrument_editor/';
+import { InstrumentEditor, Instrument } from './instrument_editor/';
 import { TimelineEditor, Channel } from './timeline_editor/';
 import { SequenceEditor } from './sequence_editor/';
 import { API } from './api/';
@@ -18,7 +18,6 @@ export class Bleep {
     this.api = new API(this);
     this.api.start();
     this.channels = [new Channel(1, this.openInstrumentEditor.bind(this))];
-    var bank = this.loadInstrumentBank(instrumentBank);
     //this.load(example);
     //this.openInstrumentEditor(bank.instruments[0]);
     //this.openSequenceEditor(null, 1);
@@ -30,6 +29,7 @@ export class Bleep {
     this.channels = [];
     for (var def of channelDefs) {
       var ch = new Channel(def.channel, this.openInstrumentEditor.bind(this));
+      ch.loadFromDefinition(def);
       this.channels.push(ch);
       ch.instrument = new Instrument();
       if (def.generator) {
@@ -143,10 +143,6 @@ export class Bleep {
       console.log("unknown def", seq);
     }
     return channelSequences;
-  }
-
-  loadInstrumentBank(bank) {
-    return new Bank().loadFromDefinition(bank);
   }
 
   load(data) {

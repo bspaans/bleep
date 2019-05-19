@@ -7,6 +7,8 @@ export class Instrument extends Patchable {
     super(modules, patches);
     this.name = null;
     this.instrumentBankIndex = null;
+    this.modules = [];
+    this.patches = [];
   }
   loadFromDefinition(instrDef) {
     var modules = [
@@ -193,10 +195,7 @@ export class Instrument extends Patchable {
       if (unit.type == "input") {
         g = null;
       } else if (unit.type == "wav") {
-        g = {"wav": {
-          "file": unit.file,
-          "gain": unit.dials["gain"].value,
-        }};
+        g = unit.compile();
       } else if (unit.type == "triangle" 
         || unit.type == "sine" 
         || unit.type == "saw" 

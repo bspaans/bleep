@@ -32,6 +32,8 @@ export class WavGenerator extends ModuleUnit {
     this.w = 220;
     this.h = 250;
     this.file = "";
+    this.is_pitched = false;
+    this.base_pitch = 440.0;
     // TODO: file input and is_pitched boolean
     this.sockets = {
       "FREQ": new InputSocket(29, this.h - 29, "FREQ", FREQUENCY_TYPE),
@@ -47,5 +49,16 @@ export class WavGenerator extends ModuleUnit {
       "sustain": new Dial(129, 120, "SUSTAIN", 0.0, 1.0, 0.8),
       "release": new Dial(179, 120, "RELEASE", 0.0, 10, 0.1),
     }
+  }
+
+  compile() {
+    return {
+      "wav": {
+        "file": this.file,
+        "gain": this.dials["gain"].value,
+        "pitched": this.is_pitched,
+        "base_pitch": this.base_pitch,
+      }
+    };
   }
 }
