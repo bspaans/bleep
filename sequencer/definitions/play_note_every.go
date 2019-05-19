@@ -16,7 +16,7 @@ type PlayNoteEveryDef struct {
 	VelocityAutomation *AutomationDef `json:"auto_velocity,omitempty" yaml:"auto_velocity"`
 	Duration           interface{}    `json:"duration" yaml:"duration"`
 	Every              interface{}    `json:"every" yaml:"every"`
-	Offset             interface{}    `json:"offset" yaml:"offset"`
+	Offset             interface{}    `json:"offset,omitempty" yaml:"offset,omitempty"`
 }
 
 func (e *PlayNoteEveryDef) GetSequence(granularity int) (Sequence, error) {

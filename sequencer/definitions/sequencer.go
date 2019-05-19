@@ -11,10 +11,10 @@ import (
 )
 
 type SequencerDef struct {
-	BPM         float64              `yaml:"bpm"`
-	Granularity int                  `yaml:"granularity"`
-	Channels    channels.ChannelsDef `yaml:",inline"`
-	Sequences   []SequenceDef        `yaml:"sequences"`
+	BPM                  float64       `json:"bpm" yaml:"bpm"`
+	Granularity          int           `json:"granularity" yaml:"granularity"`
+	Sequences            []SequenceDef `json:"sequences" yaml:"sequences"`
+	channels.ChannelsDef `json:",inline" yaml:",inline"`
 }
 
 func (s *SequencerDef) GetSequences() ([]Sequence, error) {
@@ -27,6 +27,14 @@ func (s *SequencerDef) GetSequences() ([]Sequence, error) {
 		sequences = append(sequences, sequence)
 	}
 	return sequences, nil
+}
+
+func (s *SequencerDef) YAML() (string, error) {
+	b, err := yaml.Marshal(s)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
 }
 
 func NewSequencerDefFromFile(file string) (*SequencerDef, error) {

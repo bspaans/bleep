@@ -57,6 +57,8 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		if err := json.Unmarshal([]byte(m.Data), &def); err != nil {
 			fmt.Println("Invalid sequencer_def:", err.Error())
 		}
+		fmt.Println("Received sequencer def:")
+		fmt.Println(def.YAML())
 		ctrl.Sequencer.SetSequencerDef(&def)
 	}
 }

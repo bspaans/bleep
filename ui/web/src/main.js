@@ -66,6 +66,7 @@ export class Bleep {
   compile() {
     var result = {
       "bpm": 120,
+      "granularity": 8,
       "channels": [],
       "sequences": [],
     };

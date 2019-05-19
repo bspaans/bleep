@@ -43,7 +43,7 @@ func NewSequencerFromFile(file string) (*Sequencer, error) {
 		return nil, util.WrapError("sequencer", err)
 	}
 	seq.Sequences = seqs
-	seq.InitialChannelSetup = s.Channels.Channels
+	seq.InitialChannelSetup = s.ChannelsDef.Channels
 	seq.FromFile = file
 	return seq, nil
 }
@@ -150,7 +150,7 @@ func (seq *Sequencer) instantiateFromSequencerDef(s *definitions.SequencerDef) {
 	seq.SequencerDef = s
 	seq.BPM = s.BPM
 	seq.Granularity = s.Granularity
-	seq.InitialChannelSetup = s.Channels.Channels
+	seq.InitialChannelSetup = s.ChannelsDef.Channels
 	seqs, err := s.GetSequences()
 	if err != nil {
 		fmt.Println("Failed to instantiate sequencer definition:", err.Error())
