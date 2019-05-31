@@ -1,5 +1,5 @@
 import { Patchable, CLOCK_TYPE, INT_TYPE, TRIGGER_TYPE } from '../model/';
-import { Factory, SequenceInput, PlayNote, Pulse, Transpose } from './module_units/';
+import { Factory, SequenceInput, PlayNote, Pulse, Euclidian, Transpose } from './module_units/';
 import { Module } from '../components/';
 
 export class Sequence extends Patchable {
@@ -146,8 +146,18 @@ export class Sequence extends Patchable {
       }
       return seqs;
     } else if (sequenceDef["repeat"]) {
-      console.log("Unsupported sequence def", sequenceDef);
-      return null;
+      var def = sequenceDef["repeat"];
+      var g = new Pulse(this.parseDuration(def.every));
+      var ix = this.addModule(g);
+      return ix;
+    } else if (sequenceDef["euclidian"]) {
+      var def = sequenceDef["euclidian"];
+      var g = new Euclidian();
+      g.dials.pulses.value = def.pulses || 1;
+      g.dials.over.value = def.over || 1;
+      var ix = this.addModule(g);
+      var aIx = this.loadSequence(def.sequence);
+      return ix;
     } else if (sequenceDef["panning"]) {
       console.log("Unsupported sequence def", sequenceDef);
       return null;
