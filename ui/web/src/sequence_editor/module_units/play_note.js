@@ -2,8 +2,9 @@ import { ModuleUnit, InputSocket, Dial } from '../../components/';
 import { TRIGGER_TYPE, INT_TYPE } from '../../model/';
 
 export class PlayNote extends ModuleUnit {
-  constructor() {
+  constructor(channelNr) {
     super("play_note");
+    this.channelNr = channelNr;
     this.sockets = {
       "TRIG": new InputSocket(29, this.h - 29, "TRIG", TRIGGER_TYPE),
       "NOTE": new InputSocket(79, this.h - 29, "NOTE", INT_TYPE),

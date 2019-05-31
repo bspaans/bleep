@@ -8,9 +8,9 @@ export class Range {
 }
 
 export class SequenceTrack {
-  constructor(sequence_def) {
+  constructor(channelNr, sequence_def) {
     this.sequence_def = null;
-    this.sequence = new Sequence()
+    this.sequence = new Sequence(channelNr)
     this.sequence.loadFromDefinition(sequence_def);
     this.ranges = [];
   }
@@ -18,8 +18,8 @@ export class SequenceTrack {
     this.ranges.push(new Range(start ? start : 0, stop ? stop : 1000000));
   }
   compile() {
-    if (this.sequence_def) {
-      return this.sequence_def;
+    if (this.sequence) {
+      return this.sequence.compile();
     }
     return null;
   }

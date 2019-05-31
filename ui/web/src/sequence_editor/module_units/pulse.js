@@ -16,13 +16,15 @@ export class Pulse extends ModuleUnit {
   }
 
   compile(connections) {
-    var e = {"every": this.dials["every"].value};
-    return ((e) => ((t) => {
-      for (var o of Object.keys(t)) {
-        e[o] = t[o];
+    var g = {"repeat": {
+        "every": this.dials["every"].value,
       }
-      var result = {"repeat": e};
-      return result
-    }))(e)
+    };
+    return ((g) => {
+      return (seq) => {
+        g.repeat.sequence = seq;
+        return g;
+      }
+   })(g);
   }
 }

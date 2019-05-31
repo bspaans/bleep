@@ -8,14 +8,14 @@ import (
 )
 
 type AutomationDef struct {
-	BackAndForth *[]int           `json:"back_and_forth,omitempty" yaml:"back_and_forth"`
-	Cycle        *[]int           `json:"cycle,omitempty" yaml:"cycle"`
-	Range        *RangeDef        `json:"range,omitempty" yaml:"range"`
-	Sweep        *RangeDef        `json:"sweep,omitempty" yaml:"sweep"`
-	FadeIn       *RangeDef        `json:"fade_in,omitempty" yaml:"fade_in"`
-	Random       *RandomDef       `json:"random,omitempty" yaml:"random"`
-	Register     *int             `json:"register,omitempty" yaml:"register"`
-	Transpose    *IntTransposeDef `json:"transpose,omitempty" yaml:"transpose"`
+	BackAndForth *[]int           `json:"back_and_forth,omitempty" yaml:"back_and_forth,omitempty"`
+	Cycle        *[]int           `json:"cycle,omitempty" yaml:"cycle,omitempty"`
+	Range        *RangeDef        `json:"range,omitempty" yaml:"range,omitempty"`
+	Sweep        *RangeDef        `json:"sweep,omitempty" yaml:"sweep,omitempty"`
+	FadeIn       *RangeDef        `json:"fade_in,omitempty" yaml:"fade_in,omitempty"`
+	Random       *RandomDef       `json:"random,omitempty" yaml:"random,omitempty"`
+	Register     *int             `json:"register,omitempty" yaml:"register,omitempty"`
+	Transpose    *IntTransposeDef `json:"transpose,omitempty" yaml:"transpose,omitempty"`
 }
 
 func (a *AutomationDef) GetAutomation() (IntAutomation, error) {

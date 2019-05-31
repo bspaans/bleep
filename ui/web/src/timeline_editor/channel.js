@@ -72,7 +72,7 @@ export class Channel {
           segment.after = s.before.sequence.after.after;
         }
       }
-      var track = new SequenceTrack(s);
+      var track = new SequenceTrack(this.channelNr, s);
       track.addRange(segment.after, segment.before);
       this.sequenceTracks.push(track);
     }

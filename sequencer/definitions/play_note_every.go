@@ -9,20 +9,24 @@ import (
 )
 
 type PlayNoteEveryDef struct {
-	Note               int            `json:"note,omitempty" yaml:"note"`
-	NoteAutomation     *AutomationDef `json:"auto_note,omitempty" yaml:"auto_note"`
+	Note               int            `json:"note,omitempty" yaml:"note,omitempty"`
+	NoteAutomation     *AutomationDef `json:"auto_note,omitempty" yaml:"auto_note,omitempty"`
 	Channel            int            `json:"channel" yaml:"channel"`
-	Velocity           int            `json:"velocity,omitempty" yaml:"velocity"`
-	VelocityAutomation *AutomationDef `json:"auto_velocity,omitempty" yaml:"auto_velocity"`
+	Velocity           int            `json:"velocity,omitempty" yaml:"velocity,omitempty"`
+	VelocityAutomation *AutomationDef `json:"auto_velocity,omitempty" yaml:"auto_velocity,omitempty"`
 	Duration           interface{}    `json:"duration" yaml:"duration"`
-	Every              interface{}    `json:"every" yaml:"every"`
+	Every              interface{}    `json:"every,omitempty" yaml:"every,omitempty"`
 	Offset             interface{}    `json:"offset,omitempty" yaml:"offset,omitempty"`
 }
 
 func (e *PlayNoteEveryDef) GetSequence(granularity int) (Sequence, error) {
-	every, err := parseDuration(e.Every, granularity)
-	if err != nil {
-		return nil, util.WrapError("play_note", err)
+	every := uint(1)
+	if e.Every != nil {
+		every_, err := parseDuration(e.Every, granularity)
+		if err != nil {
+			return nil, util.WrapError("play_note", err)
+		}
+		every = every_
 	}
 	duration, err := parseDuration(e.Duration, granularity)
 	if err != nil {

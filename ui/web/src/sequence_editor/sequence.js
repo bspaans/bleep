@@ -1,9 +1,9 @@
 import { Patchable, CLOCK_TYPE, INT_TYPE, TRIGGER_TYPE } from '../model/';
-import { Factory, SequenceInput, PlayNote, Pulse } from './module_units/';
+import { Factory, SequenceInput, PlayNote, Pulse, Transpose } from './module_units/';
 import { Module } from '../components/';
 
 export class Sequence extends Patchable {
-  constructor(modules, patches, channelNr) {
+  constructor(channelNr, modules, patches) {
     super(modules, patches);
     this.channelNr = channelNr || 1;
   }
@@ -75,7 +75,15 @@ export class Sequence extends Patchable {
         sequences[ix] = g;
       }
     }
-    return result;
+    if (result.length === 0) {
+      return null;
+    } else if (result.length === 1) {
+      return result[0];
+    } else {
+      return {
+        "combine": result,
+      };
+    }
   }
 
   parseDuration(duration) {
@@ -84,17 +92,17 @@ export class Sequence extends Patchable {
     }
     var granularity = 64;
     if (duration == "Thirtysecond") {
-      return granularity / 8;
+      return 0.125;
     } else if (duration == "Sixteenth") {
-      return granularity / 4;
+      return 0.25;
     } else if (duration == "Eight") {
-      return granularity / 2;
+      return 0.5;
     } else if (duration == "Quarter") {
-      return granularity;
+      return 1;
     } else if (duration == "Half") {
-      return granularity * 2;
+      return 2;
     } else if (duration == "Whole") {
-      return granularity * 4;
+      return 4;
     }
   }
 
@@ -104,9 +112,8 @@ export class Sequence extends Patchable {
     } else if (sequenceDef["after"]) { // we filter out after, because this is handled in the timeline
       return this.loadSequence(sequenceDef["after"]["sequence"], input);
     } else if (sequenceDef["play_note"]) {
-      console.log("Loading sequence", sequenceDef);
       var def = sequenceDef["play_note"];
-      var g = new PlayNote();
+      var g = new PlayNote(this.channelNr);
       g.dials.note.value = def.note || 1.0;
       g.dials.velocity.value = def.velocity || 1.0;
       g.dials.duration.value = this.parseDuration(def.duration) || 1.0;
@@ -139,7 +146,11 @@ export class Sequence extends Patchable {
       }
       return seqs;
     } else if (sequenceDef["repeat"]) {
+      console.log("Unsupported sequence def", sequenceDef);
+      return null;
     } else if (sequenceDef["panning"]) {
+      console.log("Unsupported sequence def", sequenceDef);
+      return null;
     } else {
       console.log("Unsupported sequence def", sequenceDef);
       return null;
@@ -147,7 +158,7 @@ export class Sequence extends Patchable {
   }
 
   loadAutomation(automationDef) {
-    console.log("Loading automation", automationDef);
+    //console.log("Loading automation", automationDef);
     if (automationDef["back_and_forth"]) {
       console.log("Unsupported automation def", automationDef);
       return null;
@@ -157,17 +168,21 @@ export class Sequence extends Patchable {
     } else if (automationDef["random"]) {
       console.log("Unsupported automation def", automationDef);
       return null;
-    } else if (automationDef["fade_in"]
-            || automationDef["range"] 
-            || automationDef["sweep"]) {
+    } else if (automationDef["fade_in"] !== undefined
+            || automationDef["range"] !== undefined
+            || automationDef["sweep"] !== undefined
+            || automationDef["register"] !== undefined) {
       var a = new Factory().automationFromDefinition(automationDef);
       return this.addModule(a);
-    } else if (automationDef["register"]) {
-      console.log("Unsupported automation def", automationDef);
-      return null;
     } else if (automationDef["transpose"]) {
-      console.log("Unsupported automation def", automationDef);
-      return null;
+      var a = new Transpose("transpose");
+      a.dials.transpose.value = automationDef["transpose"].value;
+      var ix = this.addModule(a);
+      var aIx = this.loadAutomation(automationDef["transpose"]);
+      if (aIx != null) {
+        this._addPatch(ix, aIx, "IN", "OUT", INT_TYPE);
+      }
+      return ix;
     } else {
       console.log("Unsupported automation def", automationDef);
       return null;
