@@ -70,7 +70,7 @@ export class Bleep {
       ch.initialiseSequenceTracks(channelSequences[ch.channelNr]);
     }
     this.openTimelineEditor();
-    this.uploadSequencerDef();
+    //this.uploadSequencerDef();
   }
 
   compile() {
@@ -229,9 +229,9 @@ export class Bleep {
     var windowWidth = window.innerWidth;
     var windowHeight = window.innerHeight;
     var bound = this.canvas.getBoundingClientRect()
+    var body = document.getElementsByTagName('body')[0];
     this.canvas.width = windowWidth;
     this.canvas.height = windowHeight - bound.top;
-    var body = document.getElementsByTagName('body')[0];
     body.style.background = this.theme.colours.Background;
     body.style.color = this.theme.colours.Foreground;
     this.active.draw(this);
