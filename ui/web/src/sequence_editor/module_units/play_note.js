@@ -11,7 +11,7 @@ export class PlayNote extends ModuleUnit {
     }
     this.dials = {
       "note": new Dial(29, 59, "NOTE", 0.0, 128.0, 1.0),
-      "velocity": new Dial(79, 59, "VEL", 0.0, 10.0, 1.0),
+      "velocity": new Dial(79, 59, "VEL", 0.0, 128.0, 90.0),
       "duration": new Dial(129, 59, "DUR", 0.0, 10.0, 1.0),
     }
     this.background = 'ModuleOutput';

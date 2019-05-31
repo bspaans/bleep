@@ -1,9 +1,19 @@
-import { Patch } from '../components/';
+import { Patch, Module } from '../components/';
 
 export class Patchable {
   constructor(modules, patches) {
     this.modules = modules;
     this.patches = patches;
+  }
+  _addPatch(fromModule, toModule, fromSocket, toSocket, type) {
+    if (Array.isArray(toModule)) {
+      for (var to of toModule) {
+        this._addPatch(fromModule, to, fromSocket, toSocket, type);
+      }
+      return;
+    }
+    var p = new Patch(fromModule, toModule, fromSocket, toSocket, type);
+    this.patches.push(p);
   }
   addPatch(fromMod, toMod, fromSocket, toSocket) {
     var from = null;
@@ -38,6 +48,11 @@ export class Patchable {
     } else {
       this.patches.splice(remove, 1);
     }
+  }
+  addModule(unit) {
+    var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, unit);
+    this.modules.push(m);
+    return this.modules.length - 1;
   }
 
 }

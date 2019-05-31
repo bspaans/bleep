@@ -1,3 +1,4 @@
+import { Sequence } from '../sequence_editor/sequence.js';
 
 export class Range {
   constructor(start, stop) {
@@ -7,8 +8,10 @@ export class Range {
 }
 
 export class SequenceTrack {
-  constructor() {
+  constructor(sequence_def) {
     this.sequence_def = null;
+    this.sequence = new Sequence()
+    this.sequence.loadFromDefinition(sequence_def);
     this.ranges = [];
   }
   addRange(start, stop) {

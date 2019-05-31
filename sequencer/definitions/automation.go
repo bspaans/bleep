@@ -8,14 +8,14 @@ import (
 )
 
 type AutomationDef struct {
-	BackAndForth *[]int           `yaml:"back_and_forth"`
-	Cycle        *[]int           `yaml:"cycle"`
-	Range        *RangeDef        `yaml:"range"`
-	Sweep        *RangeDef        `yaml:"sweep"`
-	FadeIn       *RangeDef        `yaml:"fade_in"`
-	Random       *RandomDef       `yaml:"random"`
-	Register     *int             `yaml:"register"`
-	Transpose    *IntTransposeDef `yaml:"transpose"`
+	BackAndForth *[]int           `json:"back_and_forth,omitempty" yaml:"back_and_forth"`
+	Cycle        *[]int           `json:"cycle,omitempty" yaml:"cycle"`
+	Range        *RangeDef        `json:"range,omitempty" yaml:"range"`
+	Sweep        *RangeDef        `json:"sweep,omitempty" yaml:"sweep"`
+	FadeIn       *RangeDef        `json:"fade_in,omitempty" yaml:"fade_in"`
+	Random       *RandomDef       `json:"random,omitempty" yaml:"random"`
+	Register     *int             `json:"register,omitempty" yaml:"register"`
+	Transpose    *IntTransposeDef `json:"transpose,omitempty" yaml:"transpose"`
 }
 
 func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
@@ -34,7 +34,7 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 	} else if a.Random != nil {
 		return IntRandomAutomation(a.Random.Min, a.Random.Max), nil
 	} else if a.Transpose != nil {
-		automation, err := a.Transpose.Automation.GetAutomation()
+		automation, err := a.Transpose.AutomationDef.GetAutomation()
 		if err != nil {
 			return nil, err
 		}
@@ -67,7 +67,7 @@ func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
 	} else if a.Random != nil {
 		return FloatRandomAutomation(a.Random.Min, a.Random.Min), nil
 	} else if a.Transpose != nil {
-		automation, err := a.Transpose.Automation.GetAutomation()
+		automation, err := a.Transpose.FloatAutomationDef.GetAutomation()
 		if err != nil {
 			return nil, err
 		}
@@ -77,10 +77,10 @@ func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
 }
 
 type RangeDef struct {
-	From        int
-	To          int
-	Step        int
-	ChangeEvery int `yaml:"change_every"`
+	From        int `json:"from" yaml:"from"`
+	To          int `json:"to" yaml:"to"`
+	Step        int `json:"step" yaml:"step"`
+	ChangeEvery int `json:"change_every" yaml:"change_every"`
 }
 
 type CycleChordsDef struct {
@@ -105,13 +105,13 @@ func (a *IntArrayAutomationDef) GetAutomation() (IntArrayAutomation, error) {
 	} else if a.CycleChords != nil {
 		return a.CycleChords.GetAutomation()
 	} else if a.Transpose != nil {
-		automation, err := a.Transpose.Automation.GetAutomation()
+		automation, err := a.Transpose.IntArrayAutomationDef.GetAutomation()
 		if err != nil {
 			return nil, err
 		}
 		return IntArrayTransposeAutomation(a.Transpose.Transpose, automation), nil
 	} else if a.Index != nil {
-		automation, err := a.Index.Automation.GetAutomation()
+		automation, err := a.Index.IntArrayAutomationDef.GetAutomation()
 		if err != nil {
 			return nil, err
 		}
@@ -129,20 +129,20 @@ func (a *IntArrayAutomationDef) GetAutomation() (IntArrayAutomation, error) {
 }
 
 type IntArrayIndexDef struct {
-	Index      int                   `yaml:"value"`
-	AutoIndex  *AutomationDef        `yaml:"auto_value"`
-	Automation IntArrayAutomationDef `yaml:",inline"`
+	Index                 int            `json:"value" yaml:"value"`
+	AutoIndex             *AutomationDef `json:"auto_value" yaml:"auto_value"`
+	IntArrayAutomationDef `json:",inline" yaml:",inline"`
 }
 
 type IntTransposeDef struct {
-	Transpose  int           `yaml:"value"`
-	Automation AutomationDef `yaml:",inline"`
+	Transpose     int `json:"value" yaml:"value"`
+	AutomationDef `json:",inline" yaml:",inline"`
 }
 type FloatTransposeDef struct {
-	Transpose  float64            `yaml:"value"`
-	Automation FloatAutomationDef `yaml:",inline"`
+	Transpose          float64 `json:"value" yaml:"value"`
+	FloatAutomationDef `json:",inline" yaml:",inline"`
 }
 type IntArrayTransposeDef struct {
-	Transpose  int                   `yaml:"value"`
-	Automation IntArrayAutomationDef `yaml:",inline"`
+	Transpose             int `json:"value" yaml:"value"`
+	IntArrayAutomationDef `json:",inline" yaml:",inline"`
 }

@@ -11,15 +11,11 @@ export class Instrument extends Patchable {
     this.patches = [];
   }
   loadFromDefinition(instrDef) {
-    var modules = [
+    this.modules = [
       new Module(this, 10, 40, new ChannelInput('input')), 
       new Module(this, 700, 40, new ChannelOutput('output')),
     ];
-    var patches = [
-
-    ];
-    this.modules = modules;
-    this.patches = patches;
+    this.patches = [];
     if (instrDef.name) {
       this.name = instrDef.name;
     }
@@ -46,7 +42,7 @@ export class Instrument extends Patchable {
             break;
           }
         }
-        this.addPatch(ix, 0, "FREQ", candidate, FREQUENCY_TYPE);
+        this._addPatch(ix, 0, "FREQ", candidate, FREQUENCY_TYPE);
       }
     }
   }
@@ -64,16 +60,16 @@ export class Instrument extends Patchable {
       var g = new Panning("panning");
       var tIx = this.addModule(g);
       var ix = this.loadGenerator(instrDef["panning"], input, output);
-      this.addPatch(tIx, ix, "PAN", "PAN", PANNING_TYPE);
-      this.addPatch(input, tIx, "FREQ", "FREQ", FREQUENCY_TYPE);
+      this._addPatch(tIx, ix, "PAN", "PAN", PANNING_TYPE);
+      this._addPatch(input, tIx, "FREQ", "FREQ", FREQUENCY_TYPE);
       return ix;
     } else if (instrDef["transpose"]) {
       var g = new Transpose("transpose");
       g.dials["semitones"].value = instrDef["transpose"]["semitones"] || 0;
       var tIx = this.addModule(g);
       var ix = this.loadGenerator(instrDef["transpose"], tIx, output);
-      this.addPatch(tIx, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
-      this.addPatch(input, tIx, "FREQ", "FREQ IN", FREQUENCY_TYPE);
+      this._addPatch(tIx, ix, "FREQ", "FREQ", FREQUENCY_TYPE);
+      this._addPatch(input, tIx, "FREQ", "FREQ IN", FREQUENCY_TYPE);
       return ix;
     } else if (instrDef["sine"] 
       || instrDef["triangle"] 
@@ -84,7 +80,7 @@ export class Instrument extends Patchable {
       || instrDef["wav"]) {
       var g = new Factory().generatorFromDefinition(instrDef);
       var ix = this.addModule(g);
-      this.addPatch(ix, output, "OUT", "IN", AUDIO_TYPE);
+      this._addPatch(ix, output, "OUT", "IN", AUDIO_TYPE);
       return ix;
     } else if (instrDef["vocoder"]) {
       var source = new Factory().generatorFromDefinition(instrDef["vocoder"]["source"])
@@ -94,28 +90,12 @@ export class Instrument extends Patchable {
       var g = new Factory().filterFromDefinition(instrDef["filter"])
       var tIx = this.addModule(g);
       var ix = this.loadGenerator(instrDef["filter"], input, tIx);
-      this.addPatch(tIx, output, "OUT", "IN", AUDIO_TYPE);
+      this._addPatch(tIx, output, "OUT", "IN", AUDIO_TYPE);
       return ix;
     } else {
       console.log(instrDef);
       throw 'Unknown instrument def';
     }
-  }
-  addModule(generator) {
-    var m = new Module(this, Math.random() * 800 + 100, Math.random() * 600, generator);
-    this.modules.push(m);
-    return this.modules.length - 1;
-  }
-  addPatch(fromModule, toModule, fromSocket, toSocket, type) {
-    console.log("ADding patch", fromModule, toModule, fromSocket, toSocket);
-    if (Array.isArray(toModule)) {
-      for (var to of toModule) {
-        this.addPatch(fromModule, to, fromSocket, toSocket, type);
-      }
-      return;
-    }
-    var p = new Patch(fromModule, toModule, fromSocket, toSocket, type);
-    this.patches.push(p);
   }
   load(instrDef) {
     var modules = [];
@@ -137,7 +117,7 @@ export class Instrument extends Patchable {
     }
     var patches = [];
     for (var p of instrDef.patches) {
-      this.addPatch(p.from_module, p.to_module, p.from_socket, p.to_socket);
+      this._addPatch(p.from_module, p.to_module, p.from_socket, p.to_socket);
     }
     this.modules = modules;
     this.patches = patches;

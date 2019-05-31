@@ -10,7 +10,7 @@ export class SequenceTracks {
   }
 
   handleClick() {
-    this.app.openSequenceEditor(this.channel.sequenceTracks[0].sequence_def, this.channel.channelNr);
+    this.app.openSequenceEditor(this.channel.sequenceTracks[0].sequence, this.channel.channelNr);
   }
 
   draw(app, colorOffset) {
