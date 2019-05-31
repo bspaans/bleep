@@ -1,6 +1,6 @@
 import { Theme } from './theme.js';
 import { InstrumentEditor, Instrument } from './instrument_editor/';
-import { TimelineEditor, Channel } from './timeline_editor/';
+import { TimelineEditor, Track, Channel } from './timeline_editor/';
 import { SequenceEditor } from './sequence_editor/';
 import { API } from './api/';
 
@@ -17,21 +17,21 @@ export class Bleep {
     this.selectedPos = {};
     this.api = new API(this);
     this.api.start();
-    this.channels = [new Channel(1, this.openInstrumentEditor.bind(this))];
-    //this.load(example);
-    //this.openInstrumentEditor(bank.instruments[0]);
-    //this.openSequenceEditor(null, 1);
+    this.channels = [];
+    this.tracks = [];
     this.openTimelineEditor();
     this.draw();
   }
 
+  // api callback
   initialiseChannels(channelDefs) {
     this.channels = [];
     var seenPercussionChannel = false;
     for (var def of channelDefs) {
-      var ch = new Channel(def.channel || 0, this.openInstrumentEditor.bind(this));
+      var ch = new Channel(def.channel || 0);
       ch.loadFromDefinition(def);
       this.channels.push(ch);
+      this.tracks.push(new Track(ch, this));
       if (ch.channelNr == 9) {
         seenPercussionChannel = true;
       }
@@ -43,13 +43,15 @@ export class Bleep {
       console.log("New channel", def);
     }
     if (!seenPercussionChannel) {
-      var ch = new Channel(9, this.openInstrumentEditor.bind(this));
+      var ch = new Channel(9);
       this.channels.push(ch);
+      this.tracks.push(new Track(ch, this));
     }
     this.api.requestSequencerDef();
     this.openTimelineEditor();
   }
   
+  // api callback
   initialiseSequenceTracks(sequences) {
     var channelSequences = {};
     for (var ch of this.channels) {
@@ -153,26 +155,12 @@ export class Bleep {
     return channelSequences;
   }
 
-  load(data) {
-    this.channels = [];
-    for (var ch of data.channels) {
-      var channel = new Channel(ch.channel_nr, this.openInstrumentEditor.bind(this));
-      channel.name = ch.name;
-      channel.sequence_tracks = ch.sequence_tracks;
-      if (ch.instrument) {
-        channel.instrument = new Instrument();
-        channel.instrument.load(ch.instrument);
-      }
-      this.channels.push(channel);
-    }
-  }
-
   openInstrumentEditor(instr) {
     this.active = new InstrumentEditor(this, instr, this.openTimelineEditor.bind(this));
     this.draw()
   }
   openTimelineEditor() {
-    this.active = new TimelineEditor(this.channels);
+    this.active = new TimelineEditor(this.tracks);
     this.draw();
   }
   openSequenceEditor(sequence, channelNr) {
