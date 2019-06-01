@@ -18,10 +18,15 @@ type PlayNotesEveryDef struct {
 }
 
 func (e *PlayNotesEveryDef) GetSequence(granularity int) (Sequence, error) {
-	every, err := parseDuration(e.Every, granularity)
-	if err != nil {
-		return nil, util.WrapError("play_notes", err)
+	every := uint(1)
+	if e.Every != nil {
+		every_, err := parseDuration(e.Every, granularity)
+		if err != nil {
+			return nil, util.WrapError("play_notes", err)
+		}
+		every = every_
 	}
+
 	duration, err := parseDuration(e.Duration, granularity)
 	if err != nil {
 		return nil, util.WrapError("play_notes", err)

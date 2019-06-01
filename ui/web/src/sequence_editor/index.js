@@ -1,7 +1,7 @@
 
 import { Editor, Button, Module } from '../components/';
 import { Sequence } from './sequence.js';
-import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, Range, Transpose, Register } from './module_units/';
+import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, PlayNotes, Range, Transpose, Register, IntArrayRegisterIndex, TransposeIntArray, IntArrayRegister } from './module_units/';
 
 export class SequenceEditor extends Editor {
   constructor(app, sequence, channelNr, handleClose) {
@@ -26,6 +26,7 @@ export class SequenceEditor extends Editor {
         {label: "EUCL", colour: 'ModulePulse', onclick: () => this.handleAddUnit(() => new Euclidian())},
 
         {label: "NOTE", colour: 'ModuleOutput', onclick: () => this.handleAddUnit(() => new PlayNote())},
+        {label: "NOTES", colour: 'ModuleOutput', onclick: () => this.handleAddUnit(() => new PlayNotes())},
         {label: "PAN", colour: 'ModuleOutput', onclick: () => this.handleAddGenerator("sine")},
         {label: "REV", colour: 'ModuleOutput', onclick: () => this.handleAddGenerator("sine")},
         {label: "LPF", colour: 'ModuleOutput', onclick: () => this.handleAddGenerator("sine")},
@@ -38,6 +39,10 @@ export class SequenceEditor extends Editor {
         {label: "RAND", colour: 'ModuleInt', onclick: () => this.handleAddGenerator("sine")},
         {label: "REG", colour: 'ModuleInt', onclick: () => this.handleAddUnit(() => new Register())},
         {label: "TRANS", colour: 'ModuleInt', onclick: () => this.handleAddUnit(() => new Transpose("transpose"))},
+
+        {label: "INDEX", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new IntArrayRegisterIndex())},
+        {label: "REG", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new IntArrayRegister())},
+        {label: "TRANS", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new TransposeIntArray())},
     ]
 
     var x = 0;

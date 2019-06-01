@@ -24,17 +24,18 @@ export class Factory {
       a.dials.register.value = automationDef["register"] || 0;
       return a;
     }
+    console.log("Unknown definition in factory:", automationDef);
   }
   intArrayAutomationFromDefinition(automationDef) {
-    if (automationDef["register"]) {
+    if (automationDef["register"] !== undefined) {
       var a = new IntArrayRegister();
       a.dials.register.value = automationDef["register"] || 0;
       return a;
     } else if (automationDef["index"]) {
       var a = new IntArrayRegisterIndex();
-      a.dials.register.value = automationDef["register"] || 0;
       a.dials.value.value = automationDef["value"] || 0;
       return a;
     }
+    console.log("Unknown int array definition in factory:", automationDef);
   }
 }

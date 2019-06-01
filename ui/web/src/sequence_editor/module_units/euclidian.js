@@ -18,8 +18,8 @@ export class Euclidian extends ModuleUnit {
 
   compile(connections) {
     var g = {"euclidian": {
-        "pulses": this.dials.pulses.value,
-        "over": this.dials.over.value,
+        "pulses": parseFloat(this.dials.pulses.value.toFixed(0)),
+        "over": parseFloat(this.dials.over.value.toFixed(0)),
         "duration": this.dials.over.value,
         "sequence": null,
       }

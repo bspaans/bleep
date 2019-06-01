@@ -11,7 +11,11 @@ class BaseTranspose extends ModuleUnit {
     this.dials = {
       "transpose": new Dial(29, 59, "VALUE", 0.0, 127.0, 0.0),
     }
-    this.background = 'ModuleInt';
+    if (socketType == INT_TYPE) {
+      this.background = 'ModuleInt';
+    } else {
+      this.background = 'ModuleIntArray';
+    }
   }
 
   compile(connections) {
@@ -20,7 +24,13 @@ class BaseTranspose extends ModuleUnit {
       "value": parseFloat(this.dials.transpose.value.toFixed(0)),
     };
     var on = connections["IN"];
+    if (!on) {
+      return null;
+    }
     if (on.length === 1) {
+      if (!on[0]) {
+        return null;
+      }
       for (var key of Object.keys(on[0])) {
         g[this.type][key] = on[0][key];
       }

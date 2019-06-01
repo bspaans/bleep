@@ -25,13 +25,13 @@ export class PlayNote extends ModuleUnit {
     }};
     var on = connections["NOTE"];
     if (on.length === 0) {
-      g["play_note"]["note"] = this.dials["note"].value;
+      g["play_note"]["note"] = parseFloat(this.dials["note"].value.toFixed(0));
     } else {
       g["play_note"]["auto_note"] = on[0];
     }
     var on = connections["VEL"];
     if (on.length === 0) {
-      g["play_note"]["velocity"] = this.dials["velocity"].value;
+      g["play_note"]["velocity"] = parseFloat(this.dials["velocity"].value.toFixed(0));
     } else {
       g["play_note"]["auto_velocity"] = on[0];
     }

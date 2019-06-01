@@ -28,7 +28,7 @@ export class Sequence extends Patchable {
 
     for (var i = 0; i < this.modules.length; i++) {
       var m = this.modules[i];
-      if (m.unit.type == "play_note") {
+      if (m.unit.type == "play_note" || m.unit.type == "play_notes") {
         queue.push(i);
       }
     }
@@ -153,7 +153,7 @@ export class Sequence extends Patchable {
       if (def["auto_notes"]) {
         var vIx = this.loadIntArrayAutomation(def["auto_notes"]);
         if (vIx !== null) {
-          this._addPatch(ix, vIx, "NOTES", "OUT", INT_TYPE);
+          this._addPatch(ix, vIx, "NOTES", "OUT", INT_ARRAY_TYPE);
         }
       }
       return ix;
@@ -231,9 +231,14 @@ export class Sequence extends Patchable {
       return this.addModule(a);
     } else if (automationDef["index"] !== undefined) {
       var a = new Factory().intArrayAutomationFromDefinition(automationDef);
+      var ix = this.addModule(a);
+      var aIx = this.loadIntArrayAutomation(automationDef["index"]);
+      if (aIx != null) {
+        this._addPatch(ix, aIx, "IN", "OUT", INT_ARRAY_TYPE);
+      }
       if (automationDef["index"]["auto_value"]) {
       }
-      return this.addModule(a);
+      return ix;
     } else {
       console.log("Unsupported integer array automation def", automationDef);
       return null;

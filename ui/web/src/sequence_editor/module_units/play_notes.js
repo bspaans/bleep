@@ -30,7 +30,7 @@ export class PlayNotes extends ModuleUnit {
     }
     var on = connections["VEL"];
     if (on.length === 0) {
-      g["play_notes"]["velocity"] = this.dials["velocity"].value;
+      g["play_notes"]["velocity"] = parseFloat(this.dials["velocity"].value.toFixed(0));
     } else {
       g["play_notes"]["auto_velocity"] = on[0];
     }

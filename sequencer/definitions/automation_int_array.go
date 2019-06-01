@@ -28,7 +28,7 @@ func (a *IntArrayAutomationDef) GetAutomation() (IntArrayAutomation, error) {
 	} else if a.Index != nil {
 		automation, err := a.Index.IntArrayAutomationDef.GetAutomation()
 		if err != nil {
-			return nil, err
+			return nil, util.WrapError("index", err)
 		}
 		indexF := IntIdAutomation(a.Index.Index)
 		if a.Index.AutoIndex != nil {

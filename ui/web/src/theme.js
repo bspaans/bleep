@@ -1,4 +1,4 @@
-import { AUDIO_TYPE, FREQUENCY_TYPE, PANNING_TYPE, CLOCK_TYPE, TRIGGER_TYPE, INT_TYPE } from './model/';
+import { AUDIO_TYPE, FREQUENCY_TYPE, PANNING_TYPE, CLOCK_TYPE, TRIGGER_TYPE, INT_TYPE, INT_ARRAY_TYPE } from './model/';
 
 export class Theme {
   constructor() {
@@ -11,6 +11,7 @@ export class Theme {
     socketColours[CLOCK_TYPE] = 'rgb(100, 100, 255)';
     socketColours[TRIGGER_TYPE] = 'rgb(50, 50, 50)';
     socketColours[INT_TYPE] = 'rgb(255, 255, 40)';
+    socketColours[INT_ARRAY_TYPE] = 'rgb(255, 40, 40)';
     for (var key of Object.keys(socketColours)) {
       patchColours[key] = RGB_Linear_Shade(0.1, socketColours[key]);
     }
@@ -33,6 +34,7 @@ export class Theme {
       ModuleDerived: '#ddf',
       ModuleOutput: '#dfd',
       ModuleInt: '#ff9',
+      ModuleIntArray: '#f99',
       ModulePulse: '#ddf',
 
       Button: '#ccc',

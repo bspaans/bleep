@@ -2,15 +2,19 @@ import { ModuleUnit, InputSocket, OutputSocket, Dial } from '../../components/';
 import { INT_TYPE, INT_ARRAY_TYPE } from '../../model/';
 
 class BaseRegister extends ModuleUnit {
-  constructor(outputType) {
+  constructor(socketType) {
     super("register");
     this.sockets = {
-      "OUT": new OutputSocket(this.w - 29, this.h - 29, "OUT", outputType),
+      "OUT": new OutputSocket(this.w - 29, this.h - 29, "OUT", socketType),
     }
     this.dials = {
       "register": new Dial(29, 59, "VALUE", 0, 16, 0.0),
     }
-    this.background = 'ModuleInt';
+    if (socketType == INT_TYPE) {
+      this.background = 'ModuleInt';
+    } else {
+      this.background = 'ModuleIntArray';
+    }
   }
 
   compile(connections) {

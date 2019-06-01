@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	. "github.com/bspaans/bleep/sequencer/automations"
+	"github.com/bspaans/bleep/util"
 )
 
 type FloatAutomationDef struct {
@@ -23,7 +24,7 @@ func (a *FloatAutomationDef) GetAutomation() (FloatAutomation, error) {
 	} else if a.Transpose != nil {
 		automation, err := a.Transpose.FloatAutomationDef.GetAutomation()
 		if err != nil {
-			return nil, err
+			return nil, util.WrapError("transpose", err)
 		}
 		return FloatTransposeAutomation(a.Transpose.Transpose, automation), nil
 	}

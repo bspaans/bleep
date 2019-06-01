@@ -2,24 +2,42 @@ import { ModuleUnit, InputSocket, OutputSocket, Dial } from '../../components/';
 import { INT_TYPE, INT_ARRAY_TYPE } from '../../model/';
 
 class BaseRegisterIndex extends ModuleUnit {
-  constructor(outputType) {
+  constructor(socketType) {
     super("index");
     this.sockets = {
-      "OUT": new OutputSocket(this.w - 29, this.h - 29, "OUT", outputType),
+      "IN": new InputSocket(29, this.h - 29, "IN", socketType),
+      "OUT": new OutputSocket(this.w - 29, this.h - 29, "OUT", socketType),
     }
     this.dials = {
-      "register": new Dial(29, 59, "REGISTER", 0, 16, 0.0),
       "value": new Dial(79, 59, "VALUE", 0, 16, 0.0),
     }
-    this.background = 'ModuleInt';
+    if (socketType == INT_TYPE) {
+      this.background = 'ModuleInt';
+    } else {
+      this.background = 'ModuleIntArray';
+    }
   }
 
   compile(connections) {
     var g = {"index": {
-        "register": parseFloat(this.dials.register.value.toFixed(0)),
         "value": parseFloat(this.dials.value.value.toFixed(0)),
       }
     };
+    var on = connections["IN"];
+    if (!on) {
+      return null;
+    }
+    if (on.length === 1) {
+      if (!on[0]) {
+        return null;
+      }
+      for (var key of Object.keys(on[0])) {
+        g["index"][key] = on[0][key];
+      }
+    } else {
+      console.log("inputs to index != 1");
+      return null;
+    }
     return g;
   }
 }
