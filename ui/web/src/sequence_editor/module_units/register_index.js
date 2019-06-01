@@ -6,10 +6,11 @@ class BaseRegisterIndex extends ModuleUnit {
     super("index");
     this.sockets = {
       "IN": new InputSocket(29, this.h - 29, "IN", socketType),
+      "INDEX": new InputSocket(79, this.h - 29, "INDEX", INT_TYPE),
       "OUT": new OutputSocket(this.w - 29, this.h - 29, "OUT", socketType),
     }
     this.dials = {
-      "value": new Dial(79, 59, "VALUE", 0, 16, 0.0),
+      "index": new Dial(79, 59, "INDEX", 0, 16, 0.0),
     }
     if (socketType == INT_TYPE) {
       this.background = 'ModuleInt';
@@ -20,7 +21,7 @@ class BaseRegisterIndex extends ModuleUnit {
 
   compile(connections) {
     var g = {"index": {
-        "value": parseFloat(this.dials.value.value.toFixed(0)),
+        "value": parseFloat(this.dials.index.value.toFixed(0)),
       }
     };
     var on = connections["IN"];

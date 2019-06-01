@@ -237,6 +237,10 @@ export class Sequence extends Patchable {
         this._addPatch(ix, aIx, "IN", "OUT", INT_ARRAY_TYPE);
       }
       if (automationDef["index"]["auto_value"]) {
+        aIx = this.loadAutomation(automationDef["index"]["auto_value"]);
+        if (!aIx != null) {
+          this._addPatch(ix, aIx, "INDEX", "OUT", INT_TYPE);
+        }
       }
       return ix;
     } else {

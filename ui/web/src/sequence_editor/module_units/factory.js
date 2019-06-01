@@ -33,7 +33,7 @@ export class Factory {
       return a;
     } else if (automationDef["index"]) {
       var a = new IntArrayRegisterIndex();
-      a.dials.value.value = automationDef["value"] || 0;
+      a.dials.index.value = automationDef["value"] || 0;
       return a;
     }
     console.log("Unknown int array definition in factory:", automationDef);

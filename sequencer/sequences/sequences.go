@@ -106,6 +106,25 @@ func NoteOff(channel, note int) Sequence {
 	)
 }
 
+func PlayNote(duration uint, channel, note, velocity int) Sequence {
+	return Combine(
+		NoteOn(channel, note, velocity),
+		// TODO: schedule note off event in the future instead
+	)
+}
+func PlayNoteAutomation(duration uint, channel int, noteF IntAutomation, velocityF IntAutomation) Sequence {
+	return Combine(
+		NoteOnAutomation(channel, noteF, velocityF),
+		// TODO: schedule note off event in the future instead
+	)
+}
+func PlayNotesAutomation(duration uint, channel int, noteF IntArrayAutomation, velocityF IntAutomation) Sequence {
+	return Combine(
+		NotesOnAutomation(channel, noteF, velocityF),
+		// TODO: schedule note off event in the future instead
+	)
+}
+
 func PlayNoteEvery(n uint, duration uint, channel, note, velocity int) Sequence {
 	return Combine(
 		Every(n, NoteOn(channel, note, velocity)),
