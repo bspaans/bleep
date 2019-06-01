@@ -1,12 +1,12 @@
 import { ModuleUnit, InputSocket, OutputSocket, Dial } from '../../components/';
-import { INT_TYPE } from '../../model/';
+import { INT_TYPE, INT_ARRAY_TYPE } from '../../model/';
 
-export class Transpose extends ModuleUnit {
-  constructor(type) {
-    super(type);
+class BaseTranspose extends ModuleUnit {
+  constructor(socketType) {
+    super("transpose");
     this.sockets = {
-      "IN": new InputSocket(29, this.h - 29, "IN", INT_TYPE),
-      "OUT": new OutputSocket(this.w - 29, this.h - 29, "OUT", INT_TYPE),
+      "IN": new InputSocket(29, this.h - 29, "IN", socketType),
+      "OUT": new OutputSocket(this.w - 29, this.h - 29, "OUT", socketType),
     }
     this.dials = {
       "transpose": new Dial(29, 59, "VALUE", 0.0, 127.0, 0.0),
@@ -29,5 +29,16 @@ export class Transpose extends ModuleUnit {
       return null;
     }
     return g;
+  }
+}
+export class Transpose extends BaseTranspose {
+  constructor() {
+    super(INT_TYPE);
+  }
+}
+
+export class TransposeIntArray extends BaseTranspose {
+  constructor() {
+    super(INT_ARRAY_TYPE);
   }
 }

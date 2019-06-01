@@ -1,5 +1,5 @@
-import { Patchable, CLOCK_TYPE, INT_TYPE, TRIGGER_TYPE } from '../model/';
-import { Factory, SequenceInput, PlayNote, Pulse, Euclidian, Transpose } from './module_units/';
+import { Patchable, CLOCK_TYPE, INT_TYPE, INT_ARRAY_TYPE, TRIGGER_TYPE } from '../model/';
+import { Factory, SequenceInput, PlayNote, PlayNotes, Pulse, Euclidian, Transpose, TransposeIntArray } from './module_units/';
 import { Module } from '../components/';
 
 export class Sequence extends Patchable {
@@ -66,7 +66,7 @@ export class Sequence extends Patchable {
           connections[socketId] = this.getConnectedSequences(sequences, ix, socketId);
         }
       }
-      if (unit.type == "play_note") {
+      if (unit.type == "play_note" || unit.type == "play_notes") {
         for (var o of unit.compile(connections)) {
           result.push(o);
         }
@@ -145,10 +145,25 @@ export class Sequence extends Patchable {
         }
       }
       return seqs;
+    } else if (sequenceDef["play_notes"]) {
+      var def = sequenceDef["play_notes"];
+      var g = new PlayNotes(this.channelNr);
+      var ix = this.addModule(g);
+
+      if (def["auto_notes"]) {
+        var vIx = this.loadIntArrayAutomation(def["auto_notes"]);
+        if (vIx !== null) {
+          this._addPatch(ix, vIx, "NOTES", "OUT", INT_TYPE);
+        }
+      }
+      return ix;
     } else if (sequenceDef["repeat"]) {
       var def = sequenceDef["repeat"];
       var g = new Pulse(this.parseDuration(def.every));
       var ix = this.addModule(g);
+      var aIx = this.loadSequence(def.sequence);
+      this._addPatch(ix, aIx, "TRIG", "TRIG", TRIGGER_TYPE);
+      this._addPatch(input, ix, "CLOCK", "CLOCK", CLOCK_TYPE);
       return ix;
     } else if (sequenceDef["euclidian"]) {
       var def = sequenceDef["euclidian"];
@@ -157,6 +172,8 @@ export class Sequence extends Patchable {
       g.dials.over.value = def.over || 1;
       var ix = this.addModule(g);
       var aIx = this.loadSequence(def.sequence);
+      this._addPatch(ix, aIx, "TRIG", "TRIG", TRIGGER_TYPE);
+      this._addPatch(input, ix, "CLOCK", "CLOCK", CLOCK_TYPE);
       return ix;
     } else if (sequenceDef["panning"]) {
       console.log("Unsupported sequence def", sequenceDef);
@@ -185,7 +202,7 @@ export class Sequence extends Patchable {
       var a = new Factory().automationFromDefinition(automationDef);
       return this.addModule(a);
     } else if (automationDef["transpose"]) {
-      var a = new Transpose("transpose");
+      var a = new Transpose();
       a.dials.transpose.value = automationDef["transpose"].value;
       var ix = this.addModule(a);
       var aIx = this.loadAutomation(automationDef["transpose"]);
@@ -195,6 +212,30 @@ export class Sequence extends Patchable {
       return ix;
     } else {
       console.log("Unsupported automation def", automationDef);
+      return null;
+    }
+  }
+
+  loadIntArrayAutomation(automationDef) {
+    if (automationDef["transpose"]) {
+      var a = new TransposeIntArray();
+      a.dials.transpose.value = automationDef["transpose"].value;
+      var ix = this.addModule(a);
+      var aIx = this.loadIntArrayAutomation(automationDef["transpose"]);
+      if (aIx != null) {
+        this._addPatch(ix, aIx, "IN", "OUT", INT_ARRAY_TYPE);
+      }
+      return ix;
+    } else if (automationDef["register"] !== undefined) {
+      var a = new Factory().intArrayAutomationFromDefinition(automationDef);
+      return this.addModule(a);
+    } else if (automationDef["index"] !== undefined) {
+      var a = new Factory().intArrayAutomationFromDefinition(automationDef);
+      if (automationDef["index"]["auto_value"]) {
+      }
+      return this.addModule(a);
+    } else {
+      console.log("Unsupported integer array automation def", automationDef);
       return null;
     }
   }

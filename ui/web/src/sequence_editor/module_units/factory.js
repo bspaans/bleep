@@ -1,5 +1,6 @@
 import { Range }  from './range.js';
-import { Register } from './register.js';
+import { Register, IntArrayRegister } from './register.js';
+import { IntArrayRegisterIndex } from './register_index.js';
 export class Factory {
 
   sequenceFromDefinition(sequenceDef) {
@@ -19,8 +20,20 @@ export class Factory {
       }
     }
     if (automationDef["register"] !== undefined) {
-      var a = new Register("register");
+      var a = new Register();
       a.dials.register.value = automationDef["register"] || 0;
+      return a;
+    }
+  }
+  intArrayAutomationFromDefinition(automationDef) {
+    if (automationDef["register"]) {
+      var a = new IntArrayRegister();
+      a.dials.register.value = automationDef["register"] || 0;
+      return a;
+    } else if (automationDef["index"]) {
+      var a = new IntArrayRegisterIndex();
+      a.dials.register.value = automationDef["register"] || 0;
+      a.dials.value.value = automationDef["value"] || 0;
       return a;
     }
   }

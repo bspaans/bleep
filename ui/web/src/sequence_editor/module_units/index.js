@@ -1,6 +1,10 @@
 export { Pulse } from './pulse.js';
 export { PlayNote } from './play_note.js';
+export { PlayNotes } from './play_notes.js';
 export { SequenceInput } from './sequence_input.js';
-export { Transpose } from './transpose.js';
+export { Transpose, TransposeIntArray } from './transpose.js';
 export { Euclidian } from './euclidian.js';
+export { Range } from './range.js';
+export { Register, IntArrayRegister } from './register.js';
 export { Factory } from './factory.js';
+export { IntArrayRegisterIndex } from './register_index.js';

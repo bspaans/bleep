@@ -1,7 +1,7 @@
 
 import { Editor, Button, Module } from '../components/';
 import { Sequence } from './sequence.js';
-import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, Range } from './module_units/';
+import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, Range, Transpose, Register } from './module_units/';
 
 export class SequenceEditor extends Editor {
   constructor(app, sequence, channelNr, handleClose) {
@@ -36,8 +36,8 @@ export class SequenceEditor extends Editor {
         {label: "RANGE", colour: 'ModuleInt', onclick: () => this.handleAddUnit(() => new Range("range"))},
         {label: "FADE", colour: 'ModuleInt', onclick: () => this.handleAddUnit(() => new Range("fade in"))},
         {label: "RAND", colour: 'ModuleInt', onclick: () => this.handleAddGenerator("sine")},
-        {label: "REG", colour: 'ModuleInt', onclick: () => this.handleAddGenerator("sine")},
-        {label: "TRANS", colour: 'ModuleInt', onclick: () => this.handleAddGenerator("sine")},
+        {label: "REG", colour: 'ModuleInt', onclick: () => this.handleAddUnit(() => new Register())},
+        {label: "TRANS", colour: 'ModuleInt', onclick: () => this.handleAddUnit(() => new Transpose("transpose"))},
     ]
 
     var x = 0;
