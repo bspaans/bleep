@@ -9,7 +9,7 @@ class BaseTranspose extends ModuleUnit {
       "OUT": new OutputSocket(this.w - 29, this.h - 29, "OUT", socketType),
     }
     this.dials = {
-      "transpose": new Dial(29, 59, "VALUE", 0.0, 127.0, 0.0),
+      "transpose": new Dial(29, 59, "VALUE", -127.0, 127.0, 0.0),
     }
     if (socketType == INT_TYPE) {
       this.background = 'ModuleInt';

@@ -18,7 +18,7 @@ type PlayNotesEveryDef struct {
 }
 
 func (e *PlayNotesEveryDef) GetSequence(granularity int) (Sequence, error) {
-	every := uint(1)
+	every := uint(0)
 	if e.Every != nil {
 		every_, err := parseDuration(e.Every, granularity)
 		if err != nil {
@@ -47,7 +47,12 @@ func (e *PlayNotesEveryDef) GetSequence(granularity int) (Sequence, error) {
 		}
 		velocityF = velocityF_
 	}
-	result := PlayNotesEveryAutomation(every, duration, e.Channel, notesF, velocityF)
+	var result Sequence
+	if every == 0 {
+		result = PlayNotesAutomation(duration, e.Channel, notesF, velocityF)
+	} else {
+		result = PlayNotesEveryAutomation(every, duration, e.Channel, notesF, velocityF)
+	}
 	if e.Offset != nil {
 		offset, err := parseDuration(e.Offset, granularity)
 		if err != nil {

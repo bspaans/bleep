@@ -8,3 +8,4 @@ export { Range } from './range.js';
 export { Register, IntArrayRegister } from './register.js';
 export { Factory } from './factory.js';
 export { IntArrayRegisterIndex } from './register_index.js';
+export { Offset } from './offset.js';

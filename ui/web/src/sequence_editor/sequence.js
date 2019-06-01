@@ -1,5 +1,5 @@
 import { Patchable, CLOCK_TYPE, INT_TYPE, INT_ARRAY_TYPE, TRIGGER_TYPE } from '../model/';
-import { Factory, SequenceInput, PlayNote, PlayNotes, Pulse, Euclidian, Transpose, TransposeIntArray } from './module_units/';
+import { Factory, SequenceInput, PlayNote, PlayNotes, Pulse, Euclidian, Transpose, TransposeIntArray, Offset } from './module_units/';
 import { Module } from '../components/';
 
 export class Sequence extends Patchable {
@@ -41,11 +41,11 @@ export class Sequence extends Patchable {
       dependencies.push(q);
       for (var p of this.patches) {
         var modSockets = this.modules[q].unit.sockets;
-        if (p.to === q && modSockets[p.toSocket].isInput) {
+        if (p.to === q && modSockets[p.toSocket] && modSockets[p.toSocket].isInput) {
           if (!seen[p.from]) {
             queue.push(p.from);
           }
-        } else if (p.from === q && modSockets[p.fromSocket].isInput) {
+        } else if (p.from === q && modSockets[p.fromSocket] && modSockets[p.fromSocket].isInput) {
           if (!seen[p.from]) {
             queue.push(p.to);
           }
@@ -150,11 +150,22 @@ export class Sequence extends Patchable {
       var g = new PlayNotes(this.channelNr);
       var ix = this.addModule(g);
 
+      if (def["auto_velocity"]) {
+        var vIx = this.loadAutomation(def["auto_velocity"]);
+        if (vIx !== null) {
+          this._addPatch(ix, vIx, "VEL", "OUT", INT_TYPE);
+        }
+      } 
       if (def["auto_notes"]) {
         var vIx = this.loadIntArrayAutomation(def["auto_notes"]);
         if (vIx !== null) {
           this._addPatch(ix, vIx, "NOTES", "OUT", INT_ARRAY_TYPE);
         }
+      }
+      if (def["every"]) {
+        var pulseIx = this.addModule(new Pulse(this.parseDuration(def["every"])));
+        this._addPatch(input, pulseIx, "CLOCK", "CLOCK", CLOCK_TYPE);
+        this._addPatch(ix, pulseIx, "TRIG", "TRIG", TRIGGER_TYPE);
       }
       return ix;
     } else if (sequenceDef["repeat"]) {
@@ -162,7 +173,22 @@ export class Sequence extends Patchable {
       var g = new Pulse(this.parseDuration(def.every));
       var ix = this.addModule(g);
       var aIx = this.loadSequence(def.sequence);
-      this._addPatch(ix, aIx, "TRIG", "TRIG", TRIGGER_TYPE);
+      if (aIx != null) {
+        this._addPatch(ix, aIx, "TRIG", "TRIG", TRIGGER_TYPE);
+      }
+      this._addPatch(input, ix, "CLOCK", "CLOCK", CLOCK_TYPE);
+      return ix;
+    } else if (sequenceDef["offset"]) {
+      // TODO fix?
+      console.log("WATCH OUT FOR offset", sequenceDef["offset"]);
+      var def = sequenceDef["offset"];
+      var g = new Offset();
+      g.dials.offset.value = def.offset || 0;
+      var ix = this.addModule(g);
+      var aIx = this.loadSequence(def.sequence);
+      if (aIx != null) {
+        this._addPatch(ix, aIx, "OUT", "CLOCK", CLOCK_TYPE);
+      }
       this._addPatch(input, ix, "CLOCK", "CLOCK", CLOCK_TYPE);
       return ix;
     } else if (sequenceDef["euclidian"]) {

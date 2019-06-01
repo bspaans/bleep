@@ -24,6 +24,14 @@ class BaseRegisterIndex extends ModuleUnit {
         "value": parseFloat(this.dials.index.value.toFixed(0)),
       }
     };
+    var autoValue = connections["INDEX"];
+    if (autoValue) {
+      if (autoValue.length === 1) {
+        if (autoValue[0]) {
+          g.index.auto_value = autoValue[0];
+        } 
+      }
+    }
     var on = connections["IN"];
     if (!on) {
       return null;

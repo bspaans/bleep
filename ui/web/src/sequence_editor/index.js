@@ -1,7 +1,7 @@
 
 import { Editor, Button, Module } from '../components/';
 import { Sequence } from './sequence.js';
-import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, PlayNotes, Range, Transpose, Register, IntArrayRegisterIndex, TransposeIntArray, IntArrayRegister } from './module_units/';
+import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, PlayNotes, Range, Transpose, Register, IntArrayRegisterIndex, TransposeIntArray, IntArrayRegister, Offset } from './module_units/';
 
 export class SequenceEditor extends Editor {
   constructor(app, sequence, channelNr, handleClose) {
@@ -24,6 +24,7 @@ export class SequenceEditor extends Editor {
         {label: "𝅘𝅥𝅰", colour: 'ModulePulse', onclick: () => this.handleAddUnit(() => new Pulse(0.125))},
         {label: "PULS", colour: 'ModulePulse', onclick: () => this.handleAddUnit(() => new Pulse())},
         {label: "EUCL", colour: 'ModulePulse', onclick: () => this.handleAddUnit(() => new Euclidian())},
+        {label: "OFFSET", colour: 'ModulePulse', onclick: () => this.handleAddUnit(() => new Offset())},
 
         {label: "NOTE", colour: 'ModuleOutput', onclick: () => this.handleAddUnit(() => new PlayNote())},
         {label: "NOTES", colour: 'ModuleOutput', onclick: () => this.handleAddUnit(() => new PlayNotes())},
