@@ -1,6 +1,7 @@
 import { Theme } from './theme.js';
 import { InstrumentEditor, Instrument } from './instrument_editor/';
-import { TimelineEditor, ChannelTrack, RegisterTrack, Channel, Register } from './timeline_editor/';
+import { TimelineEditor, ChannelTrack, RegisterTrack } from './timeline_editor/';
+import { Channel, Register } from './model/';
 import { SequenceEditor } from './sequence_editor/';
 import { API } from './api/';
 

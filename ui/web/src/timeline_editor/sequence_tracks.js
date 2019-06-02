@@ -12,7 +12,7 @@ export class BaseSequenceTracks {
   }
 
   handleClick() {
-    this.app.openSequenceEditor(this.sequenceTracks[0].sequence, this.unit.channelNr);
+    this.app.openSequenceEditor(this.sequenceTracks[0].sequence, this.unit.getCompileTarget());
   }
 
   draw(app, colorOffset) {

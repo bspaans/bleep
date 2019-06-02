@@ -1,5 +1,3 @@
-export { Channel } from './channel.js';
-export { Register } from './register.js';
 export { ChannelTrack, RegisterTrack } from './track.js';
 
 export class TimelineEditor {

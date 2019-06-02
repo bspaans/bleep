@@ -1,6 +1,7 @@
 import { Patchable, CLOCK_TYPE, INT_TYPE, INT_ARRAY_TYPE, TRIGGER_TYPE } from '../model/';
-import { Factory, SequenceInput, PlayNote, PlayNotes, Pulse, Euclidian, Transpose, TransposeIntArray, Offset } from './module_units/';
+import { Factory, SequenceInput, PlayNote, PlayNotes, Pulse, Euclidian, Transpose, TransposeIntArray, Offset, RegisterOutput } from './module_units/';
 import { Module } from '../components/';
+import { Register } from '../model/';
 
 export class Sequence extends Patchable {
   constructor(target, modules, patches) {
@@ -200,6 +201,29 @@ export class Sequence extends Patchable {
       var aIx = this.loadSequence(def.sequence);
       this._addPatch(ix, aIx, "TRIG", "TRIG", TRIGGER_TYPE);
       this._addPatch(input, ix, "CLOCK", "CLOCK", CLOCK_TYPE);
+      return ix;
+    } else if (sequenceDef["array_register"]) {
+      var def = sequenceDef.array_register;
+      var g = new RegisterOutput("array_register", INT_ARRAY_TYPE);
+      var ix = this.addModule(g);
+      if (def["auto_value"]) {
+        var aIx = this.loadIntArrayAutomation(def.auto_value);
+        if (aIx != null) {
+          this._addPatch(ix, aIx, "VALUE", "OUT", INT_ARRAY_TYPE);
+        }
+      }
+      return ix;
+    } else if (sequenceDef["register"]) {
+      var def = sequenceDef.register;
+      var g = new RegisterOutput("register", INT_TYPE);
+      g.dials.value.value = def.value || 0;
+      var ix = this.addModule(g);
+      if (def["auto_value"]) {
+        var aIx = this.loadAutomation(def.auto_value);
+        if (aIx != null) {
+          this._addPatch(ix, aIx, "VALUE", "OUT", INT_TYPE);
+        }
+      }
       return ix;
     } else if (sequenceDef["panning"]) {
       console.log("Unsupported sequence def", sequenceDef);

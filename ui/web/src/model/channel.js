@@ -1,5 +1,3 @@
-import { SequenceTrack } from './sequence_track.js'; 
-
 export class Channel {
   constructor(channelNr, openInstrumentEditor) {
     this.channelNr = channelNr;
