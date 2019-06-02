@@ -8,9 +8,9 @@ export class Range {
 }
 
 export class SequenceTrack {
-  constructor(channelNr, sequence_def) {
+  constructor(target, sequence_def) {
     this.sequence_def = null;
-    this.sequence = new Sequence(channelNr)
+    this.sequence = new Sequence(target)
     this.sequence.loadFromDefinition(sequence_def);
     this.ranges = [];
   }

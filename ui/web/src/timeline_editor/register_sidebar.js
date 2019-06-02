@@ -1,6 +1,6 @@
-export class ChannelSideBar {
-  constructor(channel, app, padding, panelWidth, height) {
-    this.channel = channel;
+export class RegisterSideBar {
+  constructor(register, app, padding, panelWidth, height) {
+    this.register = register;
     this.app = app;
     this.padding = padding;
     this.panelWidth = panelWidth;
@@ -15,19 +15,9 @@ export class ChannelSideBar {
 
     app.ctx.fillStyle = 'rgb(255, 255, 255)';
     app.ctx.font = '10px sans-serif';
-    app.ctx.fillText(this.channel.name, this.padding + 3, this.padding + 11);
+    app.ctx.fillText(this.register.type + " " + this.register.register, this.padding + 3, this.padding + 11);
   }
-
-  handleClick() {
-    this.app.openInstrumentEditor(this.channel.instrument);
-  }
-
   handleMouseDown(app, x, y) {
-    var path = new Path2D();
-    path.rect(0, 0, this.panelWidth, this.height + this.padding * 2);
-    if (app.ctx.isPointInPath(path, x, y)) {
-      return this;
-    }
     return false;
   }
 }

@@ -4,12 +4,7 @@ export class Channel {
   constructor(channelNr, openInstrumentEditor) {
     this.channelNr = channelNr;
     this.instrument = null;
-    this.sequenceTracks = [new SequenceTrack()];
     this.name = "Untitled " + this.channelNr;
-    for (var i = 0; i < channelNr; i++) {
-      this.sequenceTracks.push(new SequenceTrack());
-    }
-
     this.loadFromDefinition({});
   }
 
@@ -25,10 +20,11 @@ export class Channel {
     this.lpfCutoff = def.lpf_cutoff || 0;
     this.hpfCutoff = def.hpf_cutoff || 0;
     this.grain = def.grain || null;
-
   }
-
-  compile() {
+  getCompileTarget() {
+    return this.channelNr;
+  }
+  compile(sequenceTracks) {
     var channel = {
       "channel": this.channelNr,
       "generator": this.instrument ? this.instrument.compile() : null,
@@ -45,7 +41,7 @@ export class Channel {
       "grain": this.grain,
     };
     var sequences = [];
-    for (var tr of this.sequenceTracks) {
+    for (var tr of sequenceTracks) {
       var trResult = tr.compile();
       if (trResult) {
         sequences.push(trResult);
@@ -55,26 +51,5 @@ export class Channel {
       "channel": channel,
       "sequences": sequences,
     };
-  }
-
-  initialiseSequenceTracks(sequences) {
-    this.sequenceTracks = [];
-    for (var s of sequences) {
-      var segment = {};
-      if (s.after) {
-        segment.after = s.after.after;
-        if (s.after.sequence.before) {
-          segment.before = s.after.sequence.before.before;
-        }
-      } else if (s.before) {
-        segment.before = s.before.before;
-        if (s.before.sequence.after) {
-          segment.after = s.before.sequence.after.after;
-        }
-      }
-      var track = new SequenceTrack(this.channelNr, s);
-      track.addRange(segment.after, segment.before);
-      this.sequenceTracks.push(track);
-    }
   }
 }

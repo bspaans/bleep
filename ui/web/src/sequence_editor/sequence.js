@@ -3,9 +3,9 @@ import { Factory, SequenceInput, PlayNote, PlayNotes, Pulse, Euclidian, Transpos
 import { Module } from '../components/';
 
 export class Sequence extends Patchable {
-  constructor(channelNr, modules, patches) {
+  constructor(target, modules, patches) {
     super(modules, patches);
-    this.channelNr = channelNr || 1;
+    this.target = target || 1;
   }
 
   loadFromDefinition(sequenceDef) {
@@ -113,7 +113,7 @@ export class Sequence extends Patchable {
       return this.loadSequence(sequenceDef["after"]["sequence"], input);
     } else if (sequenceDef["play_note"]) {
       var def = sequenceDef["play_note"];
-      var g = new PlayNote(this.channelNr);
+      var g = new PlayNote(this.target);
       g.dials.note.value = def.note || 1.0;
       g.dials.velocity.value = def.velocity || 1.0;
       g.dials.duration.value = this.parseDuration(def.duration) || 1.0;
@@ -147,7 +147,7 @@ export class Sequence extends Patchable {
       return seqs;
     } else if (sequenceDef["play_notes"]) {
       var def = sequenceDef["play_notes"];
-      var g = new PlayNotes(this.channelNr);
+      var g = new PlayNotes(this.target);
       var ix = this.addModule(g);
 
       if (def["auto_velocity"]) {

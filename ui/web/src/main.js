@@ -1,6 +1,6 @@
 import { Theme } from './theme.js';
 import { InstrumentEditor, Instrument } from './instrument_editor/';
-import { TimelineEditor, Track, Channel } from './timeline_editor/';
+import { TimelineEditor, ChannelTrack, RegisterTrack, Channel, Register } from './timeline_editor/';
 import { SequenceEditor } from './sequence_editor/';
 import { API } from './api/';
 
@@ -57,12 +57,13 @@ export class Bleep {
   // api callback
   initialiseChannels(channelDefs) {
     this.channels = [];
+    this.tracks = [];
     var seenPercussionChannel = false;
     for (var def of channelDefs) {
       var ch = new Channel(def.channel || 0);
       ch.loadFromDefinition(def);
       this.channels.push(ch);
-      this.tracks.push(new Track(ch, this));
+      this.tracks.push(new ChannelTrack(ch, this));
       if (ch.channelNr == 9) {
         seenPercussionChannel = true;
       }
@@ -76,7 +77,7 @@ export class Bleep {
     if (!seenPercussionChannel) {
       var ch = new Channel(9);
       this.channels.push(ch);
-      this.tracks.push(new Track(ch, this));
+      this.tracks.push(new ChannelTrack(ch, this));
     }
     this.api.requestSequencerDef();
     this.openTimelineEditor();
@@ -100,8 +101,28 @@ export class Bleep {
       defs = channelsAndRegisters.registerSequences;
       this.registers.add(defs);
     }
-    for (var ch of this.channels) {
-      ch.initialiseSequenceTracks(channelSequences[ch.channelNr]);
+    for (var track of this.tracks) {
+      if (track instanceof ChannelTrack) {
+        track.initialiseSequenceTracks(channelSequences[track.unit.channelNr])
+      } else if (track instanceof RegisterTrack) {
+      }
+    }
+    for (var i = 0; i < 32; i++) {
+      if (this.registers.ints[i].length > 0) {
+        var track = new RegisterTrack(new Register(i, "register"), this);
+        track.initialiseSequenceTracks(this.registers.ints[i]);
+        this.tracks.push(track);
+      }
+      if (this.registers.floats[i].length > 0) {
+        var track = new RegisterTrack(new Register(i, "float_register"), this);
+        track.initialiseSequenceTracks(this.registers.floats[i]);
+        this.tracks.push(track);
+      }
+      if (this.registers.arrays[i].length > 0) {
+        var track = new RegisterTrack(new Register(i, "array_register"), this);
+        track.initialiseSequenceTracks(this.registers.arrays[i]);
+        this.tracks.push(track);
+      }
     }
     this.openTimelineEditor();
     //this.uploadSequencerDef();
@@ -114,12 +135,12 @@ export class Bleep {
       "channels": [],
       "sequences": [],
     };
-    for (var ch of this.channels) {
-      var channelResult = ch.compile();
-      if (channelResult.channel) {
-        result.channels.push(channelResult.channel);
+    for (var track of this.tracks) {
+      var trackResult = track.compile();
+      if (trackResult.track) {
+        result.tracks.push(trackResult.track);
       }
-      for (var s of channelResult.sequences) {
+      for (var s of trackResult.sequences) {
         result.sequences.push(s);
       }
     }
@@ -156,20 +177,17 @@ export class Bleep {
     }
     if (seq["register"]) {
       if (seq.register.register !== undefined) {
-        console.log("register", seq.register.register);
         registerSequences.ints[seq.register.register].push(seq);
         console.log(result);
       }
       return result;;
     } else if (seq["float_register"]) {
       if (seq.float_register.register !== undefined) {
-        console.log("float_register", seq.float_register.register);
         registerSequences.floats[seq.float_register.register].push(seq);
       }
       return result;;
     } else if (seq["array_register"]) {
       if (seq.array_register.register !== undefined) {
-        console.log("array_register", seq.array_register.register);
         registerSequences.arrays[seq.array_register.register].push(seq);
       }
       return result;;

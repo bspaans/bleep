@@ -1,6 +1,6 @@
 export { Channel } from './channel.js';
-export { Track } from './track.js';
-import { Track } from './track.js';
+export { Register } from './register.js';
+export { ChannelTrack, RegisterTrack } from './track.js';
 
 export class TimelineEditor {
   constructor(tracks) {
