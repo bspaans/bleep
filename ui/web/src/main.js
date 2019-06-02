@@ -4,6 +4,36 @@ import { TimelineEditor, Track, Channel } from './timeline_editor/';
 import { SequenceEditor } from './sequence_editor/';
 import { API } from './api/';
 
+class RegisterDefinitions {
+  constructor(initWith) {
+    this.reset(initWith);
+  }
+  reset(initWith) {
+    this.ints = [];
+    this.floats = [];
+    this.arrays = [];
+    for (var i = 0; i < 32; i++) {
+      this.ints.push([]);
+      this.floats.push([]);
+      this.arrays.push([]);
+    }
+  }
+  add(otherRegisterDefinitions) {
+    for (var i = 0; i < 32; i++) {
+      for (var defSeq of otherRegisterDefinitions.ints[i]) {
+        this.ints[i].push(defSeq);
+      }
+      for (var defSeq of otherRegisterDefinitions.floats[i]) {
+        this.floats[i].push(defSeq);
+      }
+      for (var defSeq of otherRegisterDefinitions.arrays[i]) {
+        this.arrays[i].push(defSeq);
+      }
+    }
+  }
+
+}
+
 export class Bleep {
   constructor() {
     this.canvas = document.getElementById('main');
@@ -18,6 +48,7 @@ export class Bleep {
     this.api = new API(this);
     this.api.start();
     this.channels = [];
+    this.registers = new RegisterDefinitions();
     this.tracks = [];
     this.openTimelineEditor();
     this.draw();
@@ -57,15 +88,18 @@ export class Bleep {
     for (var ch of this.channels) {
       channelSequences[ch.channelNr] = [];
     }
+    this.registers.reset(() => []);
     for (var seq of sequences) {
-      var defs = this.sequenceDefByChannel(seq);
+      var channelsAndRegisters = this.sequenceDefByChannelAndRegister(seq);
+      var defs = channelsAndRegisters.channelSequences;
       for (var ch of this.channels) {
         for (var s of defs[ch.channelNr]) {
           channelSequences[ch.channelNr].push(s);
         }
       }
+      defs = channelsAndRegisters.registerSequences;
+      this.registers.add(defs);
     }
-    console.log(channelSequences);
     for (var ch of this.channels) {
       ch.initialiseSequenceTracks(channelSequences[ch.channelNr]);
     }
@@ -97,8 +131,13 @@ export class Bleep {
     this.api.setSequencerDef(this.compile());
   }
 
-  sequenceDefByChannel(seq) {
+  sequenceDefByChannelAndRegister(seq) {
     var channelSequences = {};
+    var registerSequences = new RegisterDefinitions();
+    var result = {
+      channelSequences: channelSequences,
+      registerSequences: registerSequences,
+    }
     for (var ch of this.channels) {
       channelSequences[ch.channelNr] = [];
     }
@@ -112,9 +151,30 @@ export class Bleep {
         } else {
           console.log("Missing channel", s);
         }
-        return channelSequences;
+        return result;;
       }
     }
+    if (seq["register"]) {
+      if (seq.register.register !== undefined) {
+        console.log("register", seq.register.register);
+        registerSequences.ints[seq.register.register].push(seq);
+        console.log(result);
+      }
+      return result;;
+    } else if (seq["float_register"]) {
+      if (seq.float_register.register !== undefined) {
+        console.log("float_register", seq.float_register.register);
+        registerSequences.floats[seq.float_register.register].push(seq);
+      }
+      return result;;
+    } else if (seq["array_register"]) {
+      if (seq.array_register.register !== undefined) {
+        console.log("array_register", seq.array_register.register);
+        registerSequences.arrays[seq.array_register.register].push(seq);
+      }
+      return result;;
+    }
+
 
     var wrappedSequences = ["repeat", "after", "before", "euclidian", "offset"];
     for (var wrapped of wrappedSequences) {
@@ -122,37 +182,55 @@ export class Bleep {
         if (!seq[wrapped].sequence) {
           console.log("Missing sequence", seq);
         }
-        var ch = this.sequenceDefByChannel(seq[wrapped].sequence)
+        var subResult = this.sequenceDefByChannelAndRegister(seq[wrapped].sequence)
+        var ch = subResult.channelSequences;
+        var merger = (defSeq) => {
+          var merged = {};
+          for (var key of Object.keys(seq)) {
+            merged[key] = seq[key];
+          }
+          merged.sequence = defSeq;
+          return merged;
+        }
         for (var channelNr of Object.keys(ch)) {
           var seqs = ch[channelNr];
           if (seqs.length == 0) {
             continue;
           } 
           for (var defSeq of seqs) {
-            var result = {};
-            for (var key of Object.keys(seq)) {
-              result[key] = seq[key];
-            }
-            result.sequence = defSeq;
-            channelSequences[channelNr].push(result);
+            channelSequences[channelNr].push(merger(defSeq));
           }
         }
-        return channelSequences;
+        var registers = subResult.registerSequences;
+        for (var i = 0; i < 32; i++) {
+          for (var defSeq of registers.ints[i]) {
+            registerSequences.ints[i].push(merger(defSeq));
+          }
+          for (var defSeq of registers.floats[i]) {
+            registerSequences.floats[i].push(merger(defSeq));
+          }
+          for (var defSeq of registers.arrays[i]) {
+            registerSequences.arrays[i].push(merger(defSeq));
+          }
+        }
+        return result;
       }
     }
     if (seq.combine) {
       for (var seq of seq.combine) {
-        var defs = this.sequenceDefByChannel(seq);
+        var subResult = this.sequenceDefByChannelAndRegister(seq);
+        var defs = subResult.channelSequences;
         for (var ch of this.channels) {
           for (var s of defs[ch.channelNr]) {
             channelSequences[ch.channelNr].push(s);
           }
         }
+        registerSequences.add(subResult.registerSequences);
       }
     } else {
       console.log("unknown def", seq);
     }
-    return channelSequences;
+    return result;
   }
 
   openInstrumentEditor(instr) {

@@ -7,9 +7,9 @@ import (
 )
 
 type RegisterDef struct {
-	Register   int            `yaml:"register"`
-	Value      int            `yaml:"value"`
-	Automation *AutomationDef `yaml:"auto_value"`
+	Register   int            `json:"register" yaml:"register"`
+	Value      int            `json:"value" yaml:"value"`
+	Automation *AutomationDef `json:"auto_value,omitempty" yaml:"auto_value,omitempty"`
 }
 
 func (e *RegisterDef) GetSequence() (Sequence, error) {
@@ -26,9 +26,9 @@ func (e *RegisterDef) GetSequence() (Sequence, error) {
 }
 
 type FloatRegisterDef struct {
-	Register   int                 `yaml:"register"`
-	Value      float64             `yaml:"value"`
-	Automation *FloatAutomationDef `yaml:"auto_value"`
+	Register   int                 `json:"register" yaml:"register"`
+	Value      float64             `json:"value" yaml:"value"`
+	Automation *FloatAutomationDef `json:"auto_value,omitempty" yaml:"auto_value,omitempty"`
 }
 
 func (e *FloatRegisterDef) GetSequence() (Sequence, error) {
@@ -45,9 +45,9 @@ func (e *FloatRegisterDef) GetSequence() (Sequence, error) {
 }
 
 type IntArrayRegisterDef struct {
-	Register   int                    `yaml:"register"`
-	Value      []int                  `yaml:"value"`
-	Automation *IntArrayAutomationDef `yaml:"auto_values"`
+	Register   int                    `json:"register" yaml:"register"`
+	Value      []int                  `json:"value" yaml:"value"`
+	Automation *IntArrayAutomationDef `json:"auto_values,omitempty" yaml:"auto_values,omitempty"`
 }
 
 func (e *IntArrayRegisterDef) GetSequence() (Sequence, error) {
