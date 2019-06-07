@@ -12,7 +12,7 @@ export class RegisterOutput extends ModuleUnit {
     this.register = register;
     this.dials = {}
     if (socketType != INT_ARRAY_TYPE) {
-      this.dials["value"] =  new Dial(29, 59, "VALUE", 0.0, 128.0, 1.0);
+      this.dials["value"] =  new Dial(29, 59, "VALUE", 0.0, 128.0, register || 0);
     }
     this.background = 'ModuleOutput';
   }

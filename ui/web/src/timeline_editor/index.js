@@ -1,7 +1,7 @@
 export { ChannelTrack, RegisterTrack } from './track.js';
 import { Button } from '../components/';
-import { ChannelTrack } from './track.js';
-import { Channel } from '../model/';
+import { ChannelTrack, RegisterTrack } from './track.js';
+import { Channel, Register } from '../model/';
 
 export class TimelineEditor {
   constructor(tracks, app) {
@@ -9,9 +9,9 @@ export class TimelineEditor {
     this.app = app;
     var buttonDefs = [
         {label: "CHAN", colour: 'ModulePulse', onclick: this.addChannelTrack},
-        {label: "REG", colour: 'ModuleInt', onclick: () => null},
-        {label: "FLT", colour: 'ModuleFloat', onclick: () => null},
-        {label: "ARR", colour: 'ModuleIntArray', onclick: () => null},
+        {label: "REG", colour: 'ModuleInt', onclick: this.addRegisterTrack},
+        {label: "FLT", colour: 'ModuleFloat', onclick: this.addFloatRegisterTrack},
+        {label: "ARR", colour: 'ModuleIntArray', onclick: this.addIntArrayRegisterTrack},
     ];
     this.buttons = [];
     this.addButtonDefinitions(buttonDefs);
@@ -27,6 +27,29 @@ export class TimelineEditor {
     }
     var ch = new Channel(nextChannel);
     var track = new ChannelTrack(ch, this.app);
+    this.app.tracks.push(track);
+    this.app.draw()
+  }
+  addRegisterTrack() {
+    this._addRegisterTrack("register");
+  }
+  addFloatRegisterTrack() {
+    this._addRegisterTrack("float_register");
+  }
+  addIntArrayRegisterTrack() {
+    this._addRegisterTrack("array_register");
+  }
+  _addRegisterTrack(type) {
+    var nextRegister = 0;
+    for (var tr of this.tracks) {
+      if (tr instanceof RegisterTrack) {
+        if (tr.unit.type == type && tr.unit.register >= nextRegister) {
+          nextRegister = tr.unit.register + 1;
+        }
+      }
+    }
+    var ch = new Register(nextRegister, type);
+    var track = new RegisterTrack(ch, this.app);
     this.app.tracks.push(track);
     this.app.draw()
   }

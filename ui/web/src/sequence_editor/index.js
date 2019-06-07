@@ -1,7 +1,7 @@
 
 import { Editor, Button, Module } from '../components/';
 import { Sequence } from './sequence.js';
-import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, PlayNotes, Range, Transpose, Register, IntArrayRegisterIndex, TransposeIntArray, IntArrayRegister, Offset } from './module_units/';
+import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, PlayNotes, Range, Transpose, Register, IntArrayRegisterIndex, TransposeIntArray, IntArrayRegister, Offset, RegisterOutput } from './module_units/';
 
 export class BaseSequenceEditor extends Editor {
   constructor(app, sequence, sequenceTarget, handleClose) {
@@ -99,5 +99,8 @@ export class RegisterSequenceEditor extends BaseSequenceEditor {
         {label: "TRANS", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new TransposeIntArray())},
     ]
     this.addButtonDefinitions(buttonDefs);
+    if (sequence.modules.length == 1) {
+      sequence.modules.push(new Module(sequence, 400, 400, new RegisterOutput(register.type, register.socketType, register.register)));
+    }
   }
 }
