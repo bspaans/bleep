@@ -16,6 +16,24 @@ export class BaseSequenceEditor extends Editor {
     }
     this.target = sequence;
   }
+  addButtonDefinitions(buttonDefs) {
+    var x = 0;
+    var prev = null;
+    var padding = 0;
+    var groupPadding = 15;
+    for (var def of buttonDefs) {
+      var b = new Button(x, this.app.theme.padding, def.onclick.bind(this), def.label);
+      b.colour = this.app.theme.colours[def.colour] || this.app.theme.colours.ModuleGenerator;
+      this.buttons.push(b);
+      if (prev && prev.colour != def.colour) {
+        x += groupPadding;
+        b.x += groupPadding;
+      }
+      x += b.w + padding;
+      prev = def;
+    }
+
+  }
 }
 export class SequenceEditor extends BaseSequenceEditor {
   constructor(app, sequence, channelNr, handleClose) {
@@ -31,8 +49,8 @@ export class SequenceEditor extends BaseSequenceEditor {
         {label: "EUCL", colour: 'ModulePulse', onclick: () => this.handleAddUnit(() => new Euclidian())},
         {label: "OFFSET", colour: 'ModulePulse', onclick: () => this.handleAddUnit(() => new Offset())},
 
-        {label: "NOTE", colour: 'ModuleOutput', onclick: () => this.handleAddUnit(() => new PlayNote())},
-        {label: "NOTES", colour: 'ModuleOutput', onclick: () => this.handleAddUnit(() => new PlayNotes())},
+        {label: "NOTE", colour: 'ModuleOutput', onclick: () => this.handleAddUnit(() => new PlayNote(channelNr))},
+        {label: "NOTES", colour: 'ModuleOutput', onclick: () => this.handleAddUnit(() => new PlayNotes(channelNr))},
         {label: "PAN", colour: 'ModuleOutput', onclick: () => this.handleAddGenerator("sine")},
         {label: "REV", colour: 'ModuleOutput', onclick: () => this.handleAddGenerator("sine")},
         {label: "LPF", colour: 'ModuleOutput', onclick: () => this.handleAddGenerator("sine")},

@@ -17,24 +17,6 @@ export class Editor {
       new Button(10, 10, this.handleUpload.bind(this), ">>>"),
     ];
   }
-  addButtonDefinitions(buttonDefs) {
-    var x = 0;
-    var prev = null;
-    var padding = 0;
-    var groupPadding = 15;
-    for (var def of buttonDefs) {
-      var b = new Button(x, this.app.theme.padding, def.onclick.bind(this), def.label);
-      b.colour = this.app.theme.colours[def.colour] || this.app.theme.colours.ModuleGenerator;
-      this.buttons.push(b);
-      if (prev && prev.colour != def.colour) {
-        x += groupPadding;
-        b.x += groupPadding;
-      }
-      x += b.w + padding;
-      prev = def;
-    }
-
-  }
   handleAddUnit(constructor) {
     var g = constructor()
     this.target.modules.push(new Module(this.target, Math.random() * 700, Math.random() * 600, g));

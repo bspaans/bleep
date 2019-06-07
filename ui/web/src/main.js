@@ -257,7 +257,7 @@ export class Bleep {
     this.draw()
   }
   openTimelineEditor() {
-    this.active = new TimelineEditor(this.tracks);
+    this.active = new TimelineEditor(this.tracks, this);
     this.draw();
   }
   openSequenceEditor(sequence, channelNr) {

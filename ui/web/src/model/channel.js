@@ -1,5 +1,5 @@
 export class Channel {
-  constructor(channelNr, openInstrumentEditor) {
+  constructor(channelNr) {
     this.channelNr = channelNr;
     this.instrument = null;
     this.name = "Untitled " + this.channelNr;

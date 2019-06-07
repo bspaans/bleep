@@ -8,7 +8,6 @@ export class BaseTrack {
     this.padding = 0;
     this.height = 75;
     this.panelWidth = 90;
-    this.selected = null;
 
     this.sideBar = null;
     this.sequenceTracks = null;
@@ -21,7 +20,6 @@ export class BaseTrack {
   }
 
   handleMouseDown(app, x, y) {
-    this.selected = null;
     if (this.sideBar.handleMouseDown(app, x, y)) {
       return this.sideBar;
     } else if (this.sequenceTracks.handleMouseDown(app, x, y)) {

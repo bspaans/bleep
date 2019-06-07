@@ -15,6 +15,7 @@ export class Button {
   draw(app) {
     var w = this.w;
     var h = this.h;
+    app.ctx.save();
     app.ctx.fillStyle = app.theme.colours.Button;
     if (this.colour) {
       app.ctx.fillStyle = this.colour;
@@ -29,6 +30,7 @@ export class Button {
       app.ctx.textAlign = "center";
       app.ctx.fillText(this.label, this.x + w / 2, this.y + 15);
     }
+    app.ctx.restore();
   }
   handleMouseDown(app, x, y) {
     if (x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h) {

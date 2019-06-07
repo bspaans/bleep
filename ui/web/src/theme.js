@@ -34,6 +34,7 @@ export class Theme {
       ModuleDerived: '#ddf',
       ModuleOutput: '#dfd',
       ModuleInt: '#ff9',
+      ModuleFloat: '#f9f',
       ModuleIntArray: '#f99',
       ModulePulse: '#ddf',
 
