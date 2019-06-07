@@ -26,7 +26,11 @@ export class RegisterOutput extends ModuleUnit {
     if (val.length == 0) {
       return [];
     } else if (val.length == 1) {
-      g[this.type]["auto_value"] = val[0];
+      var v = "auto_value";
+      if (this.type == "array_register") {
+        v = "auto_values";
+      }
+      g[this.type][v] = val[0];
     } else {
       console.log("more than one input to register set");
       return []

@@ -26,17 +26,10 @@ export class Sequence extends Patchable {
     var queue = [];
     var seen = {};
     var dependencies = [];
-    var outputNodes = {
-        "play_note": true,
-        "play_notes": true,
-        "register": true,
-        "float_register": true,
-        "array_register": true,
-    };
 
     for (var i = 0; i < this.modules.length; i++) {
       var m = this.modules[i];
-      if (outputNodes[m.unit.type]) {
+      if (m.unit.type == "play_note" || m.unit.type == "play_notes" || m.unit instanceof RegisterOutput) {
         queue.push(i);
       }
     }
@@ -213,8 +206,8 @@ export class Sequence extends Patchable {
       var def = sequenceDef.array_register;
       var g = new RegisterOutput("array_register", INT_ARRAY_TYPE, def.register);
       var ix = this.addModule(g);
-      if (def["auto_value"]) {
-        var aIx = this.loadIntArrayAutomation(def.auto_value);
+      if (def["auto_values"]) {
+        var aIx = this.loadIntArrayAutomation(def.auto_values);
         if (aIx != null) {
           this._addPatch(ix, aIx, "VALUE", "OUT", INT_ARRAY_TYPE);
         }
@@ -300,6 +293,9 @@ export class Sequence extends Patchable {
         }
       }
       return ix;
+    } else if (automationDef["cycle_chords"] !== undefined) {
+      var a = new Factory().intArrayAutomationFromDefinition(automationDef);
+      return this.addModule(a);
     } else {
       console.log("Unsupported integer array automation def", automationDef);
       return null;

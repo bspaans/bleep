@@ -1,6 +1,7 @@
 import { Range }  from './range.js';
 import { Register, IntArrayRegister } from './register.js';
 import { IntArrayRegisterIndex } from './register_index.js';
+import { CycleChords } from './cycle_chords.js';
 export class Factory {
 
   sequenceFromDefinition(sequenceDef) {
@@ -33,7 +34,12 @@ export class Factory {
       return a;
     } else if (automationDef["index"]) {
       var a = new IntArrayRegisterIndex();
-      a.dials.index.value = automationDef["value"] || 0;
+      a.dials.index.value = automationDef["index"]["value"] || 0;
+      return a;
+    } else if (automationDef["cycle_chords"]) {
+      var a = new CycleChords();
+      a.dials.count.value = automationDef["cycle_chords"]["count"];
+      a.chords = automationDef["cycle_chords"]["chords"];
       return a;
     }
     console.log("Unknown int array definition in factory:", automationDef);
