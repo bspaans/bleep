@@ -2,6 +2,9 @@ import { Range }  from './range.js';
 import { Register, IntArrayRegister } from './register.js';
 import { IntArrayRegisterIndex } from './register_index.js';
 import { CycleChords } from './cycle_chords.js';
+import { Cycle } from './cycle.js';
+import { Random } from './random.js';
+
 export class Factory {
 
   sequenceFromDefinition(sequenceDef) {
@@ -23,6 +26,15 @@ export class Factory {
     if (automationDef["register"] !== undefined) {
       var a = new Register();
       a.dials.register.value = automationDef["register"] || 0;
+      return a;
+    } else if (automationDef["random"]) {
+      var a = new Random();
+      a.dials.min.value = automationDef.random.min || 0;
+      a.dials.max.value = automationDef.random.max || 128;
+      return a;
+    } else if (automationDef["cycle"] !== undefined) {
+      var a = new Cycle();
+      a.cycle = automationDef.cycle;
       return a;
     }
     console.log("Unknown definition in factory:", automationDef);

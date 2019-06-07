@@ -239,15 +239,11 @@ export class Sequence extends Patchable {
     if (automationDef["back_and_forth"]) {
       console.log("Unsupported automation def", automationDef);
       return null;
-    } else if (automationDef["cycle"]) {
-      console.log("Unsupported automation def", automationDef);
-      return null;
-    } else if (automationDef["random"]) {
-      console.log("Unsupported automation def", automationDef);
-      return null;
     } else if (automationDef["fade_in"] !== undefined
             || automationDef["range"] !== undefined
             || automationDef["sweep"] !== undefined
+            || automationDef["cycle"] !== undefined
+            || automationDef["random"] !== undefined
             || automationDef["register"] !== undefined) {
       var a = new Factory().automationFromDefinition(automationDef);
       return this.addModule(a);

@@ -1,7 +1,7 @@
 
 import { Editor, Button, Module } from '../components/';
 import { Sequence } from './sequence.js';
-import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, PlayNotes, Range, Transpose, Register, IntArrayRegisterIndex, TransposeIntArray, IntArrayRegister, Offset, RegisterOutput } from './module_units/';
+import { SequenceInput, SequenceOutput, Pulse, Euclidian, PlayNote, PlayNotes, Range, Transpose, Register, IntArrayRegisterIndex, TransposeIntArray, IntArrayRegister, Offset, RegisterOutput, CycleChords } from './module_units/';
 
 export class BaseSequenceEditor extends Editor {
   constructor(app, sequence, sequenceTarget, handleClose) {
@@ -67,6 +67,7 @@ export class SequenceEditor extends BaseSequenceEditor {
         {label: "INDEX", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new IntArrayRegisterIndex())},
         {label: "REG", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new IntArrayRegister())},
         {label: "TRANS", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new TransposeIntArray())},
+        {label: "CHORD", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new CycleChords())},
     ]
     this.addButtonDefinitions(buttonDefs);
   }
@@ -97,6 +98,7 @@ export class RegisterSequenceEditor extends BaseSequenceEditor {
         {label: "INDEX", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new IntArrayRegisterIndex())},
         {label: "REG", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new IntArrayRegister())},
         {label: "TRANS", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new TransposeIntArray())},
+        {label: "CHORD", colour: 'ModuleIntArray', onclick: () => this.handleAddUnit(() => new CycleChords())},
     ]
     this.addButtonDefinitions(buttonDefs);
     if (sequence.modules.length == 1) {

@@ -10,3 +10,6 @@ export { Factory } from './factory.js';
 export { IntArrayRegisterIndex } from './register_index.js';
 export { Offset } from './offset.js';
 export { RegisterOutput } from './register_output.js';
+export { CycleChords } from './cycle_chords.js';
+export { Random } from './random.js';
+export { Cycle } from './cycle.js';

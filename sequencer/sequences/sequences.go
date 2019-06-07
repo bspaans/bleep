@@ -107,22 +107,27 @@ func NoteOff(channel, note int) Sequence {
 }
 
 func PlayNote(duration uint, channel, note, velocity int) Sequence {
-	return Combine(
-		NoteOn(channel, note, velocity),
-		// TODO: schedule note off event in the future instead
-	)
+	return func(status *Status, counter, t uint, s chan *synth.Event) {
+		NoteOn(channel, note, velocity)(status, counter, t, s)
+		ev := synth.NewEvent(synth.NoteOff, channel, []int{note})
+		status.ScheduleEvent(t, duration, ev)
+	}
 }
 func PlayNoteAutomation(duration uint, channel int, noteF IntAutomation, velocityF IntAutomation) Sequence {
-	return Combine(
-		NoteOnAutomation(channel, noteF, velocityF),
-		// TODO: schedule note off event in the future instead
-	)
+	return func(status *Status, counter, t uint, s chan *synth.Event) {
+		NoteOnAutomation(channel, noteF, velocityF)(status, counter, t, s)
+		ev := synth.NewEvent(synth.NoteOff, channel, []int{noteF(status, counter, t)})
+		status.ScheduleEvent(t, duration, ev)
+	}
 }
 func PlayNotesAutomation(duration uint, channel int, noteF IntArrayAutomation, velocityF IntAutomation) Sequence {
-	return Combine(
-		NotesOnAutomation(channel, noteF, velocityF),
-		// TODO: schedule note off event in the future instead
-	)
+	return func(status *Status, counter, t uint, s chan *synth.Event) {
+		NotesOnAutomation(channel, noteF, velocityF)(status, counter, t, s)
+		for _, note := range noteF(status, counter, t) {
+			ev := synth.NewEvent(synth.NoteOff, channel, []int{note})
+			status.ScheduleEvent(t, duration, ev)
+		}
+	}
 }
 
 func PlayNoteEvery(n uint, duration uint, channel, note, velocity int) Sequence {

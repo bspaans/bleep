@@ -71,6 +71,11 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 
 		start := time.Now()
 
+		for _, scheduled := range seq.Status.GetScheduledEvents(seq.Time) {
+			fmt.Println("Dispatching scheduled event", scheduled)
+			s <- scheduled.Event
+		}
+
 		for _, sequence := range seq.Sequences {
 			sequence(&seq.Status, seq.Time, seq.Time, s)
 		}
