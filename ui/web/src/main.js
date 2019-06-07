@@ -51,6 +51,8 @@ export class Bleep {
     this.channels = [];
     this.registers = new RegisterDefinitions();
     this.tracks = [];
+    this.bpm = 120;
+    this.granularity = 64;
     this.openTimelineEditor();
     this.draw();
   }
@@ -82,6 +84,11 @@ export class Bleep {
     }
     this.api.requestSequencerDef();
     this.openTimelineEditor();
+  }
+
+  handleStatusMessage(status) {
+    this.bpm = status.BPM || 120;
+    this.granularity = status.granularity || 64;
   }
   
   // api callback
@@ -131,15 +138,15 @@ export class Bleep {
 
   compile() {
     var result = {
-      "bpm": 120,
-      "granularity": 64,
+      "bpm": this.bpm,
+      "granularity": this.granularity,
       "channels": [],
       "sequences": [],
     };
     for (var track of this.tracks) {
       var trackResult = track.compile();
-      if (trackResult.track) {
-        result.tracks.push(trackResult.track);
+      if (trackResult.channel) {
+        result.channels.push(trackResult.channel);
       }
       for (var s of trackResult.sequences) {
         result.sequences.push(s);

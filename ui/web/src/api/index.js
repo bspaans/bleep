@@ -16,7 +16,8 @@ export class API {
     var socket = new WebSocket("ws://localhost:10000/ws");
     socket.onopen = ((e) => {
       this.socket = socket;
-      this.sendData(ChannelDefMessage, "test");
+      this.requestStatus();
+      this.requestChannelsDef();
     }).bind(this)
     socket.onmessage = this.handleMessageReceived.bind(this);
   }
@@ -28,7 +29,15 @@ export class API {
       this.app.initialiseChannels(msg.data);
     } else if (msg.type === SequencerDefMessage) {
       this.app.initialiseSequenceTracks(msg.data);
+    } else if (msg.type == StatusMessage) {
+      this.app.handleStatusMessage(msg.data);
     }
+  }
+  requestStatus() {
+    this.sendData(StatusMessage, null);
+  }
+  requestChannelsDef() {
+    this.sendData(ChannelDefMessage, null);
   }
   requestSequencerDef() {
     this.sendData(SequencerDefMessage, null);

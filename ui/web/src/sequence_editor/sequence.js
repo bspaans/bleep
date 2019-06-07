@@ -6,7 +6,7 @@ import { Register } from '../model/';
 export class Sequence extends Patchable {
   constructor(target, modules, patches) {
     super(modules, patches);
-    this.target = target || 1;
+    this.target = target || 0;
   }
 
   loadFromDefinition(sequenceDef) {
@@ -216,7 +216,6 @@ export class Sequence extends Patchable {
     } else if (sequenceDef["register"]) {
       var def = sequenceDef.register;
       var g = new RegisterOutput("register", INT_TYPE, def.register);
-      g.dials.value.value = def.value || 0;
       var ix = this.addModule(g);
       if (def["auto_value"]) {
         var aIx = this.loadAutomation(def.auto_value);
