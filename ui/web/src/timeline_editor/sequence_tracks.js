@@ -1,4 +1,5 @@
 import { SequenceTrack } from './sequence_track.js';
+import { Channel, Register } from '../model/';
 
 export class BaseSequenceTracks {
 
@@ -12,7 +13,12 @@ export class BaseSequenceTracks {
   }
 
   handleClick() {
-    this.app.openSequenceEditor(this.sequenceTracks[0].sequence, this.unit.getCompileTarget());
+    if (this.unit instanceof Channel) {
+      this.app.openSequenceEditor(this.sequenceTracks[0].sequence, this.unit.getCompileTarget());
+    } else if (this.unit instanceof Register) {
+      this.app.openRegisterSequenceEditor(this.sequenceTracks[0].sequence, this.unit);
+
+    }
   }
 
   draw(app, colorOffset) {

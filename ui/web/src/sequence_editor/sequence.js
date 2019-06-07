@@ -26,10 +26,17 @@ export class Sequence extends Patchable {
     var queue = [];
     var seen = {};
     var dependencies = [];
+    var outputNodes = {
+        "play_note": true,
+        "play_notes": true,
+        "register": true,
+        "float_register": true,
+        "array_register": true,
+    };
 
     for (var i = 0; i < this.modules.length; i++) {
       var m = this.modules[i];
-      if (m.unit.type == "play_note" || m.unit.type == "play_notes") {
+      if (outputNodes[m.unit.type]) {
         queue.push(i);
       }
     }
@@ -67,7 +74,7 @@ export class Sequence extends Patchable {
           connections[socketId] = this.getConnectedSequences(sequences, ix, socketId);
         }
       }
-      if (unit.type == "play_note" || unit.type == "play_notes") {
+      if (unit.type == "play_note" || unit.type == "play_notes" || unit instanceof RegisterOutput) {
         for (var o of unit.compile(connections)) {
           result.push(o);
         }
@@ -204,7 +211,7 @@ export class Sequence extends Patchable {
       return ix;
     } else if (sequenceDef["array_register"]) {
       var def = sequenceDef.array_register;
-      var g = new RegisterOutput("array_register", INT_ARRAY_TYPE);
+      var g = new RegisterOutput("array_register", INT_ARRAY_TYPE, def.register);
       var ix = this.addModule(g);
       if (def["auto_value"]) {
         var aIx = this.loadIntArrayAutomation(def.auto_value);
@@ -215,7 +222,7 @@ export class Sequence extends Patchable {
       return ix;
     } else if (sequenceDef["register"]) {
       var def = sequenceDef.register;
-      var g = new RegisterOutput("register", INT_TYPE);
+      var g = new RegisterOutput("register", INT_TYPE, def.register);
       g.dials.value.value = def.value || 0;
       var ix = this.addModule(g);
       if (def["auto_value"]) {

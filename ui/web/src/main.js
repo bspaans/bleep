@@ -2,7 +2,7 @@ import { Theme } from './theme.js';
 import { InstrumentEditor, Instrument } from './instrument_editor/';
 import { TimelineEditor, ChannelTrack, RegisterTrack } from './timeline_editor/';
 import { Channel, Register } from './model/';
-import { SequenceEditor } from './sequence_editor/';
+import { SequenceEditor, RegisterSequenceEditor } from './sequence_editor/';
 import { API } from './api/';
 
 class RegisterDefinitions {
@@ -262,6 +262,10 @@ export class Bleep {
   }
   openSequenceEditor(sequence, channelNr) {
     this.active = new SequenceEditor(this, sequence, channelNr, this.openTimelineEditor.bind(this))
+    this.draw();
+  }
+  openRegisterSequenceEditor(sequence, register) {
+    this.active = new RegisterSequenceEditor(this, sequence, register, this.openTimelineEditor.bind(this))
     this.draw();
   }
 
