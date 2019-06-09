@@ -115,8 +115,10 @@ func PlayNote(duration uint, channel, note, velocity int) Sequence {
 }
 func PlayNoteAutomation(duration uint, channel int, noteF IntAutomation, velocityF IntAutomation) Sequence {
 	return func(status *Status, counter, t uint, s chan *synth.Event) {
-		NoteOnAutomation(channel, noteF, velocityF)(status, counter, t, s)
-		ev := synth.NewEvent(synth.NoteOff, channel, []int{noteF(status, counter, t)})
+		note := noteF(status, counter, t)
+		vel := velocityF(status, counter, t)
+		NoteOn(channel, note, vel)(status, counter, t, s)
+		ev := synth.NewEvent(synth.NoteOff, channel, []int{note})
 		status.ScheduleEvent(t, duration, ev)
 	}
 }
