@@ -69,6 +69,11 @@ func (c *Controller) ReloadPercussionBank() error {
 	return nil
 }
 
+func (c *Controller) LoadEmptySequencer() {
+	c.Sequencer = sequencer.NewSequencer(120, 64)
+	c.StartSequencer()
+}
+
 // Load a Sequencer definition from a file and start the sequencer in a
 // go-routine.
 func (c *Controller) LoadSequencerFromFile(file string) error {

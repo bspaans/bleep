@@ -25,9 +25,10 @@ type Sequencer struct {
 
 func NewSequencer(bpm float64, granularity int) *Sequencer {
 	seq := &Sequencer{
-		Status:    status.NewStatus(bpm, granularity),
-		Sequences: []sequences.Sequence{},
-		Inputs:    make(chan *SequencerEvent, 32),
+		Status:              status.NewStatus(bpm, granularity),
+		Sequences:           []sequences.Sequence{},
+		InitialChannelSetup: []*channels.ChannelDef{},
+		Inputs:              make(chan *SequencerEvent, 32),
 	}
 	return seq
 }

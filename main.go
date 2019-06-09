@@ -19,9 +19,10 @@ var sequencer = flag.String("sequencer", "", "Load sequencer from file")
 var debugPlots = flag.Bool("plot", false, "Plot outputs (debugging tool)")
 var enable8bit = flag.Bool("8bit", false, "Set bit depth to 8bit")
 var enableMono = flag.Bool("mono", false, "Mono output")
+var enableSequencer = flag.Bool("enable-sequencer", false, "Enable sequencer")
 var record = flag.String("record", "", "Record .wav output")
-var instruments = flag.String("instruments", "examples/bank.yaml", "The instruments bank to load")
-var percussion = flag.String("percussion", "examples/percussion_bank.yaml", "The instruments bank to load for the percussion channel.")
+var instruments = flag.String("instruments", "", "The instruments bank to load")
+var percussion = flag.String("percussion", "", "The instruments bank to load for the percussion channel.")
 var enableUI = flag.Bool("ui", false, "Enable terminal UI (experimental)")
 var enableWS = flag.Bool("ws", false, "Enable web socket endpoint (experimental)")
 
@@ -56,11 +57,15 @@ func main() {
 	if err := ctrl.EnablePortAudioSink(); err != nil {
 		QuitWithError(err)
 	}
-	if err := ctrl.LoadInstrumentBank(*instruments); err != nil {
-		QuitWithError(err)
+	if *instruments != "" {
+		if err := ctrl.LoadInstrumentBank(*instruments); err != nil {
+			QuitWithError(err)
+		}
 	}
-	if err := ctrl.LoadPercussionBank(*percussion); err != nil {
-		QuitWithError(err)
+	if *percussion != "" {
+		if err := ctrl.LoadPercussionBank(*percussion); err != nil {
+			QuitWithError(err)
+		}
 	}
 	defer ctrl.Quit()
 
@@ -73,6 +78,9 @@ func main() {
 		os.Exit(0)
 	}()
 
+	if *enableSequencer {
+		ctrl.LoadEmptySequencer()
+	}
 	if *sequencer != "" {
 		err := ctrl.LoadSequencerFromFile(*sequencer)
 		if err != nil {

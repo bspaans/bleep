@@ -51,7 +51,11 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 	} else if m.Type == ChannelDef {
 		m.send(conn, m.Type, ctrl.Sequencer.InitialChannelSetup)
 	} else if m.Type == SequencerDef {
-		m.send(conn, m.Type, ctrl.Sequencer.SequencerDef.Sequences)
+		if ctrl.Sequencer.SequencerDef != nil {
+			m.send(conn, m.Type, ctrl.Sequencer.SequencerDef.Sequences)
+		} else {
+			m.send(conn, m.Type, nil)
+		}
 	} else if m.Type == SetSequencerDef {
 		def := definitions.SequencerDef{}
 		if err := json.Unmarshal([]byte(m.Data), &def); err != nil {
