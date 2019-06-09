@@ -33,6 +33,10 @@ func (s *Server) Start(ctrl *controller.Controller) *Server {
 
 func (s *Server) Websocket(w http.ResponseWriter, r *http.Request) {
 	var upgrader = websocket.Upgrader{} // use default options
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		fmt.Println(r)
+		return true
+	}
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
