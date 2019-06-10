@@ -19,10 +19,13 @@ func Every(n uint, seq Sequence) Sequence {
 
 func EuclidianRhythm(n, over int, tickDuration uint, seq Sequence) Sequence {
 	rhythm := theory.EuclidianRhythm(n, over)
-	length := uint(over) * tickDuration
+	//length := uint(over) * tickDuration
 	return func(status *Status, counter, t uint, s chan *synth.Event) {
-		ix := (t % length) / tickDuration
-		if rhythm[ix] {
+		ix := (t / tickDuration) % uint(over)
+		//ix := (t % length) / tickDuration
+		//remainder := (t % length) % tickDuration
+		remainder := t % tickDuration
+		if remainder == 0 && rhythm[ix] {
 			seq(status, counter, t, s)
 		}
 	}
