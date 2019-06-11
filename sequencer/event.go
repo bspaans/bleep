@@ -14,6 +14,11 @@ const (
 	IncreaseBPM       EventType = iota
 	DecreaseBPM       EventType = iota
 
+	StartPlaying    EventType = iota
+	StopPlaying     EventType = iota
+	PausePlaying    EventType = iota
+	RewindSequencer EventType = iota
+
 	QuitSequencer EventType = iota
 )
 

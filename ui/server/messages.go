@@ -18,6 +18,10 @@ const (
 	ChannelDef      MessageType = "channel_def"
 	SequencerDef    MessageType = "sequencer_def"
 	SetSequencerDef MessageType = "set_sequencer_def"
+	Play            MessageType = "play"
+	Stop            MessageType = "stop"
+	Pause           MessageType = "pause"
+	Rewind          MessageType = "rewind"
 )
 
 type ResponseMessage struct {
@@ -50,6 +54,15 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		})
 	} else if m.Type == ChannelDef {
 		m.send(conn, m.Type, ctrl.Sequencer.InitialChannelSetup)
+	} else if m.Type == Play {
+		ctrl.Sequencer.StartPlaying()
+	} else if m.Type == Pause {
+		ctrl.Sequencer.PausePlaying()
+	} else if m.Type == Stop {
+		ctrl.Sequencer.StopPlaying()
+	} else if m.Type == Rewind {
+		ctrl.Sequencer.Rewind()
+
 	} else if m.Type == SequencerDef {
 		if ctrl.Sequencer.SequencerDef != nil {
 			m.send(conn, m.Type, ctrl.Sequencer.SequencerDef.Sequences)

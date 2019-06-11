@@ -6,6 +6,7 @@ import (
 
 type Status struct {
 	BPM               float64
+	Playing           bool
 	Granularity       int
 	IntRegisters      []int
 	IntArrayRegisters [][]int
