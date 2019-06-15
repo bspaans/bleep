@@ -12,12 +12,12 @@ type EuclidianDef struct {
 	Sequence *SequenceDef `json:"sequence" yaml:"sequence"`
 }
 
-func (e *EuclidianDef) GetSequence(granularity int) (Sequence, error) {
-	s, err := e.Sequence.GetSequence(granularity)
+func (e *EuclidianDef) GetSequence(ctx *context) (Sequence, error) {
+	s, err := e.Sequence.GetSequence(ctx)
 	if err != nil {
 		return nil, util.WrapError("euclidian", err)
 	}
-	duration, err := parseDuration(e.Duration, granularity)
+	duration, err := parseDuration(e.Duration, ctx.Granularity)
 	if err != nil {
 		return nil, util.WrapError("euclidian", err)
 	}

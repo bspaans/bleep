@@ -10,12 +10,12 @@ type OffsetDef struct {
 	Sequence SequenceDef `json:"sequence" yaml:"sequence"`
 }
 
-func (e *OffsetDef) GetSequence(granularity int) (Sequence, error) {
-	duration, err := parseDuration(e.Offset, granularity)
+func (e *OffsetDef) GetSequence(ctx *context) (Sequence, error) {
+	duration, err := parseDuration(e.Offset, ctx.Granularity)
 	if err != nil {
 		return nil, util.WrapError("offset", err)
 	}
-	s, err := e.Sequence.GetSequence(granularity)
+	s, err := e.Sequence.GetSequence(ctx)
 	if err != nil {
 		return nil, util.WrapError("offset", err)
 	}

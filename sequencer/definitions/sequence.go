@@ -33,11 +33,7 @@ type SequenceDef struct {
 	Combine        []*SequenceDef             `json:"combine,omitempty" yaml:"combine,omitempty"`
 }
 
-type SequenceGenerator interface {
-	GetSequence(granularity int) (Sequence, error)
-}
-
-func (e *SequenceDef) GetSequence(granularity int) (Sequence, error) {
+func (e *SequenceDef) GetSequence(ctx *context) (Sequence, error) {
 	if e == nil {
 		return nil, fmt.Errorf("Missing sequence")
 	}
@@ -47,16 +43,16 @@ func (e *SequenceDef) GetSequence(granularity int) (Sequence, error) {
 	var field string
 	if e.Every != nil {
 		field = "repeat"
-		result, err = e.Every.GetSequence(granularity)
+		result, err = e.Every.GetSequence(ctx)
 	} else if e.Euclidian != nil {
 		field = "euclidian"
-		result, err = e.Euclidian.GetSequence(granularity)
+		result, err = e.Euclidian.GetSequence(ctx)
 	} else if e.PlayNoteEvery != nil {
 		field = "play_note"
-		result, err = e.PlayNoteEvery.GetSequence(granularity)
+		result, err = e.PlayNoteEvery.GetSequence(ctx)
 	} else if e.PlayNotesEvery != nil {
 		field = "play_notes"
-		result, err = e.PlayNotesEvery.GetSequence(granularity)
+		result, err = e.PlayNotesEvery.GetSequence(ctx)
 	} else if e.Panning != nil {
 		field = "panning"
 		result, err = e.Panning.GetSequence(PanningAutomation)
@@ -101,21 +97,21 @@ func (e *SequenceDef) GetSequence(granularity int) (Sequence, error) {
 		result, err = e.ArrayRegister.GetSequence()
 	} else if e.MIDI != nil {
 		field = "midi"
-		result, err = e.MIDI.GetSequence()
+		result, err = e.MIDI.GetSequence(ctx)
 	} else if e.After != nil {
 		field = "after"
-		result, err = e.After.GetSequence(granularity)
+		result, err = e.After.GetSequence(ctx)
 	} else if e.Before != nil {
 		field = "before"
-		result, err = e.Before.GetSequence(granularity)
+		result, err = e.Before.GetSequence(ctx)
 	} else if e.Offset != nil {
 		field = "offset"
-		result, err = e.Offset.GetSequence(granularity)
+		result, err = e.Offset.GetSequence(ctx)
 	} else if e.Combine != nil {
 		field = "combine"
 		sequences := []Sequence{}
 		for _, s := range e.Combine {
-			s_, err := s.GetSequence(granularity)
+			s_, err := s.GetSequence(ctx)
 			if err != nil {
 				return nil, util.WrapError("combine", err)
 			}

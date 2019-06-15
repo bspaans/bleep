@@ -10,12 +10,12 @@ type AfterDef struct {
 	Sequence SequenceDef `json:"sequence" yaml:"sequence"`
 }
 
-func (e *AfterDef) GetSequence(granularity int) (sequences.Sequence, error) {
-	duration, err := parseDuration(e.After, granularity)
+func (e *AfterDef) GetSequence(ctx *context) (sequences.Sequence, error) {
+	duration, err := parseDuration(e.After, ctx.Granularity)
 	if err != nil {
 		return nil, util.WrapError("after", err)
 	}
-	s, err := e.Sequence.GetSequence(granularity)
+	s, err := e.Sequence.GetSequence(ctx)
 	if err != nil {
 		return nil, util.WrapError("after", err)
 	}

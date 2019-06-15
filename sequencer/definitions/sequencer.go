@@ -3,6 +3,7 @@ package definitions
 import (
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 
 	"github.com/bspaans/bleep/channels"
 	. "github.com/bspaans/bleep/sequencer/sequences"
@@ -15,12 +16,36 @@ type SequencerDef struct {
 	Granularity          int           `json:"granularity" yaml:"granularity"`
 	Sequences            []SequenceDef `json:"sequences" yaml:"sequences"`
 	channels.ChannelsDef `json:",inline" yaml:",inline"`
+	FromFile             string `json:"from_file" yaml:"from_file"`
+}
+
+type context struct {
+	BaseDir     string
+	Granularity int
+}
+
+func (s *SequencerDef) getBaseDir() (string, error) {
+	if s.FromFile != "" {
+		fp, err := filepath.Abs(s.FromFile)
+		if err != nil {
+			return "", err
+		}
+		return filepath.Dir(fp), nil
+	}
+	return ".", nil
 }
 
 func (s *SequencerDef) GetSequences() ([]Sequence, error) {
+	baseDir, err := s.getBaseDir()
+	if err != nil {
+		return nil, err
+	}
 	sequences := []Sequence{}
 	for i, se := range s.Sequences {
-		sequence, err := se.GetSequence(s.Granularity)
+		sequence, err := se.GetSequence(&context{
+			BaseDir:     baseDir,
+			Granularity: s.Granularity,
+		})
 		if err != nil {
 			return nil, util.WrapError(fmt.Sprintf("sequence [%d]", i), err)
 		}
@@ -49,5 +74,6 @@ func NewSequencerDefFromFile(file string) (*SequencerDef, error) {
 	if len(result.Sequences) == 0 {
 		return nil, fmt.Errorf("No sequences in sequencer def %s", file)
 	}
+	result.FromFile = file
 	return &result, nil
 }

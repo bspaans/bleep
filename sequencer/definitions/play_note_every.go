@@ -19,16 +19,16 @@ type PlayNoteEveryDef struct {
 	Offset             interface{}    `json:"offset,omitempty" yaml:"offset,omitempty"`
 }
 
-func (e *PlayNoteEveryDef) GetSequence(granularity int) (Sequence, error) {
+func (e *PlayNoteEveryDef) GetSequence(ctx *context) (Sequence, error) {
 	every := uint(0)
 	if e.Every != nil {
-		every_, err := parseDuration(e.Every, granularity)
+		every_, err := parseDuration(e.Every, ctx.Granularity)
 		if err != nil {
 			return nil, util.WrapError("play_note", err)
 		}
 		every = every_
 	}
-	duration, err := parseDuration(e.Duration, granularity)
+	duration, err := parseDuration(e.Duration, ctx.Granularity)
 	if err != nil {
 		return nil, util.WrapError("play_note", err)
 	}
@@ -61,7 +61,7 @@ func (e *PlayNoteEveryDef) GetSequence(granularity int) (Sequence, error) {
 		result = PlayNoteEveryAutomation(every, duration, e.Channel, noteF, velocityF)
 	}
 	if e.Offset != nil {
-		offset, err := parseDuration(e.Offset, granularity)
+		offset, err := parseDuration(e.Offset, ctx.Granularity)
 		if err != nil {
 			return nil, util.WrapError("play_note > offset", err)
 		}
