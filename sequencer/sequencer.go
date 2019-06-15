@@ -38,13 +38,7 @@ func NewSequencerFromFile(file string) (*Sequencer, error) {
 		return nil, util.WrapError("sequencer", err)
 	}
 	seq := NewSequencer(s.BPM, s.Granularity)
-	seq.SequencerDef = s
-	seqs, err := s.GetSequences()
-	if err != nil {
-		return nil, util.WrapError("sequencer", err)
-	}
-	seq.Sequences = seqs
-	seq.InitialChannelSetup = s.ChannelsDef.Channels
+	seq.instantiateFromSequencerDef(s)
 	seq.FromFile = file
 	return seq, nil
 }
@@ -184,6 +178,15 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 		} else if seq.SequencerDef != nil {
 			seq.instantiateFromSequencerDef(seq.SequencerDef)
 		}
+	} else if ev.Type == LoadFile {
+		s, err := definitions.NewSequencerDefFromFile(ev.Value)
+		if err != nil {
+			fmt.Println("Failed to load sequencer:", err.Error())
+			return
+		}
+		seq.Time = 0
+		seq.FromFile = ev.Value
+		seq.instantiateFromSequencerDef(s)
 	} else if ev.Type == SetSequencerDef {
 		seq.instantiateFromSequencerDef(ev.SequencerDef)
 		s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)
@@ -249,6 +252,11 @@ func (seq *Sequencer) PausePlaying() {
 }
 func (seq *Sequencer) Rewind() {
 	seq.Inputs <- NewSequencerEvent(RewindSequencer)
+}
+func (seq *Sequencer) LoadFile(file string) {
+	ev := NewSequencerEvent(LoadFile)
+	ev.Value = file
+	seq.Inputs <- ev
 }
 func (seq *Sequencer) IncreaseBPM() {
 	seq.Inputs <- NewSequencerEvent(IncreaseBPM)

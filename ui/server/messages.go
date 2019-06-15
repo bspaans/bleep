@@ -22,6 +22,7 @@ const (
 	Stop            MessageType = "stop"
 	Pause           MessageType = "pause"
 	Rewind          MessageType = "rewind"
+	Load            MessageType = "load"
 )
 
 type ResponseMessage struct {
@@ -62,7 +63,8 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		ctrl.Sequencer.StopPlaying()
 	} else if m.Type == Rewind {
 		ctrl.Sequencer.Rewind()
-
+	} else if m.Type == Load {
+		ctrl.Sequencer.LoadFile(m.Data)
 	} else if m.Type == SequencerDef {
 		if ctrl.Sequencer.SequencerDef != nil {
 			m.send(conn, m.Type, ctrl.Sequencer.SequencerDef.Sequences)

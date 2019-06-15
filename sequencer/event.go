@@ -19,12 +19,15 @@ const (
 	PausePlaying    EventType = iota
 	RewindSequencer EventType = iota
 
+	LoadFile EventType = iota
+
 	QuitSequencer EventType = iota
 )
 
 type SequencerEvent struct {
 	Type         EventType
 	SequencerDef *definitions.SequencerDef
+	Value        string
 }
 
 func NewSequencerEvent(ty EventType) *SequencerEvent {
