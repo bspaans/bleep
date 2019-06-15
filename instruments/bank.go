@@ -6,6 +6,7 @@ import (
 )
 
 type BankType func(cfg *audio.AudioConfig) generators.Generator
+type BankDefType func(cfg *Context) generators.Generator
 type Instrument BankType
 
 var Bank = make([]BankType, 128)
@@ -24,5 +25,19 @@ func init() {
 		} else {
 			Bank[i] = withCfg(generators.NewSquareWaveOscillator)
 		}
+	}
+}
+
+func BankDefToBankType(def BankDefType, fromFile string) BankType {
+	return func(cfg *audio.AudioConfig) generators.Generator {
+		ctx, _ := NewContext(fromFile, cfg)
+		return def(ctx)
+	}
+}
+
+func BankDefToInstrument(def BankDefType, fromFile string) Instrument {
+	return func(cfg *audio.AudioConfig) generators.Generator {
+		ctx, _ := NewContext(fromFile, cfg)
+		return def(ctx)
 	}
 }

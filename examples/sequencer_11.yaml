@@ -11,7 +11,7 @@ channels:
   generator:
     panning:
       wav:
-        file: examples/piano.wav
+        file: piano.wav
         pitched: true
         gain: 2.0
 
@@ -41,7 +41,7 @@ channels:
   tremelo: 50
   grain:
     name: Grain Test
-    file: examples/nice-work.wav
+    file: nice-work.wav
     gain: 4.0
     grain_size: 50.0
     birth_rate: 150.0
@@ -107,7 +107,7 @@ channels:
   generator:
     panning:
       wav:
-        file: examples/piano.wav
+        file: piano.wav
         pitched: true
         gain: 2.0
 

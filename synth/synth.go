@@ -175,7 +175,7 @@ func (s *Synth) LoadInstrumentBank(file string) error {
 	if err != nil {
 		return err
 	}
-	if err := bankDef.Validate(); err != nil {
+	if err := bankDef.Validate(s.Config); err != nil {
 		return err
 	}
 	bankDef.Activate(0)
@@ -187,7 +187,7 @@ func (s *Synth) LoadPercussionBank(file string) error {
 	if err != nil {
 		return err
 	}
-	if err := bankDef.Validate(); err != nil {
+	if err := bankDef.Validate(s.Config); err != nil {
 		return err
 	}
 	bankDef.Activate(1)

@@ -16,7 +16,7 @@ type SequencerDef struct {
 	Granularity          int           `json:"granularity" yaml:"granularity"`
 	Sequences            []SequenceDef `json:"sequences" yaml:"sequences"`
 	channels.ChannelsDef `json:",inline" yaml:",inline"`
-	FromFile             string `json:"from_file" yaml:"from_file"`
+	FromFile             string `json:"-" yaml:"-"`
 }
 
 type context struct {

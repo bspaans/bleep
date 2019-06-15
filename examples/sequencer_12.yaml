@@ -93,12 +93,12 @@ channels:
   generator:
     panning:
       wav:
-        file: examples/piano.wav
+        file: piano.wav
         pitched: true
         gain: 2.0
   grain:
     name: Grain Test
-    file: examples/nice-work.wav
+    file: nice-work.wav
     gain: 4.0
     grain_size: 25.0
     birth_rate: 125.0

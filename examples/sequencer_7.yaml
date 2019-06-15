@@ -11,7 +11,7 @@ channels:
     vocoder:
       source:
         wav:
-          file: examples/nice-work.wav
+          file: nice-work.wav
           gain: 1.0
       vocoder:
         sine:

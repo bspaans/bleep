@@ -25,7 +25,7 @@ channels:
   panning: 67
   grain:
     name: Grain Test
-    file: examples/nice-work.wav
+    file: nice-work.wav
     gain: 4.0
     grain_size: 50.0
     birth_rate: 35.0

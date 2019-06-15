@@ -4,7 +4,7 @@ bank:
 - index: 35
   name: Acoustic Bass Drum
   wav:
-    file: examples/kick.wav
+    file: kick.wav
     gain: 2.0
 
 
@@ -32,7 +32,7 @@ bank:
 - index: 37
   name: Side Stick / RimShot
   wav:
-    file: examples/clap.wav
+    file: clap.wav
     gain: 2.0
     attack: 0.0
     decay: 10.0
@@ -108,7 +108,7 @@ bank:
 - index: 41
   name: Low Floor Tom
   wav:
-    file: examples/kick.wav
+    file: kick.wav
     gain: 2.0
     attack: 0.0
     decay: 10.0

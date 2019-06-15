@@ -99,7 +99,7 @@ channels:
   generator:
     panning:
       wav:
-        file: examples/piano.wav
+        file: piano.wav
         pitched: true
         gain: 1.5
 

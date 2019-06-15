@@ -5,7 +5,7 @@ bank:
   name: Piano
   panning:
     wav:
-      file: examples/piano.wav
+      file: piano.wav
       pitched: true
       gain: 8.0
 
@@ -127,7 +127,7 @@ bank:
 - index: 11
   name: Vibraphone
   wav:
-    file: vibraphone.wav
+    file: ../vibraphone.wav
     gain: 4.0
     pitched: true
     base_pitch: c4

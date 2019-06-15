@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/bspaans/bleep/channels"
+	"github.com/bspaans/bleep/instruments"
 	"github.com/bspaans/bleep/sequencer/definitions"
 	"github.com/bspaans/bleep/sequencer/sequences"
 	"github.com/bspaans/bleep/sequencer/status"
@@ -107,16 +108,21 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 }
 
 func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
+	ctx, err := instruments.NewContext(seq.FromFile, nil)
+	if err != nil {
+		fmt.Printf("Failed to load context for file %s: %s", seq.FromFile, err.Error())
+		return
+	}
 	for _, channelDef := range seq.InitialChannelSetup {
 		ch := channelDef.Channel
 		if ch != 9 {
 			if channelDef.Generator == nil {
 				s <- synth.NewEvent(synth.ProgramChange, ch, []int{channelDef.Instrument})
 			} else {
-				if err := channelDef.Generator.Validate(); err != nil {
+				if err := channelDef.Generator.Validate(ctx); err != nil {
 					fmt.Printf("Failed to load generator for channel %d; %s\n", ch, err.Error())
 				} else {
-					instr := channelDef.Generator.Generator
+					instr := instruments.BankDefToInstrument(channelDef.Generator.Generator, seq.FromFile)
 					s <- synth.NewInstrumentEvent(synth.SetInstrument, ch, instr)
 				}
 			}
@@ -138,7 +144,7 @@ func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
 
 		if channelDef.Grain != nil {
 			g := channelDef.Grain
-			s <- synth.NewStringEvent(synth.SetGrain, ch, g.File)
+			s <- synth.NewStringEvent(synth.SetGrain, ch, ctx.GetPathFor(g.File))
 			s <- synth.NewFloatEvent(synth.SetGrainGain, ch, []float64{channelDef.Grain.Gain})
 			s <- synth.NewFloatEvent(synth.SetGrainSize, ch, []float64{channelDef.Grain.GrainSize})
 			s <- synth.NewFloatEvent(synth.SetGrainBirthRate, ch, []float64{channelDef.Grain.BirthRate})
