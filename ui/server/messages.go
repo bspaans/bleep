@@ -23,6 +23,7 @@ const (
 	Pause           MessageType = "pause"
 	Rewind          MessageType = "rewind"
 	Load            MessageType = "load"
+	ForceReload     MessageType = "force_reload"
 )
 
 type ResponseMessage struct {
@@ -36,7 +37,14 @@ type StatusResponse struct {
 
 type Message struct {
 	Type MessageType `json:"type"`
-	Data string      `json:"data"`
+	Data interface{} `json:"data"`
+}
+
+func NewMessage(ty MessageType, data interface{}) *Message {
+	return &Message{
+		Type: ty,
+		Data: data,
+	}
 }
 
 func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
@@ -64,7 +72,7 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 	} else if m.Type == Rewind {
 		ctrl.Sequencer.Rewind()
 	} else if m.Type == Load {
-		ctrl.Sequencer.LoadFile(m.Data)
+		ctrl.Sequencer.LoadFile(m.Data.(string))
 	} else if m.Type == SequencerDef {
 		if ctrl.Sequencer.SequencerDef != nil {
 			m.send(conn, m.Type, ctrl.Sequencer.SequencerDef.Sequences)
@@ -73,7 +81,7 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		}
 	} else if m.Type == SetSequencerDef {
 		def := definitions.SequencerDef{}
-		if err := json.Unmarshal([]byte(m.Data), &def); err != nil {
+		if err := json.Unmarshal([]byte(m.Data.(string)), &def); err != nil {
 			fmt.Println("Invalid sequencer_def:", err.Error())
 		}
 		fmt.Println("Received sequencer def:")
@@ -90,4 +98,8 @@ func (m *Message) send(conn *websocket.Conn, typ MessageType, v interface{}) {
 	if err == nil {
 		conn.WriteMessage(websocket.TextMessage, msg)
 	}
+}
+
+func (m *Message) Send(conn *websocket.Conn) {
+	m.send(conn, m.Type, m.Data)
 }

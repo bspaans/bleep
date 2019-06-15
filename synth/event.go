@@ -35,6 +35,8 @@ const (
 	ToggleSoloChannel  EventType = iota
 	SilenceAllChannels EventType = iota
 	SetInstrument      EventType = iota
+
+	ForceUIReload EventType = iota
 )
 
 type Event struct {

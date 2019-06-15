@@ -179,14 +179,15 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 			seq.instantiateFromSequencerDef(seq.SequencerDef)
 		}
 	} else if ev.Type == LoadFile {
-		s, err := definitions.NewSequencerDefFromFile(ev.Value)
+		def, err := definitions.NewSequencerDefFromFile(ev.Value)
 		if err != nil {
 			fmt.Println("Failed to load sequencer:", err.Error())
 			return
 		}
 		seq.Time = 0
 		seq.FromFile = ev.Value
-		seq.instantiateFromSequencerDef(s)
+		seq.instantiateFromSequencerDef(def)
+		s <- synth.NewEvent(synth.ForceUIReload, 0, nil)
 	} else if ev.Type == SetSequencerDef {
 		seq.instantiateFromSequencerDef(ev.SequencerDef)
 		s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)

@@ -145,6 +145,8 @@ func (s *Synth) dispatchEvent(ev *Event) {
 		semitones *= (64 / 5)
 		pitchbendFactor := math.Pow(2, semitones/12)
 		s.Mixer.SetPitchbend(ch, pitchbendFactor)
+	} else if et == ForceUIReload {
+		s.Outputs <- ui.NewUIEvent(ui.ForceReloadEvent)
 	} else {
 	}
 

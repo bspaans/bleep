@@ -14,6 +14,7 @@ import (
 
 type Server struct {
 	Controller *controller.Controller
+	Clients    []*websocket.Conn
 }
 
 func NewServer() *Server {
@@ -42,7 +43,19 @@ func (s *Server) Websocket(w http.ResponseWriter, r *http.Request) {
 		log.Print("upgrade:", err)
 		return
 	}
-	defer c.Close()
+	s.Clients = append(s.Clients, c)
+	defer func() {
+		// Remove from clients
+		ix := -1
+		for i, client := range s.Clients {
+			if client == c {
+				ix = i
+			}
+		}
+		s.Clients[ix] = s.Clients[len(s.Clients)-1]
+		s.Clients = s.Clients[:len(s.Clients)-1]
+		c.Close()
+	}()
 	for {
 		_, message, err := c.ReadMessage()
 		log.Printf("recv: %s", message)
@@ -60,7 +73,17 @@ func (s *Server) Websocket(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) Broadcast(msg *Message) {
+	for _, client := range s.Clients {
+		msg.Send(client)
+	}
+}
+
 func (s *Server) HandleEvent(ev *ui.UIEvent) {
+	if ev.Type == ui.ForceReloadEvent {
+		msg := NewMessage(ForceReload, "")
+		s.Broadcast(msg)
+	}
 }
 
 func (s *Server) serveFile(file, contentType string) http.HandlerFunc {

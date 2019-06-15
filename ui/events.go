@@ -4,6 +4,7 @@ type UIEventType int
 
 const (
 	ChannelsOutputEvent UIEventType = iota
+	ForceReloadEvent    UIEventType = iota
 )
 
 type UIEvent struct {
