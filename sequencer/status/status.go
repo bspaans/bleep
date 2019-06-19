@@ -8,6 +8,7 @@ type Status struct {
 	BPM               float64
 	Playing           bool
 	Granularity       int
+	Time              uint
 	IntRegisters      []int
 	IntArrayRegisters [][]int
 	FloatRegisters    []float64
@@ -22,6 +23,7 @@ func NewStatus(bpm float64, granularity int) Status {
 		IntArrayRegisters: make([][]int, 128),
 		FloatRegisters:    make([]float64, 128),
 		ScheduledEvents:   []*ScheduledEvent{},
+		Time:              0,
 	}
 }
 
@@ -29,6 +31,13 @@ func (s *Status) ScheduleEvent(t uint, duration uint, ev *synth.Event) {
 	when := t + duration
 	event := NewScheduledEvent(when, ev)
 	s.ScheduledEvents = append(s.ScheduledEvents, event)
+}
+
+func (s *Status) ResetTime() {
+	s.Time = 0
+}
+func (s *Status) IncrementTime() {
+	s.Time++
 }
 
 func (s *Status) GetScheduledEvents(t uint) []*ScheduledEvent {

@@ -18,7 +18,6 @@ type Sequencer struct {
 	Sequences           []sequences.Sequence
 	SequencerDef        *definitions.SequencerDef
 	Inputs              chan *SequencerEvent
-	Time                uint
 	FromFile            string
 	Started             bool
 	InitialChannelSetup []*channels.ChannelDef
@@ -57,7 +56,7 @@ func (seq *Sequencer) Start(s chan *synth.Event) {
 
 func (seq *Sequencer) start(s chan *synth.Event) {
 
-	seq.Time = uint(0)
+	seq.Status.ResetTime()
 
 	for {
 
@@ -65,21 +64,21 @@ func (seq *Sequencer) start(s chan *synth.Event) {
 
 		if seq.Status.Playing {
 
-			if seq.Time == 0 {
+			if seq.Status.Time == 0 {
 				s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)
 				seq.loadInstruments(s)
 			}
 
-			for _, scheduled := range seq.Status.GetScheduledEvents(seq.Time) {
+			for _, scheduled := range seq.Status.GetScheduledEvents(seq.Status.Time) {
 				s <- scheduled.Event
 			}
 
 			for _, sequence := range seq.Sequences {
-				sequence(&seq.Status, seq.Time, seq.Time, s)
+				sequence(&seq.Status, seq.Status.Time, seq.Status.Time, s)
 			}
-		}
 
-		seq.Time += 1
+			seq.Status.IncrementTime()
+		}
 
 		canRead := true
 		for canRead {
@@ -170,9 +169,9 @@ func (seq *Sequencer) instantiateFromSequencerDef(s *definitions.SequencerDef) {
 
 func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 	if ev.Type == RestartSequencer {
-		seq.Time = 0
+		seq.Status.ResetTime()
 	} else if ev.Type == ReloadSequencer {
-		seq.Time = 0
+		seq.Status.ResetTime()
 		fmt.Println("reloading")
 		if seq.FromFile != "" {
 			s, err := definitions.NewSequencerDefFromFile(seq.FromFile)
@@ -190,7 +189,7 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 			fmt.Println("Failed to load sequencer:", err.Error())
 			return
 		}
-		seq.Time = 0
+		seq.Status.ResetTime()
 		seq.FromFile = ev.Value
 		seq.instantiateFromSequencerDef(def)
 		s <- synth.NewEvent(synth.ForceUIReload, 0, nil)
@@ -199,15 +198,15 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 		s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)
 		seq.loadInstruments(s)
 	} else if ev.Type == ForwardSequencer {
-		seq.Time += uint(seq.Granularity) * 16
-		fmt.Println("t =", seq.Time)
+		seq.Status.Time += uint(seq.Granularity) * 16
+		fmt.Println("t =", seq.Status.Time)
 	} else if ev.Type == BackwardSequencer {
-		if seq.Time < uint(seq.Granularity)*16 {
-			seq.Time = 0
+		if seq.Status.Time < uint(seq.Granularity)*16 {
+			seq.Status.Time = 0
 		} else {
-			seq.Time -= uint(seq.Granularity) * 16
+			seq.Status.Time -= uint(seq.Granularity) * 16
 		}
-		fmt.Println("t =", seq.Time)
+		fmt.Println("t =", seq.Status.Time)
 	} else if ev.Type == IncreaseBPM {
 		seq.BPM += 10
 		fmt.Println("bpm =", seq.BPM)
@@ -218,21 +217,25 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 		}
 		fmt.Println("bpm =", seq.BPM)
 	} else if ev.Type == QuitSequencer {
-		seq.Time = 0
+		seq.Status.ResetTime()
 		return
 	} else if ev.Type == StartPlaying {
 		fmt.Println("Start playing")
 		seq.Status.Playing = true
 	} else if ev.Type == StopPlaying {
 		fmt.Println("Stop playing")
+		s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)
 		seq.Status.Playing = false
-		seq.Time = 0
+		seq.Status.ResetTime()
 	} else if ev.Type == PausePlaying {
 		fmt.Println("Toggle seq.Status.Playing", seq.Status.Playing)
+		if seq.Status.Playing {
+			s <- synth.NewEvent(synth.SilenceAllChannels, 0, nil)
+		}
 		seq.Status.Playing = !seq.Status.Playing
 	} else if ev.Type == RewindSequencer {
 		fmt.Println("Rewind")
-		seq.Time = 0
+		seq.Status.ResetTime()
 	}
 }
 

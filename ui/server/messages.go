@@ -32,7 +32,10 @@ type ResponseMessage struct {
 }
 
 type StatusResponse struct {
-	BPM float64
+	BPM         float64 `json:"bpm"`
+	Playing     bool    `json:"playing"`
+	Granularity int     `json:"granularity"`
+	Time        uint    `json:"time"`
 }
 
 type Message struct {
@@ -59,7 +62,10 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 	}
 	if m.Type == Status {
 		m.send(conn, m.Type, &StatusResponse{
-			BPM: ctrl.Sequencer.Status.BPM,
+			BPM:         ctrl.Sequencer.Status.BPM,
+			Playing:     ctrl.Sequencer.Status.Playing,
+			Granularity: ctrl.Sequencer.Status.Granularity,
+			Time:        ctrl.Sequencer.Status.Time,
 		})
 	} else if m.Type == ChannelDef {
 		m.send(conn, m.Type, ctrl.Sequencer.InitialChannelSetup)
