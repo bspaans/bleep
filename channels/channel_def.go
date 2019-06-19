@@ -12,6 +12,7 @@ type ChannelsDef struct {
 
 type ChannelDef struct {
 	Channel        int                           `json:"channel,omitempty" yaml:"channel,omitempty"`
+	Name           string                        `json:"name,omitempty" yaml:"name,omitempty"`
 	Instrument     int                           `json:"instrument,omitempty" yaml:"instrument,omitempty"`
 	Bank           int                           `json:"bank,omitempty" yaml:"bank,omitempty"`
 	Reverb         int                           `json:"reverb,omitempty" yaml:"reverb,omitempty"`
