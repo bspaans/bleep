@@ -16,6 +16,7 @@ type AutomationDef struct {
 	Register     *int             `json:"register,omitempty" yaml:"register,omitempty"`
 	Transpose    *IntTransposeDef `json:"transpose,omitempty" yaml:"transpose,omitempty"`
 	IntConstant  *IntConstantDef  `json:"int_constant,omitempty" yaml:"int_constant,omitempty"`
+	NoteConstant *IntConstantDef  `json:"note_constant,omitempty" yaml:"note_constant,omitempty"`
 }
 
 func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
@@ -35,6 +36,8 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 		return IntRandomAutomation(a.Random.Min, a.Random.Max), nil
 	} else if a.IntConstant != nil {
 		return IntIdAutomation(a.IntConstant.Value), nil
+	} else if a.NoteConstant != nil {
+		return IntIdAutomation(a.NoteConstant.Value), nil
 	} else if a.Transpose != nil {
 		automation, err := a.Transpose.AutomationDef.GetAutomation()
 		if err != nil {
