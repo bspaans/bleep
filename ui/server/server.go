@@ -58,7 +58,6 @@ func (s *Server) Websocket(w http.ResponseWriter, r *http.Request) {
 	}()
 	for {
 		_, message, err := c.ReadMessage()
-		log.Printf("recv: %s", message)
 		if err == nil {
 			var msg Message
 			if err := json.Unmarshal(message, &msg); err == nil {

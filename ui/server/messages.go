@@ -53,7 +53,6 @@ func NewMessage(ty MessageType, data interface{}) *Message {
 }
 
 func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
-	log.Println("handling", m.Type, "message")
 	if m.Type == Test {
 		m.send(conn, m.Type, "Test")
 	}
@@ -98,6 +97,8 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		fmt.Println("Received sequencer def:")
 		fmt.Println(def.YAML())
 		ctrl.Sequencer.SetSequencerDef(&def)
+	} else {
+		log.Println("Unknown message", m.Type, "message")
 	}
 }
 
