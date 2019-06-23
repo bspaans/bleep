@@ -8,10 +8,12 @@ import (
 )
 
 type IntArrayAutomationDef struct {
-	CycleChords *CycleChordsDef       `json:"cycle_chords,omitempty" yaml:"cycle_chords,omitempty"`
-	Register    *int                  `json:"register,omitempty" yaml:"register,omitempty"`
-	Transpose   *IntArrayTransposeDef `json:"transpose,omitempty" yaml:"transpose,omitempty"`
-	Index       *IntArrayIndexDef     `json:"index,omitempty" yaml:"index,omitempty"`
+	CycleChords   *CycleChordsDef       `json:"cycle_chords,omitempty" yaml:"cycle_chords,omitempty"`
+	Register      *int                  `json:"register,omitempty" yaml:"register,omitempty"`
+	Transpose     *IntArrayTransposeDef `json:"transpose,omitempty" yaml:"transpose,omitempty"`
+	Index         *IntArrayIndexDef     `json:"index,omitempty" yaml:"index,omitempty"`
+	Constant      *IntArrayConstantDef  `json:"int_array_constant,omitempty" yaml:"int_array_constant,omitempty"`
+	NotesConstant *IntArrayConstantDef  `json:"note_array_constant,omitempty" yaml:"note_array_constant,omitempty"`
 }
 
 func (a *IntArrayAutomationDef) GetAutomation() (IntArrayAutomation, error) {
@@ -19,6 +21,10 @@ func (a *IntArrayAutomationDef) GetAutomation() (IntArrayAutomation, error) {
 		return IntArrayRegisterAutomation(*a.Register), nil
 	} else if a.CycleChords != nil {
 		return a.CycleChords.GetAutomation()
+	} else if a.Constant != nil {
+		return IntArrayIdAutomation(a.Constant.Value), nil
+	} else if a.NotesConstant != nil {
+		return IntArrayIdAutomation(a.NotesConstant.Value), nil
 	} else if a.Transpose != nil {
 		automation, err := a.Transpose.IntArrayAutomationDef.GetAutomation()
 		if err != nil {
@@ -61,4 +67,8 @@ type IntArrayIndexDef struct {
 	Index                 int            `json:"value" yaml:"value"`
 	AutoIndex             *AutomationDef `json:"auto_value" yaml:"auto_value"`
 	IntArrayAutomationDef `json:",inline" yaml:",inline"`
+}
+
+type IntArrayConstantDef struct {
+	Value []int `json:"value" yaml:"value"`
 }

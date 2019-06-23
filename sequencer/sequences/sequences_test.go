@@ -3,13 +3,14 @@ package sequences
 import (
 	"testing"
 
+	. "github.com/bspaans/bleep/sequencer/status"
 	"github.com/bspaans/bleep/synth"
 )
 
 func Test_Every(t *testing.T) {
 	called := 0
 	counterValue := uint(0)
-	f := func(seq *Sequencer, counter, t uint, s chan *synth.Event) {
+	f := func(status *Status, counter, t uint, s chan *synth.Event) {
 		called += 1
 		counterValue = counter
 	}
@@ -44,10 +45,36 @@ func Test_Every(t *testing.T) {
 	}
 }
 
+func Test_Switch(t *testing.T) {
+	called := 0
+	f := func(status *Status, counter, t uint, s chan *synth.Event) {
+		called += 1
+	}
+	unit := Switch(4, f)
+	for i := 0; i < 4; i++ {
+		unit(nil, 0, uint(i), nil)
+		unit(nil, 0, uint(i+8), nil)
+		unit(nil, 0, uint(i+16), nil)
+		unit(nil, 0, uint(i+24), nil)
+		if called != (i+1)*4 {
+			t.Errorf("Sequence not called")
+		}
+	}
+	for i := 0; i < 4; i++ {
+		unit(nil, 0, uint(i+4), nil)
+		unit(nil, 0, uint(i+12), nil)
+		unit(nil, 0, uint(i+20), nil)
+		unit(nil, 0, uint(i+28), nil)
+		if called != 16 {
+			t.Errorf("Sequence called, but shouldn't have been called")
+		}
+	}
+}
+
 func Test_EveryWithOffset(t *testing.T) {
 	called := 0
 	counterValue := uint(0)
-	f := func(seq *Sequencer, counter, t uint, s chan *synth.Event) {
+	f := func(status *Status, counter, t uint, s chan *synth.Event) {
 		called += 1
 		counterValue = counter
 	}

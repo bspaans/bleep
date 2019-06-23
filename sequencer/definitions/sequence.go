@@ -9,6 +9,7 @@ import (
 
 type SequenceDef struct {
 	Every          *RepeatDef                 `json:"repeat,omitempty" yaml:"repeat,omitempty"`
+	Switch         *SwitchDef                 `json:"switch,omitempty" yaml:"switch,omitempty"`
 	Euclidian      *EuclidianDef              `json:"euclidian,omitempty" yaml:"euclidian,omitempty"`
 	PlayNoteEvery  *PlayNoteEveryDef          `json:"play_note,omitempty" yaml:"play_note,omitempty"`
 	PlayNotesEvery *PlayNotesEveryDef         `json:"play_notes,omitempty" yaml:"play_notes,omitempty"`
@@ -44,6 +45,9 @@ func (e *SequenceDef) GetSequence(ctx *context) (Sequence, error) {
 	if e.Every != nil {
 		field = "repeat"
 		result, err = e.Every.GetSequence(ctx)
+	} else if e.Switch != nil {
+		field = "switch"
+		result, err = e.Switch.GetSequence(ctx)
 	} else if e.Euclidian != nil {
 		field = "euclidian"
 		result, err = e.Euclidian.GetSequence(ctx)

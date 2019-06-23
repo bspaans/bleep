@@ -17,6 +17,15 @@ func Every(n uint, seq Sequence) Sequence {
 	}
 }
 
+func Switch(n uint, seq Sequence) Sequence {
+	return func(status *Status, counter, t uint, s chan *synth.Event) {
+		v := t % (2 * n)
+		if v < n {
+			seq(status, counter/2, t, s)
+		}
+	}
+}
+
 func EuclidianRhythm(n, over int, tickDuration uint, seq Sequence) Sequence {
 	rhythm := theory.EuclidianRhythm(n, over)
 	//length := uint(over) * tickDuration
@@ -53,7 +62,7 @@ func Combine(seqs ...Sequence) Sequence {
 func Offset(offset uint, seq Sequence) Sequence {
 	return func(status *Status, counter, t uint, s chan *synth.Event) {
 		if t >= offset {
-			seq(status, t-offset, t-offset, s)
+			seq(status, t-offset, t, s)
 		}
 	}
 }
