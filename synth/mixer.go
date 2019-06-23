@@ -18,6 +18,7 @@ type Mixer struct {
 	ExpressionVolume []float64
 	Panning          []float64
 	Solo             []bool
+	MasterGain       float64
 }
 
 func NewMixer() *Mixer {
@@ -26,6 +27,7 @@ func NewMixer() *Mixer {
 		Gain:             []float64{},
 		ExpressionVolume: []float64{},
 		Panning:          []float64{},
+		MasterGain:       1.0,
 	}
 	for i := 0; i < 16; i++ {
 		ch := channels.NewPolyphonicChannel()
@@ -169,7 +171,7 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	result := make([]int, len(samples))
 	maxValue := math.Pow(2, float64(cfg.BitDepth))
 	for i, sample := range samples {
-		scaled := (sample + 1) * (maxValue / 2)
+		scaled := (sample*m.MasterGain + 1) * (maxValue / 2)
 		maxClipped := math.Max(0, math.Ceil(scaled))
 		result[i] = int(math.Min(maxClipped, maxValue-1))
 	}
@@ -217,6 +219,10 @@ func (m *Mixer) SetChannelPanning(ch int, panning int) {
 	if ch < len(m.Channels) {
 		m.Panning[ch] = float64(panning) / 127.0
 	}
+}
+
+func (m *Mixer) SetMasterGain(g float64) {
+	m.MasterGain = g
 }
 
 func (m *Mixer) ToggleSoloChannel(ch int) {

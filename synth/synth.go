@@ -140,6 +140,8 @@ func (s *Synth) dispatchEvent(ev *Event) {
 		s.Mixer.SilenceAllChannels()
 	} else if et == ToggleSoloChannel {
 		s.Mixer.ToggleSoloChannel(ch)
+	} else if et == SetMasterGain {
+		s.Mixer.SetMasterGain(ev.FloatValues[0])
 	} else if et == PitchBend {
 		semitones := float64(values[0]-64) / 64.0 // -1.0 <-> 1.0
 		semitones *= (64 / 5)
@@ -158,6 +160,9 @@ func (s *Synth) dispatchEvent(ev *Event) {
 		}
 	}
 
+}
+func (s *Synth) SetMasterGain(v float64) {
+	s.Inputs <- NewFloatEvent(SetMasterGain, 0, []float64{v})
 }
 
 func (s *Synth) ChangeInstrument(channel, instrument int) {

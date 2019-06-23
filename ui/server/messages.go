@@ -24,6 +24,7 @@ const (
 	Rewind          MessageType = "rewind"
 	Load            MessageType = "load"
 	ForceReload     MessageType = "force_reload"
+	SetMasterGain   MessageType = "set_master_gain"
 )
 
 type ResponseMessage struct {
@@ -36,6 +37,7 @@ type StatusResponse struct {
 	Playing     bool    `json:"playing"`
 	Granularity int     `json:"granularity"`
 	Time        uint    `json:"time"`
+	MasterGain  float64 `json:"master_gain"`
 }
 
 type Message struct {
@@ -66,6 +68,7 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 			Playing:     ctrl.Sequencer.Status.Playing,
 			Granularity: ctrl.Sequencer.Status.Granularity,
 			Time:        ctrl.Sequencer.Status.Time,
+			MasterGain:  ctrl.Synth.Mixer.MasterGain,
 		})
 	} else if m.Type == ChannelDef {
 		m.send(conn, m.Type, ctrl.Sequencer.InitialChannelSetup)
@@ -79,6 +82,8 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		ctrl.Sequencer.Rewind()
 	} else if m.Type == Load {
 		ctrl.Sequencer.LoadFile(m.Data.(string))
+	} else if m.Type == SetMasterGain {
+		ctrl.Synth.SetMasterGain(m.Data.(float64))
 	} else if m.Type == SequencerDef {
 		if ctrl.Sequencer.SequencerDef != nil {
 			m.send(conn, m.Type, ctrl.Sequencer.SequencerDef.Sequences)

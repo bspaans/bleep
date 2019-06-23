@@ -36,6 +36,7 @@ const (
 	SilenceAllChannels EventType = iota
 	SetInstrument      EventType = iota
 
+	SetMasterGain EventType = iota
 	ForceUIReload EventType = iota
 )
 
