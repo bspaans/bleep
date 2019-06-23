@@ -41,7 +41,7 @@ func (p *PortAudioSink) Start(f func(cfg *audio.AudioConfig, n int) []int) error
 	if err != nil {
 		return err
 	}
-	streamParams := portaudio.LowLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)
+	streamParams := portaudio.HighLatencyParameters(nil, defaultHostApi.DefaultOutputDevice)
 	streamParams.SampleRate = float64(p.Config.SampleRate)
 	stream, err := portaudio.OpenStream(streamParams, callback)
 	if err != nil {

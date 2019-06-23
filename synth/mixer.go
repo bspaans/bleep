@@ -2,14 +2,12 @@ package synth
 
 import (
 	"math"
-	"sync"
 
 	"github.com/bspaans/bleep/audio"
 	"github.com/bspaans/bleep/channels"
 	"github.com/bspaans/bleep/generators"
 	"github.com/bspaans/bleep/generators/derived"
 	"github.com/bspaans/bleep/instruments"
-	"github.com/bspaans/bleep/ui"
 )
 
 type Mixer struct {
@@ -130,42 +128,36 @@ func (m *Mixer) GetSamples(cfg *audio.AudioConfig, n int) []int {
 	solo := m.HasSolo()
 
 	latestValues := make([]float64, len(m.Channels))
-	var wg sync.WaitGroup
 	for channelNr, ch := range m.Channels {
 
-		wg.Add(1)
-		go func(channelNr int, ch channels.Channel) {
-			defer wg.Done()
-			chSamples := ch.GetSamples(cfg, n)
-			if solo && !m.Solo[channelNr] {
-				return
+		chSamples := ch.GetSamples(cfg, n)
+		if solo && !m.Solo[channelNr] {
+			continue
+		}
+		channelValues[channelNr] = make([]float64, len(chSamples))
+		for i := 0; i < n; i++ {
+			if cfg.Stereo {
+				left := chSamples[i*2] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+				right := chSamples[i*2+1] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+				left, right = derived.SinusoidalPanning(left, right, m.Panning[channelNr])
+				channelValues[channelNr][i*2] = left
+				channelValues[channelNr][i*2+1] = right
+				latestValues[channelNr] = (left + right) / 2
+			} else {
+				v := chSamples[i] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
+				channelValues[channelNr][i] = v
+				latestValues[channelNr] = v
 			}
-			channelValues[channelNr] = make([]float64, len(chSamples))
-			for i := 0; i < n; i++ {
-				if cfg.Stereo {
-					left := chSamples[i*2] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
-					right := chSamples[i*2+1] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
-					left, right = derived.SinusoidalPanning(left, right, m.Panning[channelNr])
-					channelValues[channelNr][i*2] = left
-					channelValues[channelNr][i*2+1] = right
-					latestValues[channelNr] = (left + right) / 2
-				} else {
-					v := chSamples[i] * m.Gain[channelNr] * m.ExpressionVolume[channelNr] * 0.15
-					channelValues[channelNr][i] = v
-					latestValues[channelNr] = v
-				}
-			}
-		}(channelNr, ch)
+		}
 	}
-	wg.Wait()
 	for _, channelSamples := range channelValues {
 		for i, s := range channelSamples {
 			samples[i] += s
 		}
 	}
 
-	ev := ui.NewUIEvent(ui.ChannelsOutputEvent)
-	ev.Values = latestValues
+	//ev := ui.NewUIEvent(ui.ChannelsOutputEvent)
+	//ev.Values = latestValues
 	//outputEvents <- ev
 
 	result := make([]int, len(samples))

@@ -54,8 +54,8 @@ func (s *Synth) EnableWavSink(file string) error {
 }
 
 func (s *Synth) Start() {
-	stepsPerSecond := float64(s.Config.StepSize) / float64(s.Config.SampleRate)
-	stepDuration := time.Duration(stepsPerSecond * 1000000000)
+	stepsPerSecond := float64(s.Config.HandleEventsPerSecond)
+	stepDuration := time.Duration(1000000000 / stepsPerSecond)
 
 	for _, sink := range s.Sinks {
 		if s.Recorder != nil {
