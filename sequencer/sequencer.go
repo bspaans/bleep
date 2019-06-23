@@ -2,6 +2,7 @@ package sequencer
 
 import (
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	"github.com/bspaans/bleep/channels"
@@ -183,6 +184,20 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 		} else if seq.SequencerDef != nil {
 			seq.instantiateFromSequencerDef(seq.SequencerDef)
 		}
+	} else if ev.Type == SaveFile {
+		if seq.SequencerDef != nil {
+			output, err := seq.SequencerDef.YAML()
+			if err != nil {
+				fmt.Println("Failed to convert to YAML...")
+				return
+			}
+			fmt.Println("Writing", ev.Value, output)
+			if err := ioutil.WriteFile(ev.Value, []byte(output), 0644); err != nil {
+				fmt.Println("Failed to write file: ", err.Error())
+			}
+		} else {
+			fmt.Println("No sequencer def to save")
+		}
 	} else if ev.Type == LoadFile {
 		def, err := definitions.NewSequencerDefFromFile(ev.Value)
 		if err != nil {
@@ -265,6 +280,11 @@ func (seq *Sequencer) Rewind() {
 }
 func (seq *Sequencer) LoadFile(file string) {
 	ev := NewSequencerEvent(LoadFile)
+	ev.Value = file
+	seq.Inputs <- ev
+}
+func (seq *Sequencer) SaveFile(file string) {
+	ev := NewSequencerEvent(SaveFile)
 	ev.Value = file
 	seq.Inputs <- ev
 }

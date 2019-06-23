@@ -27,8 +27,8 @@ func NewStatus(bpm float64, granularity int) Status {
 	}
 }
 
-func (s *Status) ScheduleEvent(t uint, duration uint, ev *synth.Event) {
-	when := t + duration
+func (s *Status) ScheduleEvent(duration uint, ev *synth.Event) {
+	when := s.Time + duration
 	event := NewScheduledEvent(when, ev)
 	s.ScheduledEvents = append(s.ScheduledEvents, event)
 }

@@ -23,6 +23,7 @@ const (
 	Pause           MessageType = "pause"
 	Rewind          MessageType = "rewind"
 	Load            MessageType = "load"
+	Save            MessageType = "save"
 	ForceReload     MessageType = "force_reload"
 	SetMasterGain   MessageType = "set_master_gain"
 )
@@ -81,6 +82,8 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		ctrl.Sequencer.Rewind()
 	} else if m.Type == Load {
 		ctrl.Sequencer.LoadFile(m.Data.(string))
+	} else if m.Type == Save {
+		ctrl.Sequencer.SaveFile(m.Data.(string))
 	} else if m.Type == SetMasterGain {
 		ctrl.Synth.SetMasterGain(m.Data.(float64))
 	} else if m.Type == SequencerDef {

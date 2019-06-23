@@ -62,7 +62,7 @@ func Combine(seqs ...Sequence) Sequence {
 func Offset(offset uint, seq Sequence) Sequence {
 	return func(status *Status, counter, t uint, s chan *synth.Event) {
 		if t >= offset {
-			seq(status, t-offset, t, s)
+			seq(status, t-offset, t-offset, s)
 		}
 	}
 }
@@ -122,7 +122,7 @@ func PlayNote(duration uint, channel, note, velocity int) Sequence {
 	return func(status *Status, counter, t uint, s chan *synth.Event) {
 		NoteOn(channel, note, velocity)(status, counter, t, s)
 		ev := synth.NewEvent(synth.NoteOff, channel, []int{note})
-		status.ScheduleEvent(t, duration, ev)
+		status.ScheduleEvent(duration, ev)
 	}
 }
 func PlayNoteAutomation(duration uint, channel int, noteF IntAutomation, velocityF IntAutomation) Sequence {
@@ -131,7 +131,7 @@ func PlayNoteAutomation(duration uint, channel int, noteF IntAutomation, velocit
 		vel := velocityF(status, counter, t)
 		NoteOn(channel, note, vel)(status, counter, t, s)
 		ev := synth.NewEvent(synth.NoteOff, channel, []int{note})
-		status.ScheduleEvent(t, duration, ev)
+		status.ScheduleEvent(duration, ev)
 	}
 }
 func PlayNotesAutomation(duration uint, channel int, noteF IntArrayAutomation, velocityF IntAutomation) Sequence {
@@ -139,7 +139,7 @@ func PlayNotesAutomation(duration uint, channel int, noteF IntArrayAutomation, v
 		NotesOnAutomation(channel, noteF, velocityF)(status, counter, t, s)
 		for _, note := range noteF(status, counter, t) {
 			ev := synth.NewEvent(synth.NoteOff, channel, []int{note})
-			status.ScheduleEvent(t, duration, ev)
+			status.ScheduleEvent(duration, ev)
 		}
 	}
 }

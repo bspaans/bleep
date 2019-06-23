@@ -20,6 +20,7 @@ const (
 	RewindSequencer EventType = iota
 
 	LoadFile EventType = iota
+	SaveFile EventType = iota
 
 	QuitSequencer EventType = iota
 )
