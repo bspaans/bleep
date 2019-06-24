@@ -75,6 +75,12 @@ var HarmonicMajor = NewScale(
 var Scales = map[string]*Scale{
 	"diatonic":       Diatonic,
 	"ionian":         Ionian,
+	"dorian":         Dorian,
+	"phrygian":       Phrygian,
+	"lydian":         Lydian,
+	"mixolydian":     Mixolydian,
+	"aeolian":        Aeolian,
+	"locrian":        Locrian,
 	"harmonic major": HarmonicMajor,
 }
 

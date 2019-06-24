@@ -275,3 +275,48 @@ func Scale(scale string, baseNoteF, octavesF, inversionsF IntAutomation) IntArra
 		return values
 	}
 }
+
+func ChordOnScale(chord string, scaleF IntArrayAutomation, startF, octavesF, inversionsF IntAutomation) IntArrayAutomation {
+	return func(s *Status, counter, t uint) []int {
+		scale := scaleF(s, counter, t)
+		start := startF(s, counter, t)
+		inversions := inversionsF(s, counter, t)
+		octaves := octavesF(s, counter, t)
+
+		scaleChords := map[string][]int{
+			"triad":   []int{2, 2},
+			"seventh": []int{2, 2, 2},
+			"sixth":   []int{2, 2, 1},
+			"ninth":   []int{2, 2, 4},
+		}
+		ix := start % len(scale)
+		prev := scale[ix]
+
+		baseValues := []int{prev}
+		add := 0
+
+		for _, interval := range scaleChords[chord] {
+			ix = (ix + interval)
+			if ix >= len(scale) {
+				add += 12
+				ix = ix % len(scale)
+			}
+			baseValues = append(baseValues, scale[ix]+add)
+			prev = scale[ix]
+		}
+		baseValues = theory.InvertChord(baseValues, inversions)
+
+		values := []int{}
+		for octaves >= 1 {
+			for _, note := range baseValues {
+				values = append(values, note)
+			}
+			for i, _ := range baseValues {
+				baseValues[i] += 12
+			}
+			octaves--
+		}
+
+		return values
+	}
+}

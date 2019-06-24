@@ -1,6 +1,7 @@
 package definitions
 
 import (
+	"errors"
 	"fmt"
 
 	. "github.com/bspaans/bleep/sequencer/automations"
@@ -131,17 +132,53 @@ func (c *ScaleDef) GetAutomation() (IntArrayAutomation, error) {
 }
 
 type ChordOnScaleDef struct {
+	Chord                string                 `json:"chord" yaml:"chord"`
 	Start                int                    `json:"start,omitempty" yaml:"start,omitempty"`
 	Octaves              int                    `json:"octaves,omitempty" yaml:"octaves,omitempty"`
 	Inversions           int                    `json:"inversions,omitempty" yaml:"inversions,omitempty"`
-	Scale                *IntArrayAutomationDef `json:"scale,omitempty" yaml:"scale,omitempty"`
+	Scale                *IntArrayAutomationDef `json:"auto_scale,omitempty" yaml:"auto_scale,omitempty"`
 	StartAutomation      *AutomationDef         `json:"auto_start,omitempty" yaml:"auto_start,omitempty"`
 	OctavesAutomation    *AutomationDef         `json:"auto_octaves,omitempty" yaml:"auto_octaves,omitempty"`
 	InversionsAutomation *AutomationDef         `json:"auto_inversions,omitempty" yaml:"auto_inversions,omitempty"`
 }
 
 func (c *ChordOnScaleDef) GetAutomation() (IntArrayAutomation, error) {
-	return nil, nil
+	if c.Scale == nil {
+		return nil, util.WrapError("scale", errors.New("Missing scale"))
+	}
+	scaleF, err := c.Scale.GetAutomation()
+	if err != nil {
+		return nil, util.WrapError("scale", err)
+	}
+	var startA, octavesA, inversionsA IntAutomation
+	if c.StartAutomation != nil {
+		startA_, err := c.StartAutomation.GetAutomation()
+		if err != nil {
+			return nil, util.WrapError("auto_start", err)
+		}
+		startA = startA_
+	} else {
+		startA = IntIdAutomation(c.Start)
+	}
+	if c.OctavesAutomation != nil {
+		octavesA_, err := c.OctavesAutomation.GetAutomation()
+		if err != nil {
+			return nil, util.WrapError("auto_octaves", err)
+		}
+		octavesA = octavesA_
+	} else {
+		octavesA = IntIdAutomation(c.Octaves)
+	}
+	if c.InversionsAutomation != nil {
+		inversionsA_, err := c.InversionsAutomation.GetAutomation()
+		if err != nil {
+			return nil, util.WrapError("auto_inversions", err)
+		}
+		inversionsA = inversionsA_
+	} else {
+		inversionsA = IntIdAutomation(c.Inversions)
+	}
+	return ChordOnScale(c.Chord, scaleF, startA, octavesA, inversionsA), nil
 }
 
 type ChordDef struct {
