@@ -20,6 +20,19 @@ func ChordOnNoteInt(note int, chord string) []int {
 	return result
 }
 
+func InvertChord(chord []int, inversions int) []int {
+	result := make([]int, len(chord))
+	for i := range chord {
+		result[i] = chord[i]
+	}
+	for inversions >= 0 {
+		result = append(result, result[0]+12)
+		result = result[1:]
+		inversions--
+	}
+	return result
+}
+
 func ChordOnNote(note *Note, chord string) Notes {
 	result := []*Note{note}
 	notes := Chords[chord]
