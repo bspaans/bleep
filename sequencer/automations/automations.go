@@ -253,3 +253,25 @@ func Chord(chord string, baseNoteF, octavesF, inversionsF IntAutomation) IntArra
 		return values
 	}
 }
+
+func Scale(scale string, baseNoteF, octavesF, inversionsF IntAutomation) IntArrayAutomation {
+	return func(s *Status, counter, t uint) []int {
+		baseNote := baseNoteF(s, counter, t)
+		inversions := inversionsF(s, counter, t)
+		octaves := octavesF(s, counter, t)
+		baseValues := theory.ScaleOnNoteInt(baseNote, scale)
+		baseValues = theory.InvertChord(baseValues, inversions)
+
+		values := []int{}
+		for octaves >= 1 {
+			for _, note := range baseValues {
+				values = append(values, note)
+			}
+			for i, _ := range baseValues {
+				baseValues[i] += 12
+			}
+			octaves--
+		}
+		return values
+	}
+}

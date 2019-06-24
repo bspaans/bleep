@@ -15,6 +15,20 @@ func NewScale(ascending, descending Notes) *Scale {
 	}
 }
 
+func (s *Scale) GetAscendingIntervals() []int {
+	result := []int{}
+	n := C4
+	for _, note := range s.Ascending {
+		if note.Int() < n {
+			note.Octave += 1
+		}
+		interval := note.Int() - n
+		result = append(result, interval)
+		n = note.Int()
+	}
+	return result
+}
+
 var Diatonic = Ionian
 var MajorScale = Ionian
 
@@ -57,3 +71,19 @@ var HarmonicMajor = NewScale(
 	MustNotesFromString("C D E F G Ab B"),
 	MustNotesFromString("B Ab G F E D C"),
 )
+
+var Scales = map[string]*Scale{
+	"diatonic":       Diatonic,
+	"ionian":         Ionian,
+	"harmonic major": HarmonicMajor,
+}
+
+func ScaleOnNoteInt(note int, scale string) []int {
+	s := Scales[scale]
+	result := []int{}
+	for _, interval := range s.GetAscendingIntervals() {
+		result = append(result, note+interval)
+		note += interval
+	}
+	return result
+}
