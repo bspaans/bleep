@@ -9,14 +9,12 @@ import (
 
 	"github.com/bspaans/bleep/audio"
 	"github.com/bspaans/bleep/controller"
-	"github.com/bspaans/bleep/plot"
 	"github.com/bspaans/bleep/termbox"
 	"github.com/bspaans/bleep/ui/server"
 )
 
 var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
 var sequencer = flag.String("sequencer", "", "Load sequencer from file")
-var debugPlots = flag.Bool("plot", false, "Plot outputs (debugging tool)")
 var enable8bit = flag.Bool("8bit", false, "Set bit depth to 8bit")
 var enableMono = flag.Bool("mono", false, "Mono output")
 var enableSequencer = flag.Bool("enable-sequencer", false, "Enable sequencer")
@@ -45,10 +43,6 @@ func main() {
 	}
 	ctrl := controller.NewController(cfg)
 
-	if *debugPlots {
-		plot.DoPlots(cfg)
-		os.Exit(0)
-	}
 	if *record != "" {
 		if err := ctrl.EnableWavSink(*record); err != nil {
 			QuitWithError(err)
