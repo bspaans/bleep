@@ -28,9 +28,9 @@ func NewController(cfg *audio.AudioConfig) *Controller {
 	}
 }
 
-// Enables "real-time" audio output using the PortAudio library.
-func (c *Controller) EnablePortAudioSink() error {
-	return c.Synth.EnablePortAudioSink()
+// Enables "real-time" audio output using the SDL library.
+func (c *Controller) EnableSDLSink() error {
+	return c.Synth.EnableSDLSink()
 }
 
 // Record all Synthesizer output in to a .wav file. The file gets written when

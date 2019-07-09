@@ -48,7 +48,7 @@ func main() {
 			QuitWithError(err)
 		}
 	}
-	if err := ctrl.EnablePortAudioSink(); err != nil {
+	if err := ctrl.EnableSDLSink(); err != nil {
 		QuitWithError(err)
 	}
 	if *instruments != "" {

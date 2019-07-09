@@ -43,6 +43,7 @@ var CurrentSDLSink *SDLSink
 type SDLSink struct {
 	Config     *audio.AudioConfig
 	GetSamples func(cfg *audio.AudioConfig, n int) []int
+	WavSink    *WavSink
 }
 
 func NewSDLSink(cfg *audio.AudioConfig) (*SDLSink, error) {
@@ -93,21 +94,25 @@ func (s *SDLSink) GetSamples_8bit(n int) []uint8 {
 			out[i*2+1] = uint8(samples[i])
 		}
 	}
+	if s.WavSink != nil {
+		s.WavSink.Write(s.Config, samples)
+	}
 	return out
 }
 
 func (s *SDLSink) GetSamples_16bit(n int) []uint8 {
 	out := make([]uint8, n)
 	samples := s.GetSamples(s.Config, n/4)
-	if s.Config.Stereo {
 
-		buf := make([]byte, 2)
-		m := int16(math.Pow(2, 15))
-		for i := 0; i < n/2; i++ {
-			binary.LittleEndian.PutUint16(buf, uint16(int16(samples[i])-m))
-			out[i*2] = buf[0]
-			out[i*2+1] = buf[1]
-		}
+	buf := make([]byte, 2)
+	m := int16(math.Pow(2, 15))
+	for i := 0; i < n/2; i++ {
+		binary.LittleEndian.PutUint16(buf, uint16(int16(samples[i])-m))
+		out[i*2] = buf[0]
+		out[i*2+1] = buf[1]
+	}
+	if s.WavSink != nil {
+		s.WavSink.Write(s.Config, samples)
 	}
 	return out
 }
