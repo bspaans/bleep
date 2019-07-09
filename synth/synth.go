@@ -34,8 +34,7 @@ func NewSynth(cfg *audio.AudioConfig) *Synth {
 	return s
 }
 
-func (s *Synth) EnablePortAudioSink() error {
-	//sink, err := sinks.NewPortAudioSink(s.Config)
+func (s *Synth) EnableSDLSink() error {
 	sink, err := sinks.NewSDLSink(s.Config)
 	if err != nil {
 		return err
@@ -60,7 +59,7 @@ func (s *Synth) Start() {
 
 	for _, sink := range s.Sinks {
 		if s.Recorder != nil {
-			portAudio, ok := sink.(*sinks.PortAudioSink)
+			portAudio, ok := sink.(*sinks.SDLSink)
 			if ok {
 				portAudio.WavSink = s.Recorder
 			}
