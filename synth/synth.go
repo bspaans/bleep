@@ -35,7 +35,8 @@ func NewSynth(cfg *audio.AudioConfig) *Synth {
 }
 
 func (s *Synth) EnablePortAudioSink() error {
-	sink, err := sinks.NewPortAudioSink(s.Config)
+	//sink, err := sinks.NewPortAudioSink(s.Config)
+	sink, err := sinks.NewSDLSink(s.Config)
 	if err != nil {
 		return err
 	}

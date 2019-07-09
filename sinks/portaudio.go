@@ -10,7 +10,6 @@ import (
 type PortAudioSink struct {
 	Stream     *portaudio.Stream
 	Samples    []int
-	Stereo     bool
 	ChanBuffer chan int
 	Config     *audio.AudioConfig
 	GetSamples func(cfg *audio.AudioConfig, n int) []int
@@ -22,7 +21,6 @@ func NewPortAudioSink(cfg *audio.AudioConfig) (*PortAudioSink, error) {
 		return nil, err
 	}
 	p := &PortAudioSink{
-		Stereo:     cfg.Stereo,
 		ChanBuffer: make(chan int, cfg.SampleRate*2),
 		Config:     cfg,
 	}
