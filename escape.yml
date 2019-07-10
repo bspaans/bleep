@@ -1,0 +1,16 @@
+name: bleep
+version: 0.8.@
+description: >
+  Bleep synthesizer and sequencer.
+
+inputs:
+
+metadata:
+  milestone: "0.8"
+
+includes:
+- bleep
+
+build:
+  inline: docker build -t bleep .
+
