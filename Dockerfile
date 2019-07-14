@@ -21,7 +21,7 @@ RUN cp -r ./dist/SDL2-2.0.9/x86_64-w64-mingw32 /usr && \
     cp -r ./dist/SDL2-2.0.9/i686-w64-mingw32 /usr && \
     cp -r ./dist/SDL2_mixer-2.0.4/x86_64-w64-mingw32 /usr && \ 
     cp -r ./dist/SDL2_mixer-2.0.4/i686-w64-mingw32 /usr && \ 
-    go build main.go
+    go build -tags static main.go
 
 RUN ls -al main.exe
 
