@@ -4,7 +4,7 @@ WORKDIR /go/src/app
 
 COPY . .
 
-RUN apt-get update && apt-get install -y mingw-w64 libasound2-dev libsdl2-dev libsdl2-mixer-dev
+RUN apt-get update && apt-get install -y mingw-w64 libasound2-dev
 
 
 ENV GO111MODULE=on
@@ -21,7 +21,7 @@ RUN cp -r ./dist/SDL2-2.0.9/x86_64-w64-mingw32 /usr && \
     cp -r ./dist/SDL2-2.0.9/i686-w64-mingw32 /usr && \
     cp -r ./dist/SDL2_mixer-2.0.4/x86_64-w64-mingw32 /usr && \ 
     cp -r ./dist/SDL2_mixer-2.0.4/i686-w64-mingw32 /usr && \ 
-    go build -tags static main.go
+    go build main.go
 
 RUN ls -al main.exe
 
