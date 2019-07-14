@@ -13,7 +13,6 @@ import (
 	"github.com/bspaans/bleep/ui/server"
 )
 
-var virtualMidi = flag.Bool("midi", false, "Register as virtual MIDI input device (linux and mac only)")
 var sequencer = flag.String("sequencer", "", "Load sequencer from file")
 var enable8bit = flag.Bool("8bit", false, "Set bit depth to 8bit")
 var enableMono = flag.Bool("mono", false, "Mono output")
@@ -32,6 +31,8 @@ func QuitWithError(err error) {
 func main() {
 
 	flag.Parse()
+	fmt.Println("This is not a test.")
+	fmt.Println("You are now running bleep.")
 
 	cfg := audio.NewAudioConfig()
 
@@ -81,9 +82,7 @@ func main() {
 			QuitWithError(err)
 		}
 	}
-	if *virtualMidi {
-		ctrl.StartVirtualMIDIDevice()
-	}
+
 	if *enableUI {
 		ctrl.UI = termbox.NewTermBox().Start(ctrl)
 	}
