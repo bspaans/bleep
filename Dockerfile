@@ -32,6 +32,7 @@ ENV CGO_LDFLAGS=
 ENV CGO_FLAGS="-s -w"
 ENV GOOS=linux
 ENV GOARCH=amd64
+RUN apt-get install -y libsdl2-dev libsdl2-mixer-dev
 RUN go get -v github.com/veandco/go-sdl2/sdl@master && go build main.go
 
 RUN ls -al .
