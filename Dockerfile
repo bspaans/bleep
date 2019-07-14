@@ -4,7 +4,7 @@ WORKDIR /go/src/app
 
 COPY . .
 
-RUN apt-get update && apt-get install -y mingw-w64
+RUN apt-get update && apt-get install -y mingw-w64 libasound2-dev libsdl2-dev libsdl2-mixer-dev
 
 
 ENV GO111MODULE=on
