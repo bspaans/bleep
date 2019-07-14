@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/bspaans/bleep/audio"
-	"github.com/bspaans/bleep/midi"
 	"github.com/bspaans/bleep/sequencer"
 	"github.com/bspaans/bleep/synth"
 	"github.com/bspaans/bleep/ui"
@@ -132,12 +131,6 @@ func (c *Controller) StartSynth() {
 // Start Sequencer. The sequencer is started in its own go-routine.
 func (c *Controller) StartSequencer() {
 	c.Sequencer.Start(c.Synth.Inputs)
-}
-
-// Register this program as a Virtual MIDI device. Programs that support it
-// can then output MIDI to the device.
-func (c *Controller) StartVirtualMIDIDevice() {
-	midi.StartVirtualMIDIDevice(c.Synth.Inputs)
 }
 
 // Close the Synthesizer and its sinks.
