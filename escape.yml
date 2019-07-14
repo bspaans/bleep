@@ -3,6 +3,12 @@ version: 0.8.@
 description: >
   Bleep synthesizer and sequencer.
 
+downloads:
+- url: http://libsdl.org/release/SDL2-devel-2.0.9-mingw.tar.gz
+  dest: SDL2-devel.tar.gz
+- url: https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.4-mingw.tar.gz
+  dest: SDL2_mixer-devel.tar.gz
+
 inputs:
 
 metadata:
@@ -12,5 +18,11 @@ includes:
 - bleep
 
 build:
-  inline: docker build -t bleep .
+  inline: | 
+      set +ef
+      mkdir -p dist
+      tar -C dist -xvzf SDL2-devel.tar.gz
+      tar -C dist -xvzf SDL2_mixer-devel.tar.gz
+      docker build -t bleep .
+
 
