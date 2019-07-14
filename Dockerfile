@@ -16,6 +16,7 @@ ENV GOARCH=amd64
 ENV CGO_LDFLAGS="-lmingw32 -lSDL2"
 ENV CGO_FLAGS="-D_REENTRANT"
 
+RUN ls -al /usr/bin/
 RUN cp -r ./dist/SDL2-2.0.9/x86_64-w64-mingw32 /usr && \
     cp -r ./dist/SDL2-2.0.9/i686-w64-mingw32 /usr && \
     cp -r ./dist/SDL2_mixer-2.0.4/x86_64-w64-mingw32 /usr && \ 
