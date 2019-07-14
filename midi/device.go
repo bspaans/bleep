@@ -1,4 +1,5 @@
 // Register as virtual MIDI device
+// +build linux, windows, !cgo darwin
 package midi
 
 import (
