@@ -23,6 +23,8 @@ github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d h1:x3S6kxmy49zXVVyh
 github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d/go.mod h1:IuKpRQcYE1Tfu+oAQqaLisqDeXgjyyltCfsaoYN18NQ=
 github.com/veandco/go-sdl2 v0.3.0 h1:IWYkHMp8V3v37NsKjszln8FFnX2+ab0538J371t+rss=
 github.com/veandco/go-sdl2 v0.3.0/go.mod h1:FB+kTpX9YTE+urhYiClnRzpOXbiWgaU3+5F2AB78DPg=
+github.com/veandco/go-sdl2 v0.3.1-0.20190710133802-e7420673f779 h1:UC/7VOMicHqyWCkBg05+1EgMr5Zsrnr9czLuIE0dkXw=
+github.com/veandco/go-sdl2 v0.3.1-0.20190710133802-e7420673f779/go.mod h1:FB+kTpX9YTE+urhYiClnRzpOXbiWgaU3+5F2AB78DPg=
 github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7 h1:GmnQBLZSOXI1F2hXKlyUuV19bW6DpCnWN14p/jP+WXA=
 github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7/go.mod h1:6Wezm38bOZuwEwcq0W+WIrLxkod95+jT5xxaqU9xcj4=
 gitlab.com/gomidi/midi v1.13.0 h1:SawozwajCLPS6AUyvgsdVt4HUwjHn6kB08reUY1DIKU=

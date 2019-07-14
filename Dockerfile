@@ -23,7 +23,7 @@ RUN cp -r ./dist/SDL2-2.0.9/x86_64-w64-mingw32 /usr && \
     cp -r ./dist/SDL2_mixer-2.0.4/i686-w64-mingw32 /usr && \ 
     go build main.go
 
-RUN ls -al .
+RUN ls -al main.exe
 
 # Linux build
 ENV CC=gcc
@@ -32,7 +32,9 @@ ENV CGO_LDFLAGS=
 ENV CGO_FLAGS="-s -w"
 ENV GOOS=linux
 ENV GOARCH=amd64
-RUN go build -tags static main.go
+RUN go get -v github.com/veandco/go-sdl2/sdl@master && go build main.go
+
+RUN ls -al .
 
 # MacOS build
 ENV CC=gcc
