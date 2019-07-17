@@ -22,6 +22,7 @@ const (
 	Stop            MessageType = "stop"
 	Pause           MessageType = "pause"
 	Rewind          MessageType = "rewind"
+	GoToTime        MessageType = "goto"
 	Load            MessageType = "load"
 	Save            MessageType = "save"
 	ForceReload     MessageType = "force_reload"
@@ -80,6 +81,9 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		ctrl.Sequencer.StopPlaying()
 	} else if m.Type == Rewind {
 		ctrl.Sequencer.Rewind()
+	} else if m.Type == GoToTime {
+		v := m.Data.(float64)
+		ctrl.Sequencer.GoToTime(uint(v * float64(ctrl.Sequencer.Status.Granularity)))
 	} else if m.Type == Load {
 		ctrl.Sequencer.LoadFile(m.Data.(string))
 	} else if m.Type == Save {

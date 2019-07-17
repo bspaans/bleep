@@ -192,20 +192,20 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 				return
 			}
 			fmt.Println("Writing", ev.Value, output)
-			if err := ioutil.WriteFile(ev.Value, []byte(output), 0644); err != nil {
+			if err := ioutil.WriteFile(ev.Value.(string), []byte(output), 0644); err != nil {
 				fmt.Println("Failed to write file: ", err.Error())
 			}
 		} else {
 			fmt.Println("No sequencer def to save")
 		}
 	} else if ev.Type == LoadFile {
-		def, err := definitions.NewSequencerDefFromFile(ev.Value)
+		def, err := definitions.NewSequencerDefFromFile(ev.Value.(string))
 		if err != nil {
 			fmt.Println("Failed to load sequencer:", err.Error())
 			return
 		}
 		seq.Status.ResetTime()
-		seq.FromFile = ev.Value
+		seq.FromFile = ev.Value.(string)
 		seq.instantiateFromSequencerDef(def)
 		s <- synth.NewEvent(synth.ForceUIReload, 0, nil)
 	} else if ev.Type == SetSequencerDef {
@@ -222,6 +222,8 @@ func (seq *Sequencer) handleEvent(ev *SequencerEvent, s chan *synth.Event) {
 			seq.Status.Time -= uint(seq.Granularity) * 16
 		}
 		fmt.Println("t =", seq.Status.Time)
+	} else if ev.Type == GoToTime {
+		seq.Status.Time = ev.Value.(uint)
 	} else if ev.Type == IncreaseBPM {
 		seq.BPM += 10
 		fmt.Println("bpm =", seq.BPM)
@@ -277,6 +279,11 @@ func (seq *Sequencer) PausePlaying() {
 }
 func (seq *Sequencer) Rewind() {
 	seq.Inputs <- NewSequencerEvent(RewindSequencer)
+}
+func (seq *Sequencer) GoToTime(t uint) {
+	ev := NewSequencerEvent(GoToTime)
+	ev.Value = t
+	seq.Inputs <- ev
 }
 func (seq *Sequencer) LoadFile(file string) {
 	ev := NewSequencerEvent(LoadFile)

@@ -11,6 +11,7 @@ const (
 
 	ForwardSequencer  EventType = iota
 	BackwardSequencer EventType = iota
+	GoToTime          EventType = iota
 	IncreaseBPM       EventType = iota
 	DecreaseBPM       EventType = iota
 
@@ -28,7 +29,7 @@ const (
 type SequencerEvent struct {
 	Type         EventType
 	SequencerDef *definitions.SequencerDef
-	Value        string
+	Value        interface{}
 }
 
 func NewSequencerEvent(ty EventType) *SequencerEvent {
