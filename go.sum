@@ -21,12 +21,8 @@ github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 h1:DpOJ2HYzC
 github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7/go.mod h1:ZXFpozHsX6DPmq2I0TCekCxypsnAUbP2oI0UX1GXzOo=
 github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d h1:x3S6kxmy49zXVVyhcnrFqxvNVCBPb2KZ9hV2RBdS840=
 github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d/go.mod h1:IuKpRQcYE1Tfu+oAQqaLisqDeXgjyyltCfsaoYN18NQ=
-github.com/veandco/go-sdl2 v0.3.0 h1:IWYkHMp8V3v37NsKjszln8FFnX2+ab0538J371t+rss=
-github.com/veandco/go-sdl2 v0.3.0/go.mod h1:FB+kTpX9YTE+urhYiClnRzpOXbiWgaU3+5F2AB78DPg=
-github.com/veandco/go-sdl2 v0.3.1-0.20190710133802-e7420673f779 h1:UC/7VOMicHqyWCkBg05+1EgMr5Zsrnr9czLuIE0dkXw=
-github.com/veandco/go-sdl2 v0.3.1-0.20190710133802-e7420673f779/go.mod h1:FB+kTpX9YTE+urhYiClnRzpOXbiWgaU3+5F2AB78DPg=
-github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7 h1:GmnQBLZSOXI1F2hXKlyUuV19bW6DpCnWN14p/jP+WXA=
-github.com/xlab/midievent v0.0.0-20160910135058-44d2a415bbc7/go.mod h1:6Wezm38bOZuwEwcq0W+WIrLxkod95+jT5xxaqU9xcj4=
+github.com/veandco/go-sdl2 v0.4.0 h1:l9q6K+Dvpd/VlZdw2ufApKnWhAQqx9UL8Zrvbjtm3Lw=
+github.com/veandco/go-sdl2 v0.4.0/go.mod h1:FB+kTpX9YTE+urhYiClnRzpOXbiWgaU3+5F2AB78DPg=
 gitlab.com/gomidi/midi v1.13.0 h1:SawozwajCLPS6AUyvgsdVt4HUwjHn6kB08reUY1DIKU=
 gitlab.com/gomidi/midi v1.13.0/go.mod h1:3ohtNOhqoSakkuLG/Li1OI6I3J1c2LErnJF5o/VBq1c=
 golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045/go.mod h1:cYlCBUl1MsqxdiKgmc4uh7TxZfWSFLOGSRR090WDxt8=
