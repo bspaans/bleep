@@ -70,7 +70,7 @@ func (s *SDLSink) Start(f func(cfg *audio.AudioConfig, n int) []int) error {
 		Freq:     int32(s.Config.SampleRate),
 		Format:   fmt,
 		Channels: uint8(s.Config.GetNumberOfChannels()),
-		Samples:  uint16(256),
+		Samples:  uint16(1024),
 		Callback: callback,
 	}
 	if err := sdl.OpenAudio(spec, nil); err != nil {
