@@ -92,7 +92,7 @@ func (m *Message) Handle(ctrl *controller.Controller, conn *websocket.Conn) {
 		ctrl.Synth.SetMasterGain(m.Data.(float64))
 	} else if m.Type == SequencerDef {
 		if ctrl.Sequencer.SequencerDef != nil {
-			m.send(conn, m.Type, ctrl.Sequencer.SequencerDef.Sequences)
+			m.send(conn, m.Type, ctrl.Sequencer.SequencerDef)
 		} else {
 			m.send(conn, m.Type, nil)
 		}

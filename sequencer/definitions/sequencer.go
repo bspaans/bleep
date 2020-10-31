@@ -15,6 +15,7 @@ type SequencerDef struct {
 	BPM                  float64       `json:"bpm" yaml:"bpm"`
 	Granularity          int           `json:"granularity" yaml:"granularity"`
 	Sequences            []SequenceDef `json:"sequences" yaml:"sequences"`
+	Tracks               []TrackDef    `json:"tracks" yaml:"tracks"`
 	channels.ChannelsDef `json:",inline" yaml:",inline"`
 	FromFile             string `json:"-" yaml:"-"`
 }
@@ -41,15 +42,25 @@ func (s *SequencerDef) GetSequences() ([]Sequence, error) {
 		return nil, err
 	}
 	sequences := []Sequence{}
+	ctx := &context{
+		BaseDir:     baseDir,
+		Granularity: s.Granularity,
+	}
 	for i, se := range s.Sequences {
-		sequence, err := se.GetSequence(&context{
-			BaseDir:     baseDir,
-			Granularity: s.Granularity,
-		})
+		sequence, err := se.GetSequence(ctx)
 		if err != nil {
 			return nil, util.WrapError(fmt.Sprintf("sequence [%d]", i), err)
 		}
 		sequences = append(sequences, sequence)
+	}
+	for i, tr := range s.Tracks {
+		for j, seq := range tr.Sequences {
+			sequence, err := seq.GetSequence(ctx)
+			if err != nil {
+				return nil, util.WrapError(fmt.Sprintf("tracks [%d] -> sequences [%d]", i, j), err)
+			}
+			sequences = append(sequences, sequence)
+		}
 	}
 	return sequences, nil
 }
