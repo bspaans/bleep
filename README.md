@@ -14,9 +14,9 @@ I don't really have any goals for this project, but it's #instructive.
 Old examples first:
 
 1. [basic wave forms and delay](https://github.com/bspaans/bleep/raw/master/demo/demo.mp3)
-2. [the shabbiest percussion channel](https://github.com/bspaans/bleep/raw/master/demo/demo2.mp3) 
-3. [stereo, 16bit, tremelo](https://github.com/bspaans/bleep/raw/master/demo/demo3.mp3) 
-4. [granular synthesis, sequencer, automations, euclidian rhythms](https://github.com/bspaans/bleep/raw/master/demo/demo4.mp3) 
+2. [the shabbiest percussion channel](https://github.com/bspaans/bleep/raw/master/demo/demo2.mp3)
+3. [stereo, 16bit, tremelo](https://github.com/bspaans/bleep/raw/master/demo/demo3.mp3)
+4. [granular synthesis, sequencer, automations, euclidian rhythms](https://github.com/bspaans/bleep/raw/master/demo/demo4.mp3)
 
 ## Features
 
@@ -26,7 +26,7 @@ Things that generate waveforms (`generators/`):
 * Square wave oscillator
 * Sawtooth wave oscillator
 * Triangle wave oscillator
-* Pulse wave oscillator 
+* Pulse wave oscillator
 * White noise generator
 * .wav playback
 * Grain generator
@@ -61,7 +61,7 @@ Things that filter (`filters/`):
 * High Pass Convolution filter
 * Band Pass Convolution filter
 
-Things that mix: 
+Things that mix:
 
 * Channels (`channels/`)
 * Mixer (`synth/`)
@@ -112,7 +112,10 @@ Use `--help` to see the various options and modes.
 
 `go run main.go --midi`
 
-### Change instruments banks for virtual midi device 
+### Change instruments banks for virtual midi device
 
 `go run main.go --instruments examples/bank.yaml --percussion examples/percussion_bank.yaml --midi`
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/bspaans/bleep/blob/master/LICENSE.md) file for details
