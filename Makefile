@@ -1,5 +1,9 @@
 
-.PHONY: go-test run record
+.PHONY: vet go-test run record
+
+vet:
+	go vet
+	golangci-lint run
 
 go-test:
 	go test -v ./...
