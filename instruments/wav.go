@@ -24,12 +24,13 @@ func (w *WavOptionsDef) Generator(ctx *Context) generators.Generator {
 	if w.Pitched {
 		basePitch := 440.0
 		if w.BasePitch != nil {
-			switch w.BasePitch.(type) {
+			switch pitch := w.BasePitch.(type) {
 			case string:
-				n, _ := theory.NoteFromString(w.BasePitch.(string))
-				basePitch = n.Pitch()
+				basePitch = theory.MustNoteFromString(pitch).Pitch()
+
 			case float64:
-				basePitch = w.BasePitch.(float64)
+				basePitch = pitch
+
 			}
 		}
 		g, err = generators.NewPitchedWavGenerator(file, w.Gain, basePitch)

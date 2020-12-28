@@ -9,8 +9,10 @@ require (
 	github.com/gomidi/midi v1.6.0
 	github.com/gorilla/websocket v1.4.0
 	github.com/mattn/go-runewidth v0.0.4 // indirect
+	github.com/pkg/errors v0.8.1
+	github.com/stretchr/testify v1.6.1
 	github.com/veandco/go-sdl2 v0.4.0
 	gitlab.com/gomidi/midi v1.13.0
-	gonum.org/v1/plot v0.8.0 // indirect
+	gonum.org/v1/plot v0.8.0
 	gopkg.in/yaml.v2 v2.2.2
 )

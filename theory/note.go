@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
-	"github.com/xelaj/go-dry"
 )
 
 type Note struct {
@@ -40,7 +38,7 @@ func NoteFromInt(n int) (*Note, error) {
 	// we sure that "1 <= semitone+1 <= 12", so we have only 12 variants.
 	// if semitone+1 doesnt contain in ToneNames, so semitone+1 == one of 2 4 7 9 or 11
 	// for all of those variants, we choosing + 1 semitone and add to accidentals -1. Easy!
-	if dry.SliceContains(ToneNames, ToneName(semitone+1)) {
+	if toneContains(ToneNames, ToneName(semitone+1)) {
 		toneName = ToneName(semitone + 1)
 	} else {
 		toneName = ToneName(semitone + 2)
@@ -152,4 +150,14 @@ func (n *Note) Pitch() float64 {
 
 func (n *Note) Chord(chord string) Notes {
 	return ChordOnNote(n, chord)
+}
+
+func toneContains(in []ToneName, item ToneName) bool {
+	for _, tone := range in {
+		if tone == item {
+			return true
+		}
+	}
+
+	return false
 }

@@ -17,7 +17,7 @@ func NewSineWaveOscillator() Generator {
 		pitch := g.GetPitch()
 		stepSize := (pitch * math.Pi * 2) / float64(cfg.SampleRate)
 		for i := 0; i < n; i++ {
-			v := math.Sin(phase) * g.Gain
+			v := math.Sin(float64(phase)) * g.Gain
 			SetResult(cfg, result, i, v)
 			phase += stepSize
 		}
