@@ -37,7 +37,7 @@ func (c *PolyphonicChannel) NoteOn(note int, velocity float64) {
 			// turn note off briefly to reset phase
 			c.Instruments[note].SetPitch(0.0)
 		}
-		c.Instruments[note].SetPitch(notes.NoteToPitch[note])
+		c.Instruments[note].SetPitch(theory.NoteToPitch(note - theory.MidiNoteOffset))
 		c.Instruments[note].SetGain(velocity)
 		c.On.Store(note, true)
 	}

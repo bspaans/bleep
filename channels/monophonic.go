@@ -22,7 +22,7 @@ func (c *MonophonicChannel) SetInstrument(g func() generators.Generator) {
 
 func (c *MonophonicChannel) NoteOn(note int, velocity float64) {
 	if c.Instrument != nil {
-		c.Instrument.SetPitch(notes.NoteToPitch[note])
+		c.Instrument.SetPitch(theory.NoteToPitch(note - theory.MidiNoteOffset))
 		c.Instrument.SetGain(velocity)
 	}
 }

@@ -45,7 +45,7 @@ func (c *PercussionChannel) SetInstrument(g func() generators.Generator) {
 func (c *PercussionChannel) NoteOn(note int, velocity float64) {
 	instr := c.getInstrument(note)
 	if instr != nil {
-		instr.SetPitch(notes.NoteToPitch[note])
+		instr.SetPitch(theory.NoteToPitch(note - theory.MidiNoteOffset))
 		instr.SetGain(velocity)
 		c.On.Store(note, true)
 	}

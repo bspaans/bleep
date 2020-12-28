@@ -88,7 +88,7 @@ func (n *Note) Diminish() {
 	n.Accidentals--
 }
 func (n *Note) Pitch() float64 {
-	return NoteToPitch[n.Int()]
+	return NoteToPitch(n.Int() - MidiNoteOffset)
 }
 func (n *Note) Chord(chord string) Notes {
 	return ChordOnNote(n, chord)

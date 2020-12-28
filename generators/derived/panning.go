@@ -10,8 +10,8 @@ import (
 
 func NewPitchControlledPanningGenerator(g generators.Generator) generators.Generator {
 	result := NewWrappedGenerator(g)
-	minPitch := theory.NoteToPitch[theory.C1]
-	maxPitch := theory.NoteToPitch[theory.A7]
+	minPitch := theory.NoteC1.Pitch()
+	maxPitch := theory.NoteA7.Pitch()
 	maxPitchLog2 := math.Log2(maxPitch)
 	pitch := 0.0
 	result.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
