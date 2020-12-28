@@ -27,7 +27,7 @@ func EuclidianRhythm(n, over int) []bool {
 			ix = 0
 		} else {
 			bix := nrOfBuckets - 1
-			buckets[ix] = mergeBuckets(buckets[ix], buckets[bix])
+			buckets[ix] = append(buckets[ix], buckets[bix]...)
 			buckets[bix] = []bool{}
 			ix++
 			nrOfBuckets--
@@ -56,11 +56,4 @@ func EuclidianRhythm(n, over int) []bool {
 		}
 	}
 	return result
-}
-
-func mergeBuckets(b1, b2 []bool) []bool {
-	for _, v := range b2 {
-		b1 = append(b1, v)
-	}
-	return b1
 }
