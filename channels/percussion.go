@@ -6,7 +6,7 @@ import (
 	"github.com/bspaans/bleep/audio"
 	"github.com/bspaans/bleep/generators"
 	"github.com/bspaans/bleep/instruments"
-	"github.com/bspaans/bleep/midi/notes"
+	"github.com/bspaans/bleep/theory"
 )
 
 type PercussionChannel struct {
