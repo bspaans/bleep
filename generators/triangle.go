@@ -21,6 +21,8 @@ func NewTriangleWaveOscillator() Generator {
 			} else {
 				v = 1.0 - (float64(g.Phase)-flipEvery)*stepSize
 			}
+			v *= g.Gain
+			
 			SetResult(cfg, result, i, v)
 			g.Phase++
 			if g.Phase >= int(flipEvery*2) {
