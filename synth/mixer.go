@@ -60,12 +60,6 @@ func (m *Mixer) NoteOff(channel, note int) {
 	}
 }
 
-func (m *Mixer) SetPitchbend(channel int, pitchbendFactor float64) {
-	if channel < len(m.Channels) {
-		m.Channels[channel].SetPitchbend(pitchbendFactor)
-	}
-}
-
 func (m *Mixer) SetReverb(channel, reverb int) {
 	if channel < len(m.Channels) {
 		m.Channels[channel].SetFX(channels.Reverb, float64(reverb)/127.0-0.01)
