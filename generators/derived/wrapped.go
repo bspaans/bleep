@@ -8,7 +8,6 @@ import (
 type WrappedGenerator struct {
 	GetSamplesFunc   func(cfg *audio.AudioConfig, n int) []float64
 	SetPitchFunc     func(float64)
-	SetPitchbendFunc func(float64)
 	SetGainFunc      func(float64)
 }
 
@@ -16,7 +15,6 @@ func NewWrappedGenerator(g generators.Generator) *WrappedGenerator {
 	return &WrappedGenerator{
 		GetSamplesFunc:   g.GetSamples,
 		SetPitchFunc:     g.SetPitch,
-		SetPitchbendFunc: g.SetPitchbend,
 		SetGainFunc:      g.SetGain,
 	}
 }
@@ -30,17 +28,5 @@ func (b *WrappedGenerator) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
 func (b *WrappedGenerator) SetPitch(f float64) {
 	if b.SetPitchFunc != nil {
 		b.SetPitchFunc(f)
-	}
-}
-
-func (b *WrappedGenerator) SetPitchbend(f float64) {
-	if b.SetPitchbendFunc != nil {
-		b.SetPitchbendFunc(f)
-	}
-}
-
-func (b *WrappedGenerator) SetGain(f float64) {
-	if b.SetGainFunc != nil {
-		b.SetGainFunc(f)
 	}
 }

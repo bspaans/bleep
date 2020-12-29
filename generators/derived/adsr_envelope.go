@@ -85,7 +85,3 @@ func (e *EnvelopeGenerator) SetPitch(f float64) {
 func (e *EnvelopeGenerator) SetGain(f float64) {
 	e.Generator.SetGain(f)
 }
-
-func (e *EnvelopeGenerator) SetPitchbend(f float64) {
-	e.Generator.SetPitchbend(f)
-}

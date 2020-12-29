@@ -6,6 +6,8 @@ import (
 	"github.com/bspaans/bleep/theory"
 )
 
+// MonophonicChannel is channel wrapper of single generator. It's implement Channel interface for single
+// generator. Also MonophonicChannel doesn't supports chords, cause, you know, it's mono channel
 type MonophonicChannel struct {
 	Instrument generators.Generator
 }
@@ -37,11 +39,6 @@ func (c *MonophonicChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 
 	return c.Instrument.GetSamples(cfg, n)
 }
 
-func (c *MonophonicChannel) SetPitchbend(pitchbendFactor float64) {
-	if c.Instrument != nil {
-		c.Instrument.SetPitchbend(pitchbendFactor)
-	}
-}
 
 func (c *MonophonicChannel) SetFX(fx FX, value float64)                        {}
 func (c *MonophonicChannel) SetGrainOption(opt GrainOption, value interface{}) {}

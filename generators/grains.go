@@ -36,13 +36,13 @@ type GrainsGenerator struct {
 // repeat: whether or not to loop through the sample
 // randomPosition: in milliseconds
 //
-func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, density int, spread, speed, randomPosition, gain float64, repeat bool) (Generator, error) {
-	data, err := LoadWavData(file)
-	if err != nil {
-		return nil, err
-	}
-	return NewGrainsGenerator(cfg, data, grainSize, birthrate, density, spread, speed, randomPosition, gain, repeat), nil
-}
+//func NewGrainsGeneratorForWavFile(cfg *audio.AudioConfig, file string, grainSize, birthrate float64, density int, spread, speed, randomPosition, gain float64, repeat bool) (Generator, error) {
+//	data, err := LoadWavData(file)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return NewGrainsGenerator(cfg, data, grainSize, birthrate, density, spread, speed, randomPosition, gain, repeat), nil
+//}
 
 // Synchronous Granular Synthesis.
 //
@@ -142,8 +142,8 @@ func NewGrainsGenerator(cfg *audio.AudioConfig, sample []float64, grainSize, bir
 		}
 		return result
 	}
-	g.SetPitchFunc = func(f float64) {
-		g.Phase = 0
-	}
+	//g.SetPitchFunc = func(f float64) {
+	//	g.Phase = 0
+	//}
 	return &gen
 }

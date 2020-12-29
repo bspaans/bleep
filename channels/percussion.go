@@ -59,9 +59,6 @@ func (c *PercussionChannel) NoteOff(note int) {
 	}
 }
 
-func (c *PercussionChannel) SetPitchbend(f float64) {
-}
-
 func (c *PercussionChannel) GetSamples(cfg *audio.AudioConfig, n int) []float64 {
 	result := generators.GetEmptySampleArray(cfg, n)
 	c.On.Range(func(on, value interface{}) bool {

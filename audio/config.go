@@ -39,3 +39,17 @@ func (c *AudioConfig) GetNumberOfChannels() int {
 	}
 	return 1
 }
+
+// faster comparator, equals reflect.DeepEqual()
+func (c *AudioConfig) IsEqual(cfg *AudioConfig) bool {
+	if cfg == nil || c == nil {
+		return c == cfg
+	}
+
+	return c.BitDepth == cfg.BitDepth &&
+		c.SampleRate == cfg.SampleRate &&
+		c.Stereo == cfg.Stereo &&
+		c.HandleEventsPerSecond == cfg.HandleEventsPerSecond &&
+		c.MidiEventInputBufferSize == cfg.MidiEventInputBufferSize &&
+		c.Debug == cfg.Debug
+}

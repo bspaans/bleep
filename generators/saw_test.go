@@ -11,7 +11,7 @@ func Test_Sawtooth_GetSamples_sanity_check(t *testing.T) {
 	cfg.SampleRate = 100
 	cfg.Stereo = false
 	osc := NewSawtoothWaveOscillator()
-	osc.SetPitch(1.0)
+	osc.Pitch = 1
 	samples := osc.GetSamples(cfg, 100)
 	if len(samples) != 100 {
 		t.Errorf("Want 100 samples, got %v", len(samples))

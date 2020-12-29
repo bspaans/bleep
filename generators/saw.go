@@ -1,28 +1,17 @@
 package generators
 
-import (
-	"github.com/bspaans/bleep/audio"
-)
+func NewSawtoothWaveOscillator() *BaseGenerator {
+	gen := NewBaseGenerator()
+	gen.GetSamplesFunc = gen.getGeneralSampleGetter(sawtoothWave)
+	return gen
+}
 
-func NewSawtoothWaveOscillator() Generator {
-	g := NewBaseGenerator()
-	g.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
-		result := GetEmptySampleArray(cfg, n)
-		if g.Pitch == 0.0 {
-			return result
-		}
-		pitch := g.GetPitch()
-		flipEvery := (float64(cfg.SampleRate)) / pitch
-		stepSize := 2.0 / flipEvery
-		for i := 0; i < n; i++ {
-			v := (-1.0 + float64(g.Phase)*stepSize) * g.Gain
-			SetResult(cfg, result, i, v)
-			g.IncrementPhase(int(flipEvery))
-			if float64(g.Phase) > flipEvery {
-				g.Phase -= int(flipEvery)
-			}
-		}
-		return result
-	}
-	return g
+func NewSawtoothWaveOscillatorAdvanced() *AdvancedGenerator {
+	gen := NewAdvancedGenerator()
+	gen.GetSamplesFunc = gen.getGeneralSampleGetter(sawtoothWave)
+	return gen
+}
+
+func sawtoothWave(phase float64) float64 {
+	return fract(phase) - 0.5
 }

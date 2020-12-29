@@ -21,11 +21,6 @@ func NewCombinedGenerators(g ...generators.Generator) generators.Generator {
 			generator.SetPitch(f)
 		}
 	}
-	result.SetPitchbendFunc = func(f float64) {
-		for _, generator := range g {
-			generator.SetPitchbend(f)
-		}
-	}
 	result.SetGainFunc = func(f float64) {
 		for _, generator := range g {
 			generator.SetGain(f)

@@ -2,26 +2,20 @@ package generators
 
 import (
 	"math"
-
-	"github.com/bspaans/bleep/audio"
 )
 
-func NewSineWaveOscillator() Generator {
-	g := NewBaseGenerator()
-	var phase float64
-	g.GetSamplesFunc = func(cfg *audio.AudioConfig, n int) []float64 {
-		result := GetEmptySampleArray(cfg, n)
-		if g.Pitch == 0.0 {
-			return result
-		}
-		pitch := g.GetPitch()
-		stepSize := (pitch * math.Pi * 2) / float64(cfg.SampleRate)
-		for i := 0; i < n; i++ {
-			v := math.Sin(float64(phase)) * g.Gain
-			SetResult(cfg, result, i, v)
-			phase += stepSize
-		}
-		return result
-	}
-	return g
+func NewSineWaveOscillator() *BaseGenerator {
+	gen := NewBaseGenerator()
+	gen.GetSamplesFunc = gen.getGeneralSampleGetter(sineWave)
+	return gen
+}
+
+func NewSineWaveOscillatorAdvanced() *AdvancedGenerator {
+	gen := NewAdvancedGenerator()
+	gen.GetSamplesFunc = gen.getGeneralSampleGetter(sineWave)
+	return gen
+}
+
+func sineWave(phase float64) float64 {
+	return math.Sin(math.Pi*2*phase) / 2
 }

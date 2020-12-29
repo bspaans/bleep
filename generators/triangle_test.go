@@ -11,7 +11,7 @@ func Test_Triangle_GetSamples_sanity_check(t *testing.T) {
 	cfg.SampleRate = 100
 	cfg.Stereo = false
 	osc := NewTriangleWaveOscillator()
-	osc.SetPitch(1.0)
+	osc.Pitch = 1
 	samples := osc.GetSamples(cfg, 101)
 	if len(samples) != 101 {
 		t.Errorf("Want 100 samples, got %v", len(samples))
@@ -38,7 +38,7 @@ func Test_Triangle_GetSamples_stereo_sanity_check(t *testing.T) {
 	cfg.SampleRate = 100
 	cfg.Stereo = true
 	osc := NewTriangleWaveOscillator()
-	osc.SetPitch(1.0)
+	osc.Pitch = 1
 	samples := osc.GetSamples(cfg, 101)
 	if len(samples) != 202 {
 		t.Errorf("Want 101x2 samples, got %v", len(samples))

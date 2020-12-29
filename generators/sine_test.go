@@ -11,7 +11,7 @@ func Test_Sine_GetSamples_sanity_check(t *testing.T) {
 	cfg.SampleRate = 100
 	cfg.Stereo = false
 	osc := NewSineWaveOscillator()
-	osc.SetPitch(1.0)
+	osc.Pitch = 1
 	samples := osc.GetSamples(cfg, 100)
 	if len(samples) != 100 {
 		t.Errorf("Want 100 samples, got %v", len(samples))
@@ -35,7 +35,7 @@ func Test_Sine_GetSamples_number_of_peaks_equals_pitch(t *testing.T) {
 	cfg.SampleRate = 44000
 	cfg.Stereo = false
 	osc := NewSineWaveOscillator()
-	osc.SetPitch(440.0)
+	osc.Pitch = 440
 	samples := osc.GetSamples(cfg, 44000)
 	if len(samples) != 44000 {
 		t.Errorf("Want 44000 samples, got %v", len(samples))
