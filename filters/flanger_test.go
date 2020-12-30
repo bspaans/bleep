@@ -1,11 +1,16 @@
 package filters
 
 import (
+	"math"
 	"testing"
 
 	"github.com/bspaans/bleep/audio"
 	"github.com/bspaans/bleep/generators"
 )
+
+func almostEqual(a, b, threshold float64) bool {
+	return math.Abs(a-b) <= threshold
+}
 
 func Test_Flanger_with_zero_rate_and_factor_one_leaves_input_unaffected(t *testing.T) {
 	cfg := audio.NewAudioConfig()

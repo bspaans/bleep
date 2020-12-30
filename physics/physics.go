@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/color"
 	"log"
+	"math"
 	"os"
 
 	"gonum.org/v1/plot"
@@ -13,6 +14,8 @@ import (
 	"gonum.org/v1/plot/vg/draw"
 	"gonum.org/v1/plot/vg/vgimg"
 )
+
+const SoundSpeed = 343.0
 
 // Returns the "height" at time t for a ball bouncing from the ground (i.e.
 // 0.0) with an initialSpeed and gravity. Adjusted for sampleRate (e.g.
@@ -51,6 +54,28 @@ func MultipleBouncesOfLength(sampleRate, bounces int, initialBounceLength, gravi
 
 }
 
+func ScaleFloats(floats []float64, min, max float64) []float64 {
+	foundMin, foundMax := math.MaxFloat64, 0.0
+	for _, f := range floats {
+		if f < foundMin {
+			foundMin = f
+		}
+		if f > foundMax {
+			foundMax = f
+		}
+	}
+
+	// Scaling from foundMin - foundMax to min - max
+	foundRange := foundMax - foundMin
+	newRange := max - min
+	scale := newRange / foundRange
+
+	for i, f := range floats {
+		floats[i] = f*scale + min
+	}
+	return floats
+}
+
 func Spring() {
 
 }
@@ -59,8 +84,12 @@ func main() {
 	fmt.Println("alright")
 	values := MultipleBouncesOfLength(44100, 6, 1.0, 9.8, 0.7, false)
 	PlotValues(values, "test.png")
-	values = MultipleBouncesOfLength(44100, 6, 1.0, 1000.0, 0.7, false)
+	values = MultipleBouncesOfLength(44100, 10, 0.2, 1000.0, 0.7, true)
+	ScaleFloats(values, 1000.0, 15000.0)
 	PlotValues(values, "test2.png")
+	values = MultipleBounces(44100, 10, SoundSpeed, 9.8, 0.7, true)
+	ScaleFloats(values, 1000.0, 15000.0)
+	PlotValues(values, "test3.png")
 
 }
 

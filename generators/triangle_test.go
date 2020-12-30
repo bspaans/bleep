@@ -14,7 +14,7 @@ func Test_Triangle_GetSamples_sanity_check(t *testing.T) {
 	osc.SetPitch(1.0)
 	samples := osc.GetSamples(cfg, 101)
 	if len(samples) != 101 {
-		t.Errorf("Want 100 samples, got %v", len(samples))
+		t.Errorf("Want 101 samples, got %v", len(samples))
 	}
 	if samples[0] != -1.0 {
 		t.Errorf("Expecting first sample to be -1.0, got: %v", samples[0])

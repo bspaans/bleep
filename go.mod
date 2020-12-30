@@ -11,6 +11,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/veandco/go-sdl2 v0.4.0
 	gitlab.com/gomidi/midi v1.13.0
-	gonum.org/v1/plot v0.8.0 // indirect
+	gonum.org/v1/plot v0.8.0
 	gopkg.in/yaml.v2 v2.2.2
 )
