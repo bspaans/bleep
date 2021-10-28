@@ -21,7 +21,8 @@ jobs:
       - run:
           name: Run unit tests
           command: |
-            gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml 
+            PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
+            gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- $PACKAGE_NAMES
 
       - run: make # pull and build dependencies for the project
 
