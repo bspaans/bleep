@@ -12,7 +12,7 @@ jobs:
     steps: 
       - checkout 
       - run: mkdir -p $TEST_RESULTS 
-      - run: sudo apt-get install libsdl1.2-dev
+      - run: sudo apt-get install libsdl2-dev
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
@@ -21,8 +21,7 @@ jobs:
       - run:
           name: Run unit tests
           command: |
-            PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
-            gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- $PACKAGE_NAMES
+            gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml 
 
       - run: make # pull and build dependencies for the project
 
