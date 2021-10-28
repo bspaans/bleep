@@ -6,7 +6,7 @@ import (
 	"github.com/bspaans/bleep/midi"
 	. "github.com/bspaans/bleep/sequencer/status"
 	"github.com/bspaans/bleep/synth"
-	"github.com/gomidi/midi/midimessage/channel"
+	"gitlab.com/gomidi/midi/midimessage/channel"
 )
 
 func MidiSequence(mid *midi.MIDISequences, inputChannels, outputChannels []int, speed float64, loop bool) Sequence {

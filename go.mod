@@ -6,7 +6,6 @@ require (
 	github.com/gizak/termui/v3 v3.0.0
 	github.com/go-audio/audio v0.0.0-20181013203223-7b2a6ca21480
 	github.com/go-audio/wav v0.0.0-20181013172942-de841e69b884
-	github.com/gomidi/midi v1.6.0
 	github.com/gorilla/websocket v1.4.1
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/veandco/go-sdl2 v0.4.0
