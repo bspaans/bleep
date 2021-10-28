@@ -12,6 +12,7 @@ jobs:
     steps: 
       - checkout 
       - run: mkdir -p $TEST_RESULTS 
+      - run: sudo apt-get install libsdl1.2-dev
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
