@@ -1,23 +1,43 @@
-version: 2
-
-jobs:
+version: 2 
+jobs: 
   build:
-    docker:
-        - image: ankyra/escape:latest
+    docker: 
+      - image: circleci/golang:1.12
 
-    steps:
-    - add_ssh_keys
-    - checkout
-    - setup_remote_docker
-    - run:
-        name: Install Docker client
-        command: |
-          set -x
-          VER="17.03.0-ce"
-          curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
-          tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-          mv /tmp/docker/* /usr/bin
+    parallelism: 2
 
-    - run: 
-        name: Release
-        command: escape run release
+    environment: 
+      TEST_RESULTS: /tmp/test-results # path to where test results will be saved
+
+    steps: 
+      - checkout 
+      - run: mkdir -p $TEST_RESULTS 
+
+      - restore_cache: # restores saved cache if no changes are detected since last run
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
+
+      - run:
+          name: Run unit tests
+          command: |
+            PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
+            gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- $PACKAGE_NAMES
+
+      - run: make # pull and build dependencies for the project
+
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+
+      - store_artifacts: # upload test summary for display in Artifacts
+          path: /tmp/test-results
+          destination: raw-test-output
+
+      - store_test_results: # upload test results for display in Test Summary
+          path: /tmp/test-results
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+      - build
