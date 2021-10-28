@@ -11,5 +11,5 @@ require (
 	github.com/veandco/go-sdl2 v0.4.0
 	gitlab.com/gomidi/midi v1.13.0
 	gonum.org/v1/plot v0.8.0
-	gopkg.in/yaml.v2 v2.2.2
+	gopkg.in/yaml.v2 v2.4.0
 )
