@@ -39,7 +39,6 @@ func (c *ChannelEvents) Add(ev *MidiEvent) {
 type MIDISequences struct {
 	Channels     []*ChannelEvents
 	GlobalEvents []*MidiEvent
-	BPM          float64
 	Length       int
 	TimeFormat   smf.MetricTicks
 }
