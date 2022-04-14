@@ -8,6 +8,7 @@ import (
 	"github.com/bspaans/bleep/filters"
 	"github.com/bspaans/bleep/generators"
 	"github.com/bspaans/bleep/generators/derived"
+	"github.com/bspaans/bleep/util"
 )
 
 type FilterDef struct {
@@ -99,7 +100,7 @@ func (f *FilterOptionsDef) Validate() error {
 		for _, filter := range f.Sum {
 			err := filter.Validate()
 			if err != nil {
-				return WrapError("sum filter", err)
+				return util.WrapError("sum filter", err)
 			}
 		}
 		return nil
@@ -107,7 +108,7 @@ func (f *FilterOptionsDef) Validate() error {
 		for _, filter := range f.Average {
 			err := filter.Validate()
 			if err != nil {
-				return WrapError("average filter", err)
+				return util.WrapError("average filter", err)
 			}
 		}
 		return nil

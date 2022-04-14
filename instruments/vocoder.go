@@ -5,6 +5,7 @@ import (
 
 	"github.com/bspaans/bleep/generators"
 	"github.com/bspaans/bleep/generators/derived"
+	"github.com/bspaans/bleep/util"
 )
 
 type VocoderDef struct {
@@ -20,15 +21,15 @@ func (w *VocoderDef) Generator(ctx *Context) generators.Generator {
 
 func (w *VocoderDef) Validate(ctx *Context) error {
 	if w.Source == nil {
-		return WrapError("vocoder", fmt.Errorf("missing 'source' parameter"))
+		return util.WrapError("vocoder", fmt.Errorf("missing 'source' parameter"))
 	} else if w.Vocoder == nil {
-		return WrapError("vocoder", fmt.Errorf("missing 'vocoder' parameter"))
+		return util.WrapError("vocoder", fmt.Errorf("missing 'vocoder' parameter"))
 	}
 	if err := w.Source.Validate(ctx); err != nil {
-		return WrapError("vocoder > source", err)
+		return util.WrapError("vocoder > source", err)
 	}
 	if err := w.Vocoder.Validate(ctx); err != nil {
-		return WrapError("vocoder > vocoder", err)
+		return util.WrapError("vocoder > vocoder", err)
 	}
 	return nil
 }

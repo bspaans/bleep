@@ -2,6 +2,7 @@ package instruments
 
 import (
 	"github.com/bspaans/bleep/generators"
+	"github.com/bspaans/bleep/util"
 )
 
 type PulseWaveDef struct {
@@ -23,7 +24,7 @@ func (p *PulseWaveDef) Generator(ctx *Context) generators.Generator {
 func (g *PulseWaveDef) Validate(ctx *Context) error {
 	if g.DutyCycleModulator != nil {
 		if err := g.DutyCycleModulator.Validate(ctx); err != nil {
-			return WrapError("pulse > duty_cycle_modulator", err)
+			return util.WrapError("pulse > duty_cycle_modulator", err)
 		}
 	}
 	return g.GeneratorOptionsDef.Validate()
