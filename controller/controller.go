@@ -5,6 +5,7 @@ import (
 
 	"github.com/bspaans/bleep/audio"
 	"github.com/bspaans/bleep/sequencer"
+	"github.com/bspaans/bleep/sequencer/definitions"
 	"github.com/bspaans/bleep/synth"
 	"github.com/bspaans/bleep/ui"
 )
@@ -70,6 +71,12 @@ func (c *Controller) ReloadPercussionBank() error {
 
 func (c *Controller) LoadEmptySequencer() {
 	c.Sequencer = sequencer.NewSequencer(120, 64)
+	c.StartSequencer()
+}
+
+func (c *Controller) LoadSequencerFromDefinition(def *definitions.SequencerDef) {
+	seq := sequencer.NewSequencerFromDefinition(def)
+	c.Sequencer = seq
 	c.StartSequencer()
 }
 

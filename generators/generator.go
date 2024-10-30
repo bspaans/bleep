@@ -92,3 +92,9 @@ func GetEmptySampleArray(cfg *audio.AudioConfig, n int) []float64 {
 	}
 	return make([]float64, n)
 }
+
+func ToInstrument(g func() Generator) func(cfg *audio.AudioConfig) Generator {
+	return func(cfg *audio.AudioConfig) Generator {
+		return g()
+	}
+}

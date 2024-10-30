@@ -5,3 +5,4 @@ examples/808.yaml
 examples/sequencer_son.yaml
 .escape
 deps/
+test.wav

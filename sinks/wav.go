@@ -3,6 +3,7 @@ package sinks
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 
 	"github.com/bspaans/bleep/audio"
@@ -16,6 +17,28 @@ type WavSink struct {
 	Encoder     *wav.Encoder
 	Samples     []int
 	Closed      bool
+}
+
+func WriteFloatSamplesToWavFile(cfg *audio.AudioConfig, samples []float64, file string) error {
+	result := make([]int, len(samples))
+	maxValue := math.Pow(2, float64(cfg.BitDepth))
+	for i, sample := range samples {
+		scaled := (sample + 1) * (maxValue / 2)
+		maxClipped := math.Max(0, math.Ceil(scaled))
+		result[i] = int(math.Min(maxClipped, maxValue-1))
+	}
+	return WriteSamplesToWavFile(cfg, result, file)
+}
+
+func WriteSamplesToWavFile(cfg *audio.AudioConfig, samples []int, file string) error {
+	sink, err := NewWavSink(cfg, file)
+	if err != nil {
+		return err
+	}
+	if err := sink.Write(cfg, samples); err != nil {
+		return err
+	}
+	return sink.Close(cfg)
 }
 
 func NewWavSink(cfg *audio.AudioConfig, file string) (*WavSink, error) {

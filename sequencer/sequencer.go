@@ -33,13 +33,19 @@ func NewSequencer(bpm float64, granularity int) *Sequencer {
 	}
 	return seq
 }
+
+func NewSequencerFromDefinition(def *definitions.SequencerDef) *Sequencer {
+	seq := NewSequencer(def.BPM, def.Granularity)
+	seq.instantiateFromSequencerDef(def)
+	return seq
+}
+
 func NewSequencerFromFile(file string) (*Sequencer, error) {
 	s, err := definitions.NewSequencerDefFromFile(file)
 	if err != nil {
 		return nil, util.WrapError("sequencer", err)
 	}
-	seq := NewSequencer(s.BPM, s.Granularity)
-	seq.instantiateFromSequencerDef(s)
+	seq := NewSequencerFromDefinition(s)
 	seq.FromFile = file
 	return seq, nil
 }
@@ -135,11 +141,13 @@ func (seq *Sequencer) loadInstruments(s chan *synth.Event) {
 		s <- synth.NewEvent(synth.SetChannelPanning, ch, []int{channelDef.Panning})
 		s <- synth.NewFloatEvent(synth.SetReverbFeedback, ch, []float64{channelDef.ReverbFeedback})
 
-		d, err := channels.ParseDuration(channelDef.ReverbTime, seq.BPM)
-		if err == nil {
-			s <- synth.NewFloatEvent(synth.SetReverbTime, ch, []float64{d})
-		} else {
-			fmt.Println("Invalid duration:", err.Error())
+		if channelDef.ReverbTime != nil {
+			d, err := channels.ParseDuration(channelDef.ReverbTime, seq.BPM)
+			if err == nil {
+				s <- synth.NewFloatEvent(synth.SetReverbTime, ch, []float64{d})
+			} else {
+				fmt.Println("Invalid duration:", err.Error())
+			}
 		}
 
 		if channelDef.Grain != nil {

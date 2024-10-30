@@ -5,8 +5,8 @@ import (
 	"github.com/bspaans/bleep/channels"
 	"github.com/bspaans/bleep/controller"
 	"github.com/bspaans/bleep/generators"
-	"github.com/bspaans/bleep/midi/notes"
 	"github.com/bspaans/bleep/synth"
+	"github.com/bspaans/bleep/theory"
 )
 
 func main() {
@@ -27,7 +27,7 @@ func main() {
 	// volumes, etc. In this case it's a bit overkill, because we have
 	// only one channel.
 	mixer := synth.NewMixer()
-	mixer.AddChannel(channel)
+	mixer.Channels[0] = channel
 
 	// The Synth takes a mixer, handles input and output events, and is the
 	// component that actually asks for samples to send to the output sinks.
@@ -42,7 +42,7 @@ func main() {
 	ctrl.Synth = synth
 
 	// Now that we have everything setup, play a C5 note:
-	mixer.NoteOn(0, notes.C5, 1.0)
+	mixer.NoteOn(0, theory.C5, 1.0)
 
 	// And start the synthesizer in the background
 	ctrl.StartSynth()
