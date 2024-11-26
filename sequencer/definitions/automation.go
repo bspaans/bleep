@@ -49,8 +49,8 @@ func (a *AutomationDef) GetAutomation() (IntAutomation, error) {
 }
 
 type RandomDef struct {
-	Max int `json:"min" yaml:"min"`
-	Min int `json:"max" yaml:"max"`
+	Min int `json:"min" yaml:"min"`
+	Max int `json:"max" yaml:"max"`
 }
 
 type RangeDef struct {
